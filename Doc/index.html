@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AKM Public Sr. Sec. School — Nursery to Class 12 | HPBOSE</title>
+<meta name="description" content="AKM Public Sr. Sec. School provides quality education from Nursery to Class 12 under HPBOSE in English & Hindi medium.">
+<link rel="icon" href="https://lh3.googleusercontent.com/d/1lRIi9Q1HubDIcFGeFSAIOcBtQ8tH_-Kr=w64">
+<link rel="preconnect" href="https://lh3.googleusercontent.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --royal:#12307F;
+  --royal-dark:#0B2059;
+  --gold:#E3A81C;
+  --red:#D0342C;
+  --azure:#1466BC;
+  --coffee:#4A3324;
+  --sky-soft:#E7F3FD;
+  --cream:#FFFCF5;
+  --ink:#1A2340;
+  --muted:#5E6A8C;
+  --radius-lg:28px;
+  --radius-md:18px;
+  --radius-sm:12px;
+  --shadow:0 10px 30px rgba(18,48,127,.10);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito Sans',sans-serif;color:var(--ink);background:var(--cream);line-height:1.65;font-size:16px;overflow-x:hidden}
+h1,h2,h3,h4{font-family:'Baloo 2',cursive;line-height:1.2;color:var(--royal-dark)}
+img{max-width:100%;display:block}
+a{text-decoration:none;color:inherit}
+.container{max-width:1180px;margin:0 auto;padding:0 22px}
+section{padding:72px 0;position:relative}
+.section-intro{max-width:640px;margin:0 auto 44px;text-align:center}
+.section-intro .tag{display:inline-block;background:var(--sky-soft);color:var(--royal);font-weight:800;font-size:.85rem;padding:6px 16px;border-radius:999px;margin-bottom:12px}
+.section-intro h2{font-size:clamp(1.7rem,3.5vw,2.4rem);font-weight:800}
+.section-intro p{color:var(--muted);margin-top:10px}
+.btn{display:inline-block;font-family:'Baloo 2',cursive;font-weight:700;font-size:1rem;padding:13px 30px;border-radius:999px;transition:transform .18s ease, box-shadow .18s ease;cursor:pointer;border:none}
+.btn-primary{background:var(--gold);color:#3A2A00;box-shadow:0 6px 0 #BE8709}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 9px 0 #BE8709}
+.btn-primary:active{transform:translateY(2px);box-shadow:0 3px 0 #BE8709}
+.btn-outline{background:transparent;color:var(--royal);border:2px solid var(--royal)}
+.btn-outline:hover{background:var(--royal);color:#fff}
+.btn:focus-visible{outline:3px solid var(--red);outline-offset:3px}
+
+/* ================= Preloader ================= */
+#preloader{position:fixed;inset:0;background:var(--royal-dark);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:opacity .5s ease, visibility .5s ease}
+#preloader.done{opacity:0;visibility:hidden}
+.pl-mark{width:94px;height:94px;object-fit:contain;animation:plBounce 1s ease infinite;filter:drop-shadow(0 10px 24px rgba(0,0,0,.4))}
+.pl-text{color:#C9DCF7;font-weight:800;letter-spacing:.5px;font-size:.9rem}
+@keyframes plBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+
+/* ================= Scroll reveal ================= */
+.reveal{opacity:0;transform:translateY(34px);transition:opacity .7s ease, transform .7s ease}
+.reveal.visible{opacity:1;transform:none}
+.reveal.d1{transition-delay:.1s}
+.reveal.d2{transition-delay:.2s}
+.reveal.d3{transition-delay:.3s}
+.reveal.d4{transition-delay:.4s}
+
+/* ================= Floating deco shapes ================= */
+.deco{position:absolute;border-radius:50%;pointer-events:none;z-index:0}
+.deco.ring{border:3px dashed var(--gold);background:transparent;opacity:.5}
+.deco.dot-t{background:rgba(18,48,127,.10)}
+.deco.dot-c{background:rgba(20,102,188,.14)}
+.float-slow{animation:floaty 7s ease-in-out infinite}
+.float-mid{animation:floaty 5s ease-in-out infinite reverse}
+.spin-slow{animation:spin 26s linear infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ================= Top bar + ticker ================= */
+.topbar{background:var(--royal-dark);color:#C9DCF7;font-size:.85rem;padding:8px 0;position:relative;z-index:60}
+.topbar .container{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.topbar span{display:inline-flex;align-items:center;gap:6px}
+.topbar a{color:#F0C763;font-weight:700}
+.ticker{background:var(--red);color:#fff;font-size:.85rem;font-weight:700;overflow:hidden;white-space:nowrap;position:relative;z-index:60}
+.ticker-track{display:inline-block;padding:7px 0;animation:ticker 28s linear infinite}
+.ticker:hover .ticker-track{animation-play-state:paused}
+.ticker-track span{margin:0 34px}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ================= Header / Nav ================= */
+header{background:#fff;position:sticky;top:0;z-index:50;box-shadow:0 2px 14px rgba(18,48,127,.08);transition:box-shadow .3s ease}
+header.scrolled{box-shadow:0 6px 24px rgba(18,48,127,.16)}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:16px}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-mark{width:56px;height:56px;object-fit:contain;transition:transform .4s ease}
+.logo:hover .logo-mark{transform:rotate(-6deg) scale(1.06)}
+.logo-text b{font-family:'Baloo 2',cursive;font-size:1.15rem;color:var(--royal-dark);display:block;line-height:1.15}
+.logo-text small{color:var(--muted);font-size:.72rem;font-weight:700}
+nav ul{list-style:none;display:flex;gap:26px;align-items:center}
+nav a{font-weight:700;font-size:.95rem;color:var(--ink);position:relative;padding:6px 0}
+nav ul a::after{content:"";position:absolute;left:0;bottom:-4px;height:3px;width:0;border-radius:3px;background:var(--gold);transition:width .25s ease}
+nav ul a:hover::after,nav ul a.active::after{width:100%}
+nav a:hover{color:var(--azure)}
+nav a.active{color:var(--royal)}
+.nav .btn{padding:10px 22px;font-size:.92rem}
+.menu-toggle{display:none;background:none;border:none;font-size:1.6rem;color:var(--royal);cursor:pointer}
+
+/* ================= Hero ================= */
+.hero{background:linear-gradient(180deg,var(--sky-soft) 0%, var(--cream) 100%);padding:70px 0 90px;overflow:hidden}
+.hero .container{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;position:relative;z-index:1}
+.hero .kicker{display:inline-block;background:#fff;border:2px dashed var(--gold);color:var(--royal);font-weight:800;font-size:.85rem;padding:7px 18px;border-radius:999px;margin-bottom:18px}
+.hero h1{font-size:clamp(2rem,4.5vw,3.1rem);font-weight:800;margin-bottom:16px}
+.hero h1 em{font-style:normal;color:var(--red)}
+.hero p{color:var(--muted);font-size:1.05rem;max-width:520px;margin-bottom:26px}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.hero-media{position:relative}
+.hero-photo{aspect-ratio:4/3.4;border-radius:46% 54% 52% 48% / 44% 46% 54% 56%;background:
+  linear-gradient(rgba(11,32,89,.18),rgba(11,32,89,.18)),
+  repeating-linear-gradient(45deg,#12307F 0 24px,#2A4CA8 24px 48px);
+  display:flex;align-items:center;justify-content:center;color:#E7F3FD;font-family:'Baloo 2',cursive;font-weight:700;text-align:center;padding:30px;border:6px solid #fff;box-shadow:var(--shadow);
+  animation:blob 9s ease-in-out infinite}
+@keyframes blob{
+  0%,100%{border-radius:46% 54% 52% 48% / 44% 46% 54% 56%}
+  33%{border-radius:54% 46% 44% 56% / 52% 56% 44% 48%}
+  66%{border-radius:48% 52% 56% 44% / 46% 44% 56% 54%}
+}
+.float-card{position:absolute;background:#fff;border-radius:var(--radius-md);box-shadow:var(--shadow);padding:12px 18px;font-weight:800;font-family:'Baloo 2',cursive;color:var(--royal-dark)}
+.float-card small{display:block;font-family:'Nunito Sans',sans-serif;font-weight:700;color:var(--muted);font-size:.75rem}
+.fc-1{top:6%;left:-16px;animation:floaty 5.5s ease-in-out infinite}
+.fc-2{bottom:8%;right:-8px;animation:floaty 6.5s ease-in-out infinite reverse}
+/* hero entrance */
+.hero-in{opacity:0;transform:translateY(28px);animation:heroIn .8s ease forwards}
+.hi-1{animation-delay:.15s}
+.hi-2{animation-delay:.3s}
+.hi-3{animation-delay:.45s}
+.hi-4{animation-delay:.6s}
+.hi-media{opacity:0;transform:scale(.9);animation:heroMedia .9s ease .35s forwards}
+@keyframes heroIn{to{opacity:1;transform:none}}
+@keyframes heroMedia{to{opacity:1;transform:none}}
+
+/* ================= Stats ================= */
+.stats{background:var(--royal);border-radius:var(--radius-lg);padding:34px 20px;display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:-58px;position:relative;z-index:2;box-shadow:var(--shadow)}
+.stat{text-align:center;color:#fff}
+.stat b{font-family:'Baloo 2',cursive;font-size:1.9rem;display:block;color:var(--gold)}
+.stat > span{font-size:.88rem;font-weight:700;color:#C9DCF7}
+
+/* ================= Academic stages ================= */
+.stage-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:18px}
+.stage{background:#fff;border-radius:var(--radius-md);padding:26px 18px;text-align:center;box-shadow:var(--shadow);border-top:6px solid var(--gold);transition:transform .22s ease, box-shadow .22s ease}
+.stage:nth-child(2){border-top-color:var(--red)}
+.stage:nth-child(3){border-top-color:var(--royal)}
+.stage:nth-child(4){border-top-color:var(--coffee)}
+.stage:nth-child(5){border-top-color:#1466BC}
+.stage:hover{transform:translateY(-8px) rotate(-.5deg);box-shadow:0 18px 40px rgba(18,48,127,.16)}
+.stage .emoji{font-size:2rem;display:inline-block;transition:transform .3s ease}
+.stage:hover .emoji{transform:scale(1.25) rotate(8deg)}
+.stage h3{font-size:1.05rem;margin:10px 0 4px}
+.stage .cls{font-weight:800;color:var(--azure);font-size:.85rem;display:block;margin-bottom:8px}
+.stage p{font-size:.85rem;color:var(--muted)}
+
+/* ================= Principal ================= */
+.principal{background:#fff}
+.pr-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:44px;align-items:center}
+.pr-photo{aspect-ratio:1/1.1;max-width:340px;border-radius:var(--radius-lg);background:
+  linear-gradient(rgba(11,32,89,.25),rgba(11,32,89,.35)),
+  repeating-linear-gradient(135deg,#E3A81C 0 22px,#F0C763 22px 44px);
+  display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Baloo 2',cursive;font-weight:700;text-align:center;padding:24px;border:6px solid var(--sky-soft);box-shadow:var(--shadow)}
+.pr-quote{font-size:1.05rem;color:var(--muted);border-left:5px solid var(--gold);padding-left:20px;margin:18px 0;font-style:italic}
+.pr-name b{font-family:'Baloo 2',cursive;color:var(--royal-dark);font-size:1.1rem;display:block}
+.pr-name span{color:var(--muted);font-size:.85rem;font-weight:700}
+
+/* ================= Streams ================= */
+.streams{background:var(--sky-soft)}
+.stream-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.stream{background:#fff;border-radius:var(--radius-lg);padding:34px 28px;box-shadow:var(--shadow);position:relative;overflow:hidden;transition:transform .22s ease}
+.stream:hover{transform:translateY(-8px)}
+.stream::after{content:"";position:absolute;width:120px;height:120px;border-radius:50%;right:-40px;top:-40px;background:rgba(227,168,28,.14);transition:transform .4s ease}
+.stream:hover::after{transform:scale(1.6)}
+.stream h3{font-size:1.25rem;margin-bottom:8px;position:relative;z-index:1}
+.stream p{color:var(--muted);font-size:.92rem;position:relative;z-index:1}
+.stream ul{list-style:none;margin-top:14px;position:relative;z-index:1}
+.stream li{font-size:.9rem;font-weight:700;padding:6px 0;border-bottom:1px dashed #DCE7F5}
+.stream li::before{content:"✓ ";color:var(--royal);font-weight:800}
+
+/* ================= Facilities ================= */
+.fac-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.fac{background:#fff;border-radius:var(--radius-md);padding:28px 20px;text-align:center;box-shadow:var(--shadow);transition:transform .22s ease}
+.fac:hover{transform:translateY(-8px)}
+.fac .ico{width:64px;height:64px;margin:0 auto 14px;border-radius:50%;background:var(--sky-soft);display:flex;align-items:center;justify-content:center;font-size:1.7rem;transition:transform .35s ease, background .35s ease}
+.fac:hover .ico{transform:rotate(-10deg) scale(1.12);background:var(--gold)}
+.fac h3{font-size:1rem}
+.fac p{font-size:.83rem;color:var(--muted);margin-top:6px}
+
+/* ================= Achievements ================= */
+.ach-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.ach{background:#fff;border-radius:var(--radius-md);padding:28px 24px;box-shadow:var(--shadow);text-align:center;border-bottom:6px solid var(--gold);transition:transform .22s ease}
+.ach:hover{transform:translateY(-8px)}
+.ach .medal{font-size:2.2rem}
+.ach h3{font-size:1.05rem;margin:8px 0 2px}
+.ach .score{font-family:'Baloo 2',cursive;font-weight:800;color:var(--red);font-size:1.5rem}
+.ach p{font-size:.85rem;color:var(--muted)}
+
+/* ================= Notices + Admission ================= */
+.split{display:grid;grid-template-columns:1.05fr .95fr;gap:36px;align-items:start}
+.notice-box{background:#fff;border-radius:var(--radius-lg);box-shadow:var(--shadow);overflow:hidden}
+.notice-box .nb-head{background:var(--red);color:#fff;padding:16px 24px;font-family:'Baloo 2',cursive;font-weight:700;font-size:1.15rem;display:flex;justify-content:space-between;align-items:center}
+.notice-box .nb-head a{font-size:.8rem;font-family:'Nunito Sans',sans-serif;font-weight:800;background:rgba(255,255,255,.2);padding:5px 14px;border-radius:999px;transition:background .2s ease}
+.notice-box .nb-head a:hover{background:rgba(255,255,255,.35)}
+.notice{padding:16px 24px;border-bottom:1px solid #E8EDF7;display:flex;gap:16px;align-items:flex-start;transition:background .2s ease}
+.notice:hover{background:#EFF6FE}
+.notice:last-child{border-bottom:none}
+.n-date{background:var(--sky-soft);color:var(--royal);border-radius:var(--radius-sm);text-align:center;padding:8px 12px;font-weight:800;min-width:64px}
+.n-date b{display:block;font-family:'Baloo 2',cursive;font-size:1.2rem;line-height:1}
+.n-date span{font-size:.7rem}
+.notice h4{font-size:.98rem;font-family:'Nunito Sans',sans-serif;font-weight:800;color:var(--ink)}
+.notice p{font-size:.83rem;color:var(--muted)}
+.adm-card{background:var(--royal);color:#fff;border-radius:var(--radius-lg);padding:40px 34px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.adm-card::before{content:"";position:absolute;width:180px;height:180px;border-radius:50%;background:rgba(227,168,28,.18);bottom:-70px;right:-60px;animation:floaty 8s ease-in-out infinite}
+.adm-card h2{color:#fff;font-size:1.7rem;margin-bottom:10px}
+.adm-card p{color:#C9DCF7;font-size:.95rem;margin-bottom:20px}
+.adm-card ul{list-style:none;margin-bottom:26px}
+.adm-card li{padding:7px 0;font-weight:700;font-size:.92rem}
+.adm-card li::before{content:"★ ";color:var(--gold)}
+.adm-actions{display:flex;gap:12px;flex-wrap:wrap;position:relative;z-index:1}
+.btn-wa{background:#25D366;color:#053B1D;box-shadow:0 6px 0 #17934A}
+.btn-wa:hover{transform:translateY(-3px);box-shadow:0 9px 0 #17934A}
+
+/* ================= Gallery ================= */
+.gal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.gal{aspect-ratio:1/1;border-radius:var(--radius-md);display:flex;align-items:end;padding:16px;color:#fff;font-family:'Baloo 2',cursive;font-weight:700;font-size:.95rem;box-shadow:var(--shadow);position:relative;overflow:hidden;cursor:pointer;transition:transform .25s ease}
+.gal:hover{transform:scale(1.04) rotate(-.6deg)}
+.gal::after{content:"📷 View Album";position:absolute;inset:0;background:rgba(11,32,89,.72);display:flex;align-items:center;justify-content:center;font-size:.9rem;opacity:0;transition:opacity .3s ease}
+.gal:hover::after{opacity:1}
+.g1{background:linear-gradient(rgba(11,32,89,.45),rgba(11,32,89,.65)),repeating-linear-gradient(135deg,#E3A81C 0 20px,#F0C763 20px 40px)}
+.g2{background:linear-gradient(rgba(11,32,89,.45),rgba(11,32,89,.65)),repeating-linear-gradient(135deg,#12307F 0 20px,#2A4CA8 20px 40px)}
+.g3{background:linear-gradient(rgba(11,32,89,.45),rgba(11,32,89,.65)),repeating-linear-gradient(135deg,#D0342C 0 20px,#E0685C 20px 40px)}
+.g4{background:linear-gradient(rgba(11,32,89,.45),rgba(11,32,89,.65)),repeating-linear-gradient(135deg,#4A3324 0 20px,#6B4C38 20px 40px)}
+
+/* ================= Contact ================= */
+.contact{background:var(--sky-soft)}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+.c-card{background:#fff;border-radius:var(--radius-lg);padding:34px;box-shadow:var(--shadow)}
+.c-card h3{margin-bottom:16px;font-size:1.25rem}
+.c-line{display:flex;gap:14px;align-items:flex-start;padding:12px 0;border-bottom:1px dashed #DCE7F5}
+.c-line:last-of-type{border-bottom:none}
+.c-line .ci{width:42px;height:42px;flex:0 0 42px;border-radius:50%;background:var(--sky-soft);display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.c-line b{display:block;font-size:.9rem}
+.c-line span{font-size:.85rem;color:var(--muted)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.c-card input,.c-card select,.c-card textarea{width:100%;padding:12px 16px;border:2px solid #E3EAF6;border-radius:var(--radius-sm);font-family:inherit;font-size:.92rem;background:#FBFDFF;transition:border-color .2s ease, box-shadow .2s ease}
+.c-card input:focus,.c-card select:focus,.c-card textarea:focus{outline:none;border-color:var(--royal);box-shadow:0 0 0 4px rgba(18,48,127,.10)}
+.c-card textarea{min-height:96px;margin-bottom:14px;resize:vertical}
+.map-ph{margin-top:18px;height:140px;border-radius:var(--radius-md);background:repeating-linear-gradient(0deg,#E3EAF6 0 2px,#F7FAFF 2px 22px),repeating-linear-gradient(90deg,#E3EAF6 0 2px,transparent 2px 22px);display:flex;align-items:center;justify-content:center;color:var(--muted);font-weight:800;font-size:.85rem}
+
+/* ================= Footer ================= */
+footer{background:var(--royal-dark);color:#AFC7EC;padding:56px 0 0;border-top:8px solid var(--gold)}
+.f-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr 1.2fr;gap:34px;padding-bottom:40px}
+.f-grid h4{color:#fff;font-size:1.05rem;margin-bottom:14px}
+.f-grid ul{list-style:none}
+.f-grid li{padding:5px 0;font-size:.9rem}
+.f-grid a{transition:color .2s ease, padding-left .2s ease}
+.f-grid a:hover{color:var(--gold);padding-left:6px}
+.f-about p{font-size:.9rem;margin-top:12px}
+.f-bottom{border-top:1px solid rgba(255,255,255,.12);padding:18px 0;font-size:.82rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.f-bottom a{color:#F0C763}
+
+/* ================= Back to top ================= */
+#toTop{position:fixed;bottom:26px;right:26px;width:50px;height:50px;border-radius:50%;background:var(--gold);color:#3A2A00;border:none;font-size:1.3rem;cursor:pointer;box-shadow:var(--shadow);opacity:0;visibility:hidden;transform:translateY(16px);transition:all .3s ease;z-index:80}
+#toTop.show{opacity:1;visibility:visible;transform:none}
+#toTop:hover{transform:translateY(-4px)}
+
+/* ================= Responsive ================= */
+@media (max-width:980px){
+  .hero .container{grid-template-columns:1fr}
+  .hero-media{max-width:420px;margin:0 auto}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .stage-grid{grid-template-columns:repeat(2,1fr)}
+  .stream-grid,.fac-grid,.ach-grid{grid-template-columns:repeat(2,1fr)}
+  .split,.contact-grid,.gal-grid{grid-template-columns:1fr 1fr}
+  .pr-grid{grid-template-columns:1fr;text-align:center}
+  .pr-photo{margin:0 auto}
+  .pr-quote{text-align:left}
+  .f-grid{grid-template-columns:1fr 1fr}
+  nav ul{display:none;position:absolute;top:100%;left:0;right:0;background:#fff;flex-direction:column;gap:0;padding:10px 22px 20px;box-shadow:0 12px 20px rgba(18,48,127,.12)}
+  nav ul.open{display:flex}
+  nav li{width:100%;border-bottom:1px solid #E8EDF7}
+  nav a{display:block;padding:12px 0}
+  .nav .btn{display:none}
+  .menu-toggle{display:block}
+}
+@media (max-width:600px){
+  section{padding:52px 0}
+  .stage-grid,.stream-grid,.fac-grid,.ach-grid,.split,.contact-grid{grid-template-columns:1fr}
+  .gal-grid{grid-template-columns:1fr 1fr}
+  .form-row{grid-template-columns:1fr}
+  .topbar .container{justify-content:center}
+  .f-grid{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .reveal,.hero-in,.hi-media{opacity:1!important;transform:none!important}
+  #preloader{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- Preloader -->
+<div id="preloader">
+  <img class="pl-mark" src="https://lh3.googleusercontent.com/d/1lRIi9Q1HubDIcFGeFSAIOcBtQ8tH_-Kr=w512" onerror="this.onerror=null;this.src='logo.png'" alt="">
+  <div class="pl-text">AKM Public Sr. Sec. School</div>
+</div>
+
+<!-- Top bar -->
+<div class="topbar">
+  <div class="container">
+    <span>📞 +91 98765 43210</span>
+    <span>✉️ info@akmpublicschool.in</span>
+    <span>🕗 Mon–Sat, 8:00 AM – 2:00 PM</span>
+    <span><a href="#admission">Admissions Open 2026–27 →</a></span>
+  </div>
+</div>
+
+<!-- Notice ticker -->
+<div class="ticker" aria-label="Latest announcements">
+  <div class="ticker-track" id="tickerTrack">
+    <span>📢 Admissions open for Session 2026–27 — Nursery to Class 12</span>
+    <span>📝 Annual Examination date sheet released — check Downloads</span>
+    <span>🏆 Class 12 Board Results: 96% pass percentage this year</span>
+    <span>🎉 Annual Function on 20th December — parents are invited</span>
+  </div>
+</div>
+
+<!-- Header -->
+<header id="siteHeader">
+  <div class="container nav">
+    <a class="logo" href="#">
+      <img class="logo-mark" src="https://lh3.googleusercontent.com/d/1lRIi9Q1HubDIcFGeFSAIOcBtQ8tH_-Kr=w512" onerror="this.onerror=null;this.src='logo.png'" alt="A.K.M Public Sr. Sec. School, Dadahu, Sirmaur H.P.">
+      <span class="logo-text">
+        <b>AKM Public Sr. Sec. School</b>
+        <small>Nursery to Class 12 • HPBOSE Affiliated</small>
+      </span>
+    </a>
+    <nav>
+      <button class="menu-toggle" aria-label="Open menu" onclick="document.getElementById('mainmenu').classList.toggle('open')">☰</button>
+      <ul id="mainmenu">
+        <li><a href="#" class="active">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#academics">Academics</a></li>
+        <li><a href="#admission">Admissions</a></li>
+        <li><a href="#facilities">Campus</a></li>
+        <li><a href="#notices">News &amp; Events</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+    <a class="btn btn-primary" href="#admission">Admission Enquiry</a>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero" id="about">
+  <div class="deco ring spin-slow" style="width:180px;height:180px;top:8%;right:6%"></div>
+  <div class="deco dot-c float-slow" style="width:90px;height:90px;bottom:12%;left:4%"></div>
+  <div class="deco dot-t float-mid" style="width:56px;height:56px;top:20%;left:12%"></div>
+  <div class="container">
+    <div>
+      <span class="kicker hero-in hi-1">Welcome to AKM Public Sr. Sec. School</span>
+      <h1 class="hero-in hi-2">A Strong Start, <em>From Nursery to Class 12</em></h1>
+      <p class="hero-in hi-3">Quality education under the Himachal Pradesh Board of School Education (HPBOSE), in both English and Hindi medium — with a focus on academics, discipline, practical learning and the overall growth of every student.</p>
+      <div class="hero-cta hero-in hi-4">
+        <a class="btn btn-primary" href="#admission">Apply for Admission</a>
+        <a class="btn btn-outline" href="#academics">Explore Academics</a>
+      </div>
+    </div>
+    <div class="hero-media hi-media">
+      <div class="hero-photo">Real school / campus photo here<br>(students &amp; activities)</div>
+      <div class="float-card fc-1">HPBOSE<small>Affiliated Board</small></div>
+      <div class="float-card fc-2">English + Hindi<small>Dual Medium</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats (animated counters) -->
+<div class="container">
+  <div class="stats" id="statsBox">
+    <div class="stat"><b><span class="count" data-target="310">0</span>+</b><span>Students</span></div>
+    <div class="stat"><b><span class="count" data-target="22">0</span></b><span>Dedicated Teachers</span></div>
+    <div class="stat"><b><span class="count" data-target="3">0</span></b><span>Senior Sec. Streams</span></div>
+    <div class="stat"><b><span class="count" data-target="14">0</span></b><span>Classes: Nursery–12</span></div>
+  </div>
+</div>
+
+<!-- Academics -->
+<section id="academics">
+  <div class="deco dot-t float-slow" style="width:110px;height:110px;top:10%;right:3%"></div>
+  <div class="container">
+    <div class="section-intro reveal">
+      <span class="tag">Our Academics</span>
+      <h2>One School, Every Learning Stage</h2>
+      <p>A structured HPBOSE academic journey — from playful early learning to board exam preparation.</p>
+    </div>
+    <div class="stage-grid">
+      <div class="stage reveal">
+        <div class="emoji">🧸</div>
+        <h3>Pre-Primary</h3>
+        <span class="cls">Nursery – UKG</span>
+        <p>Language, numbers, creativity and social skills through play-based activities.</p>
+      </div>
+      <div class="stage reveal d1">
+        <div class="emoji">📖</div>
+        <h3>Primary</h3>
+        <span class="cls">Classes 1 – 5</span>
+        <p>Strong foundations in languages, maths, EVS and general knowledge.</p>
+      </div>
+      <div class="stage reveal d2">
+        <div class="emoji">🔬</div>
+        <h3>Middle School</h3>
+        <span class="cls">Classes 6 – 8</span>
+        <p>Concept-based learning, projects, practical work and independent study.</p>
+      </div>
+      <div class="stage reveal d3">
+        <div class="emoji">📝</div>
+        <h3>Secondary</h3>
+        <span class="cls">Classes 9 – 10</span>
+        <p>Full HPBOSE curriculum with focused board exam preparation.</p>
+      </div>
+      <div class="stage reveal d4">
+        <div class="emoji">🎓</div>
+        <h3>Senior Secondary</h3>
+        <span class="cls">Classes 11 – 12</span>
+        <p>Science (Medical &amp; Non-Medical) and Arts streams as per HPBOSE.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Principal's Message -->
+<section class="principal">
+  <div class="container pr-grid">
+    <div class="pr-photo reveal">Principal's Photo Here</div>
+    <div class="reveal d1">
+      <span class="section-intro tag" style="display:inline-block;margin-bottom:12px">Principal's Message</span>
+      <h2 style="font-size:clamp(1.5rem,3vw,2.1rem)">Nurturing Every Child's Potential</h2>
+      <p class="pr-quote">"At AKM Public Sr. Sec. School, we believe education is not just about textbooks — it is about building confidence, discipline, values and curiosity. Our dedicated team of 22 teachers works every day to give each of our 310 students individual attention and a supportive environment to learn, explore and grow."</p>
+      <div class="pr-name">
+        <b>Mrs. Sunita Sharma</b>
+        <span>Principal, AKM Public Sr. Sec. School</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Streams -->
+<section class="streams">
+  <div class="container">
+    <div class="section-intro reveal">
+      <span class="tag">Classes 11 &amp; 12</span>
+      <h2>Choose Your Stream</h2>
+      <p>Students study subjects prescribed by HPBOSE for their selected stream, in English or Hindi medium.</p>
+    </div>
+    <div class="stream-grid">
+      <div class="stream reveal">
+        <h3>🩺 Science — Medical</h3>
+        <p>For students aiming at medical and life-science careers.</p>
+        <ul>
+          <li>Physics, Chemistry, Biology</li>
+          <li>Science laboratory practicals</li>
+          <li>HPBOSE prescribed subjects</li>
+        </ul>
+      </div>
+      <div class="stream reveal d1">
+        <h3>⚙️ Science — Non-Medical</h3>
+        <p>For students aiming at engineering and technical fields.</p>
+        <ul>
+          <li>Physics, Chemistry, Mathematics</li>
+          <li>Practical &amp; analytical learning</li>
+          <li>HPBOSE prescribed subjects</li>
+        </ul>
+      </div>
+      <div class="stream reveal d2">
+        <h3>🎨 Arts</h3>
+        <p>For students interested in humanities and social sciences.</p>
+        <ul>
+          <li>Humanities subject group</li>
+          <li>Communication &amp; language skills</li>
+          <li>HPBOSE prescribed subjects</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Facilities -->
+<section id="facilities">
+  <div class="deco ring spin-slow" style="width:130px;height:130px;bottom:6%;left:3%"></div>
+  <div class="container">
+    <div class="section-intro reveal">
+      <span class="tag">Campus &amp; Facilities</span>
+      <h2>A Supportive Learning Environment</h2>
+    </div>
+    <div class="fac-grid">
+      <div class="fac reveal">
+        <div class="ico">💻</div>
+        <h3>Computer &amp; IT Lab</h3>
+        <p>Digital skills and computer-based learning for every level.</p>
+      </div>
+      <div class="fac reveal d1">
+        <div class="ico">🧪</div>
+        <h3>Science Laboratories</h3>
+        <p>Hands-on practicals that take concepts beyond textbooks.</p>
+      </div>
+      <div class="fac reveal d2">
+        <div class="ico">🏸</div>
+        <h3>Indoor Playground</h3>
+        <p>Recreational and physical activities inside the campus.</p>
+      </div>
+      <div class="fac reveal d3">
+        <div class="ico">🏫</div>
+        <h3>Classrooms</h3>
+        <p>Disciplined, engaging classrooms with individual attention.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Achievements -->
+<section style="background:#fff" id="achievements">
+  <div class="container">
+    <div class="section-intro reveal">
+      <span class="tag">Achievements</span>
+      <h2>Our Proud Moments</h2>
+      <p>Board toppers, sports victories and cultural wins — our students shine everywhere.</p>
+    </div>
+    <div class="ach-grid">
+      <div class="ach reveal">
+        <div class="medal">🥇</div>
+        <h3>Anjali Thakur — Class 12</h3>
+        <div class="score">94.2%</div>
+        <p>School topper, Science (Medical), HPBOSE Board 2026</p>
+      </div>
+      <div class="ach reveal d1">
+        <div class="medal">🥈</div>
+        <h3>Rohit Verma — Class 10</h3>
+        <div class="score">92.8%</div>
+        <p>School topper, HPBOSE Matric Board 2026</p>
+      </div>
+      <div class="ach reveal d2">
+        <div class="medal">🏆</div>
+        <h3>District Level Winners</h3>
+        <div class="score">12+</div>
+        <p>Prizes in sports, quiz and cultural competitions this year</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Notices + Admission -->
+<section id="notices" style="background:var(--cream)">
+  <div class="container split">
+    <div class="notice-box reveal">
+      <div class="nb-head">📌 Latest News &amp; Notices <a href="#">View All</a></div>
+      <div class="notice">
+        <div class="n-date"><b>15</b><span>MAR</span></div>
+        <div>
+          <h4>Annual Examination Date Sheet Released</h4>
+          <p>Date sheet for Classes 1–9 and 11 is now available in Downloads.</p>
+        </div>
+      </div>
+      <div class="notice">
+        <div class="n-date"><b>02</b><span>MAR</span></div>
+        <div>
+          <h4>Admissions Open for Session 2026–27</h4>
+          <p>Nursery to Class 12 — visit the school office or send an enquiry online.</p>
+        </div>
+      </div>
+      <div class="notice">
+        <div class="n-date"><b>26</b><span>JAN</span></div>
+        <div>
+          <h4>Republic Day Celebration</h4>
+          <p>Cultural programme and prize distribution held at the school campus.</p>
+        </div>
+      </div>
+      <div class="notice">
+        <div class="n-date"><b>10</b><span>JAN</span></div>
+        <div>
+          <h4>House Test Results Announced</h4>
+          <p>Results for the latest house tests are available with class teachers.</p>
+        </div>
+      </div>
+    </div>
+    <div class="adm-card reveal d1" id="admission">
+      <h2>Admissions Open 2026–27</h2>
+      <p>A simple, transparent admission process for every parent — Nursery to Class 12.</p>
+      <ul>
+        <li>Easy admission steps &amp; guidance</li>
+        <li>English &amp; Hindi medium options</li>
+        <li>Affordable fee structure</li>
+        <li>Quick document submission</li>
+      </ul>
+      <div class="adm-actions">
+        <a class="btn btn-primary" href="#contact">Enquire Now</a>
+        <a class="btn btn-wa" href="https://wa.me/919876543210">💬 WhatsApp Us</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Gallery -->
+<section id="gallery" style="background:#fff">
+  <div class="container">
+    <div class="section-intro reveal">
+      <span class="tag">Gallery</span>
+      <h2>Life at AKM</h2>
+      <p>Real photos of our campus, classrooms, events and student activities.</p>
+    </div>
+    <div class="gal-grid">
+      <div class="gal g1 reveal">Campus</div>
+      <div class="gal g2 reveal d1">Classrooms</div>
+      <div class="gal g3 reveal d2">Sports Day</div>
+      <div class="gal g4 reveal d3">Cultural Events</div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
+<section class="contact" id="contact">
+  <div class="container">
+    <div class="section-intro reveal">
+      <span class="tag">Get in Touch</span>
+      <h2>Contact &amp; Admission Enquiry</h2>
+    </div>
+    <div class="contact-grid">
+      <div class="c-card reveal">
+        <h3>School Information</h3>
+        <div class="c-line"><span class="ci">📍</span><div><b>Address</b><span>AKM Public Sr. Sec. School, Main Road, Tehsil &amp; District, Himachal Pradesh — 176xxx</span></div></div>
+        <div class="c-line"><span class="ci">📞</span><div><b>Phone</b><span>+91 98765 43210, +91 91234 56789</span></div></div>
+        <div class="c-line"><span class="ci">✉️</span><div><b>Email</b><span>info@akmpublicschool.in</span></div></div>
+        <div class="c-line"><span class="ci">🕗</span><div><b>School Timings</b><span>Monday – Saturday, 8:00 AM – 2:00 PM</span></div></div>
+        <div class="map-ph">🗺️ Google Map Embed Here</div>
+      </div>
+      <div class="c-card reveal d1">
+        <h3>Admission Enquiry Form</h3>
+        <div class="form-row">
+          <input type="text" placeholder="Parent's Name" aria-label="Parent's Name">
+          <input type="tel" placeholder="Phone Number" aria-label="Phone Number">
+        </div>
+        <div class="form-row">
+          <input type="text" placeholder="Student's Name" aria-label="Student's Name">
+          <select aria-label="Class applying for">
+            <option>Class Applying For</option>
+            <option>Nursery – UKG</option>
+            <option>Class 1 – 5</option>
+            <option>Class 6 – 8</option>
+            <option>Class 9 – 10</option>
+            <option>Class 11 – 12</option>
+          </select>
+        </div>
+        <textarea placeholder="Your Message (optional)" aria-label="Your Message"></textarea>
+        <button class="btn btn-primary" type="button">Send Enquiry</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="f-grid">
+      <div class="f-about">
+        <a class="logo" href="#">
+          <img class="logo-mark" src="https://lh3.googleusercontent.com/d/1lRIi9Q1HubDIcFGeFSAIOcBtQ8tH_-Kr=w512" onerror="this.onerror=null;this.src='logo.png'" alt="School crest">
+          <span class="logo-text"><b style="color:#fff">AKM Public Sr. Sec. School</b></span>
+        </a>
+        <p>Providing quality HPBOSE education from Nursery to Class 12 in English &amp; Hindi medium, focused on academics, discipline and the overall growth of every student.</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#academics">Academics</a></li>
+          <li><a href="#admission">Admissions</a></li>
+          <li><a href="#facilities">Campus &amp; Facilities</a></li>
+          <li><a href="#gallery">Gallery</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Information</h4>
+        <ul>
+          <li><a href="#notices">News &amp; Notices</a></li>
+          <li><a href="#achievements">Results &amp; Toppers</a></li>
+          <li><a href="#">Downloads</a></li>
+          <li><a href="#">Public Disclosure</a></li>
+          <li><a href="#contact">Contact Us</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li>📍 Main Road, Tehsil &amp; District, Himachal Pradesh</li>
+          <li>📞 +91 98765 43210</li>
+          <li>✉️ info@akmpublicschool.in</li>
+          <li>🕗 Mon–Sat, 8:00 AM – 2:00 PM</li>
+        </ul>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <span>© 2026 AKM Public Sr. Sec. School. All rights reserved.</span>
+      <span><a href="#">Privacy Policy</a> • <a href="#">Terms &amp; Conditions</a> • <a href="#">Disclaimer</a></span>
+    </div>
+  </div>
+</footer>
+
+<!-- Back to top -->
+<button id="toTop" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+// ===== Preloader =====
+window.addEventListener('load', () => {
+  setTimeout(() => document.getElementById('preloader').classList.add('done'), 400);
+});
+// Fallback: hide preloader after 2.5s even if load event is delayed
+setTimeout(() => document.getElementById('preloader').classList.add('done'), 2500);
+
+// ===== Duplicate ticker content for seamless loop =====
+const track = document.getElementById('tickerTrack');
+track.innerHTML += track.innerHTML;
+
+// ===== Mobile menu close on click =====
+document.querySelectorAll('#mainmenu a').forEach(a => {
+  a.addEventListener('click', () => document.getElementById('mainmenu').classList.remove('open'));
+});
+
+// ===== Header shadow on scroll + back-to-top =====
+const header = document.getElementById('siteHeader');
+const toTop = document.getElementById('toTop');
+window.addEventListener('scroll', () => {
+  header.classList.toggle('scrolled', window.scrollY > 40);
+  toTop.classList.toggle('show', window.scrollY > 500);
+}, { passive: true });
+
+// ===== Scroll reveal =====
+const revealObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      revealObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.15 });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// ===== Animated counters =====
+function animateCount(el) {
+  const target = +el.dataset.target;
+  const duration = 1600;
+  const start = performance.now();
+  function tick(now) {
+    const p = Math.min((now - start) / duration, 1);
+    // easeOutCubic
+    const eased = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(target * eased);
+    if (p < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+const statsObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.count').forEach(animateCount);
+      statsObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.4 });
+statsObserver.observe(document.getElementById('statsBox'));
+
+// ===== Respect reduced motion =====
+if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  document.querySelectorAll('.count').forEach(el => el.textContent = el.dataset.target);
+}
+</script>
+</body>
+</html>

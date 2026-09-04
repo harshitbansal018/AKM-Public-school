@@ -1,0 +1,193 @@
+.hero {
+  background: linear-gradient(180deg, var(--sky-soft) 0%, var(--cream) 100%);
+  padding: 70px 0 90px;
+  overflow: hidden;
+  position: relative;
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 48px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.kicker {
+  display: inline-block;
+  background: #fff;
+  border: 2px dashed var(--gold);
+  color: var(--royal);
+  font-weight: 800;
+  font-size: 0.85rem;
+  padding: 7px 18px;
+  border-radius: 999px;
+  margin-bottom: 18px;
+}
+
+.title {
+  font-size: clamp(2rem, 4.5vw, 3.1rem);
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+
+.title em {
+  font-style: normal;
+  color: var(--red);
+}
+
+.lead {
+  color: var(--muted);
+  font-size: 1.05rem;
+  max-width: 520px;
+  margin-bottom: 26px;
+}
+
+.actions {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* ---- entrance animation ---- */
+.in {
+  opacity: 0;
+  transform: translateY(28px);
+  animation: heroIn 0.8s ease forwards;
+}
+.d1 {
+  animation-delay: 0.15s;
+}
+.d2 {
+  animation-delay: 0.3s;
+}
+.d3 {
+  animation-delay: 0.45s;
+}
+.d4 {
+  animation-delay: 0.6s;
+}
+
+.mediaIn {
+  opacity: 0;
+  transform: scale(0.9);
+  animation: heroMedia 0.9s ease 0.35s forwards;
+}
+
+/* ---- blob photo frame ---- */
+.media {
+  position: relative;
+}
+
+.photo {
+  aspect-ratio: 4 / 3.4;
+  border-radius: 46% 54% 52% 48% / 44% 46% 54% 56%;
+  background:
+    linear-gradient(rgba(11, 32, 89, 0.18), rgba(11, 32, 89, 0.18)),
+    repeating-linear-gradient(45deg, #12307f 0 24px, #2a4ca8 24px 48px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--sky-soft);
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-align: center;
+  padding: 30px;
+  border: 6px solid #fff;
+  box-shadow: var(--shadow);
+  animation: blob 9s ease-in-out infinite;
+}
+
+.badge {
+  position: absolute;
+  background: #fff;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow);
+  padding: 12px 18px;
+  font-weight: 800;
+  font-family: var(--font-display);
+  color: var(--royal-dark);
+}
+
+.badge small {
+  display: block;
+  font-family: var(--font-body);
+  font-weight: 700;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.b1 {
+  top: 6%;
+  left: -16px;
+  animation: floaty 5.5s ease-in-out infinite;
+}
+
+.b2 {
+  bottom: 8%;
+  right: -8px;
+  animation: floaty 6.5s ease-in-out infinite reverse;
+}
+
+@media (max-width: 980px) {
+  .inner {
+    grid-template-columns: 1fr;
+  }
+  .media {
+    max-width: 420px;
+    margin: 0 auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .in,
+  .mediaIn {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* --------------------------------------------------------------
+   Keyframes must be declared in this file, not globals.css.
+   CSS Modules rewrites animation-name references to a hashed,
+   file-scoped name, so a global @keyframes of the same name is
+   never matched and the animation silently never runs.
+   -------------------------------------------------------------- */
+@keyframes heroIn {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes heroMedia {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes floaty {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-18px);
+  }
+}
+
+@keyframes blob {
+  0%,
+  100% {
+    border-radius: 46% 54% 52% 48% / 44% 46% 54% 56%;
+  }
+  33% {
+    border-radius: 54% 46% 44% 56% / 52% 56% 44% 48%;
+  }
+  66% {
+    border-radius: 48% 52% 56% 44% / 46% 44% 56% 54%;
+  }
+}

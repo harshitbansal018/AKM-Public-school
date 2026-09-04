@@ -1,0 +1,80 @@
+.panel {
+  max-width: 620px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.full {
+  grid-column: 1 / -1;
+}
+
+.half {
+  grid-column: span 1;
+}
+
+.help {
+  display: block;
+  margin-top: 5px;
+  font-size: 0.76rem;
+  color: var(--muted);
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ink);
+  cursor: pointer;
+  padding: 10px 0;
+}
+
+.checkbox input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--royal);
+  cursor: pointer;
+}
+
+.colorRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.colorRow > div {
+  flex: 1;
+}
+
+.swatch {
+  width: 46px;
+  height: 44px;
+  padding: 2px;
+  border: 2px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  cursor: pointer;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+@media (max-width: 560px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .half {
+    grid-column: 1 / -1;
+  }
+}

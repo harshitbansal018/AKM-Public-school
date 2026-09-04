@@ -1,0 +1,44 @@
+.topbar {
+  background: var(--royal-dark);
+  color: #c9dcf7;
+  font-size: 0.85rem;
+  padding: 8px 0;
+  position: relative;
+  z-index: 60;
+}
+
+.inner {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.inner span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.plain {
+  color: inherit;
+}
+
+.plain:hover {
+  color: #fff;
+}
+
+.cta {
+  color: #f0c763;
+  font-weight: 700;
+}
+
+.cta:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .inner {
+    justify-content: center;
+  }
+}

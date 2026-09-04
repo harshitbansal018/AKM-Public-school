@@ -1,0 +1,39 @@
+.ticker {
+  background: var(--red);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  z-index: 60;
+}
+
+.track {
+  display: inline-block;
+  padding: 7px 0;
+  animation: ticker 28s linear infinite;
+}
+
+.ticker:hover .track {
+  animation-play-state: paused;
+}
+
+.track span {
+  margin: 0 34px;
+}
+
+/* --------------------------------------------------------------
+   Keyframes must be declared in this file, not globals.css.
+   CSS Modules rewrites animation-name references to a hashed,
+   file-scoped name, so a global @keyframes of the same name is
+   never matched and the animation silently never runs.
+   -------------------------------------------------------------- */
+@keyframes ticker {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}

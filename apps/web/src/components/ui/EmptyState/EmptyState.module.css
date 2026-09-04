@@ -1,0 +1,28 @@
+.empty {
+  background: #fff;
+  border: 2px dashed var(--line);
+  border-radius: var(--radius-lg);
+  padding: 54px 28px;
+  text-align: center;
+}
+
+.icon {
+  font-size: 2.6rem;
+  margin-bottom: 10px;
+}
+
+.title {
+  font-size: 1.15rem;
+}
+
+.description {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-top: 6px;
+  max-width: 420px;
+  margin-inline: auto;
+}
+
+.action {
+  margin-top: 20px;
+}

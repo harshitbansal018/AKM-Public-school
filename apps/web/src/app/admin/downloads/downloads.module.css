@@ -1,0 +1,81 @@
+.field {
+  margin-top: 16px;
+}
+
+.fileLabel {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--royal-dark);
+  margin-bottom: 6px;
+}
+
+.fileInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.filePicker {
+  display: block;
+  padding: 12px 16px;
+  border: 2px dashed var(--line);
+  border-radius: var(--radius-sm);
+  background: #fbfdff;
+  color: var(--muted);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.filePicker:hover {
+  border-color: var(--royal);
+  color: var(--royal);
+}
+
+.hint {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.76rem;
+  color: var(--muted);
+}
+
+.error {
+  margin-top: 16px;
+  background: rgba(208, 52, 44, 0.1);
+  border-left: 4px solid var(--red);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--red);
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.viewLink {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--royal);
+  transition: background 0.18s ease;
+}
+
+.viewLink:hover {
+  background: var(--sky-soft);
+}

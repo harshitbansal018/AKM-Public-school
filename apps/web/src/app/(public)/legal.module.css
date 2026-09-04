@@ -1,0 +1,58 @@
+/* Shared prose styling for the privacy / terms / disclaimer pages. */
+.prose {
+  max-width: 760px;
+  background: #fff;
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  box-shadow: var(--shadow);
+  margin: 0 auto;
+}
+
+.prose h2 {
+  font-size: 1.25rem;
+  margin: 26px 0 10px;
+}
+
+.prose h2:first-child {
+  margin-top: 0;
+}
+
+.prose p,
+.prose li {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.prose p {
+  margin-bottom: 14px;
+}
+
+.prose ul {
+  margin: 0 0 14px 20px;
+}
+
+.prose li {
+  margin-bottom: 6px;
+}
+
+.prose a {
+  color: var(--royal);
+  font-weight: 700;
+}
+
+.prose a:hover {
+  text-decoration: underline;
+}
+
+.updated {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--azure);
+  margin-bottom: 20px;
+}
+
+@media (max-width: 600px) {
+  .prose {
+    padding: 28px 22px;
+  }
+}

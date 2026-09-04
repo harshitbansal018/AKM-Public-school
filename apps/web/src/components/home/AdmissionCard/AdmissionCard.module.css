@@ -1,0 +1,79 @@
+.card {
+  background: var(--royal);
+  color: #fff;
+  border-radius: var(--radius-lg);
+  padding: 40px 34px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: rgba(227, 168, 28, 0.18);
+  bottom: -70px;
+  right: -60px;
+  animation: floaty 8s ease-in-out infinite;
+}
+
+.card h2 {
+  color: #fff;
+  font-size: 1.7rem;
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+.card p {
+  color: #c9dcf7;
+  font-size: 0.95rem;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.card ul {
+  list-style: none;
+  margin-bottom: 26px;
+  position: relative;
+  z-index: 1;
+}
+
+.card li {
+  padding: 7px 0;
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+
+.card li::before {
+  content: '★ ';
+  color: var(--gold);
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+
+/* --------------------------------------------------------------
+   Keyframes must be declared in this file, not globals.css.
+   CSS Modules rewrites animation-name references to a hashed,
+   file-scoped name, so a global @keyframes of the same name is
+   never matched and the animation silently never runs.
+   -------------------------------------------------------------- */
+@keyframes floaty {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-18px);
+  }
+}

@@ -1,0 +1,155 @@
+.sidebar {
+  width: 250px;
+  flex-shrink: 0;
+  background: var(--royal-dark);
+  color: #c9dcf7;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.brand b {
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  display: block;
+  line-height: 1.2;
+}
+
+.brand small {
+  font-size: 0.7rem;
+  font-weight: 700;
+  opacity: 0.7;
+}
+
+.nav {
+  flex: 1;
+  padding: 14px 10px;
+}
+
+.nav ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #c9dcf7;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.link:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.active {
+  background: var(--gold);
+  color: #3a2a00;
+}
+
+.active:hover {
+  background: var(--gold);
+  color: #3a2a00;
+}
+
+.disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.disabled:hover {
+  background: none;
+  color: #c9dcf7;
+}
+
+.soon {
+  margin-left: auto;
+  font-size: 0.62rem;
+  font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: rgba(255, 255, 255, 0.12);
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+
+.footer {
+  padding: 16px 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.user b {
+  color: #fff;
+  font-size: 0.86rem;
+  display: block;
+}
+
+.user small {
+  font-size: 0.72rem;
+  opacity: 0.7;
+}
+
+.logout {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #fff;
+  padding: 9px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.84rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.logout:hover {
+  background: var(--red);
+}
+
+.viewSite {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #f0c763;
+  text-align: center;
+}
+
+.viewSite:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 120;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+  }
+  .open {
+    transform: none;
+  }
+}

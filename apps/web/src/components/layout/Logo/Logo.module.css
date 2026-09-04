@@ -1,0 +1,39 @@
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mark {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  transition: transform 0.4s ease;
+}
+
+.logo:hover .mark {
+  transform: rotate(-6deg) scale(1.06);
+}
+
+.text b {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  color: var(--royal-dark);
+  display: block;
+  line-height: 1.15;
+}
+
+.text small {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+/* footer variant sits on the dark navy background */
+.footer .text b {
+  color: #fff;
+}
+
+.footer .text small {
+  color: #afc7ec;
+}

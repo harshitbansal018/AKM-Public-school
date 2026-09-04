@@ -1,0 +1,40 @@
+.header {
+  background: linear-gradient(180deg, var(--sky-soft) 0%, var(--cream) 100%);
+  padding: 46px 0 42px;
+  border-bottom: 1px solid rgba(18, 48, 127, 0.06);
+}
+
+.crumbs {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.crumbs a {
+  color: var(--royal);
+}
+
+.crumbs a:hover {
+  text-decoration: underline;
+}
+
+.crumb {
+  display: inline;
+}
+
+.sep {
+  margin: 0 8px;
+  color: #a9b6d2;
+}
+
+.title {
+  font-size: clamp(1.7rem, 4vw, 2.5rem);
+  font-weight: 800;
+}
+
+.subtitle {
+  color: var(--muted);
+  margin-top: 8px;
+  max-width: 640px;
+}

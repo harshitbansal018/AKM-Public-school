@@ -1,0 +1,43 @@
+.panel {
+  display: none;
+  background: #fff;
+  padding: 10px 22px 22px;
+  box-shadow: 0 12px 20px rgba(18, 48, 127, 0.12);
+  border-top: 1px solid var(--line);
+}
+
+.open {
+  display: block;
+}
+
+.list {
+  list-style: none;
+  margin-bottom: 14px;
+}
+
+.list li {
+  border-bottom: 1px solid #e8edf7;
+}
+
+.link {
+  display: block;
+  padding: 12px 0;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--ink);
+}
+
+.link:hover {
+  color: var(--azure);
+}
+
+.active {
+  color: var(--royal);
+}
+
+@media (min-width: 981px) {
+  .panel,
+  .open {
+    display: none;
+  }
+}

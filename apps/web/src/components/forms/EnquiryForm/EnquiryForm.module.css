@@ -1,0 +1,60 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.alt {
+  font-size: 0.83rem;
+  color: var(--muted);
+}
+
+.alt a {
+  color: var(--royal);
+  font-weight: 800;
+}
+
+.alt a:hover {
+  text-decoration: underline;
+}
+
+.thanks {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.thanksIcon {
+  font-size: 2.6rem;
+  margin-bottom: 8px;
+}
+
+.thanks h3 {
+  font-size: 1.3rem;
+  margin-bottom: 8px;
+}
+
+.thanks p {
+  color: var(--muted);
+  font-size: 0.92rem;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 600px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+}

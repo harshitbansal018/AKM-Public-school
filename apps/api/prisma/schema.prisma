@@ -1,0 +1,248 @@
+// AKM Public Sr. Sec. School — database schema
+// Every value currently hardcoded in the old static site lives in one of these tables.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  EDITOR
+}
+
+enum EnquiryStatus {
+  NEW
+  CONTACTED
+  ADMITTED
+  CLOSED
+}
+
+enum MediumType {
+  ENGLISH
+  HINDI
+  BOTH
+}
+
+/// Admin panel accounts.
+model User {
+  id           Int       @id @default(autoincrement())
+  name         String
+  email        String    @unique
+  passwordHash String
+  role         Role      @default(EDITOR)
+  isActive     Boolean   @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  notices Notice[]
+}
+
+/// Key/value site configuration: phone, email, address, timings, stat counters, SEO.
+model Setting {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     String   @db.Text
+  group     String   @default("general") // contact | stats | social | seo | general
+  label     String?
+  updatedAt DateTime @updatedAt
+
+  @@index([group])
+}
+
+/// The scrolling red ticker below the topbar.
+model Announcement {
+  id        Int       @id @default(autoincrement())
+  text      String    @db.Text
+  isActive  Boolean   @default(true)
+  sortOrder Int       @default(0)
+  startsAt  DateTime?
+  endsAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([isActive, sortOrder])
+}
+
+/// News & notices board.
+model Notice {
+  id          Int       @id @default(autoincrement())
+  title       String
+  slug        String    @unique
+  excerpt     String?   @db.Text
+  body        String?   @db.LongText
+  noticeDate  DateTime
+  category    String    @default("general") // exam | event | result | admission
+  isPublished Boolean   @default(true)
+  isPinned    Boolean   @default(false)
+  viewCount   Int       @default(0)
+  authorId    Int?
+  downloadId  Int?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  author   User?     @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  download Download? @relation(fields: [downloadId], references: [id], onDelete: SetNull)
+
+  @@index([isPublished, noticeDate])
+  @@index([category])
+}
+
+/// Admission / contact form submissions.
+model Enquiry {
+  id          Int           @id @default(autoincrement())
+  parentName  String
+  phone       String
+  email       String?
+  studentName String?
+  classGroup  String?
+  medium      MediumType?
+  message     String?       @db.Text
+  status      EnquiryStatus @default(NEW)
+  adminNote   String?       @db.Text
+  source      String        @default("website")
+  ipAddress   String?
+  userAgent   String?       @db.Text
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([status, createdAt])
+}
+
+model GalleryAlbum {
+  id          Int       @id @default(autoincrement())
+  title       String
+  slug        String    @unique
+  description String?   @db.Text
+  coverImage  String?
+  eventDate   DateTime?
+  isPublished Boolean   @default(true)
+  sortOrder   Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  images GalleryImage[]
+
+  @@index([isPublished, sortOrder])
+}
+
+model GalleryImage {
+  id        Int      @id @default(autoincrement())
+  albumId   Int
+  imagePath String
+  caption   String?
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  album GalleryAlbum @relation(fields: [albumId], references: [id], onDelete: Cascade)
+
+  @@index([albumId, sortOrder])
+}
+
+/// Board toppers, sports and cultural wins.
+model Achievement {
+  id          Int      @id @default(autoincrement())
+  studentName String
+  classLabel  String?
+  score       String?
+  description String?  @db.Text
+  medal       String   @default("🥇")
+  year        Int?
+  type        String   @default("academic") // academic | sports | cultural
+  photo       String?
+  isFeatured  Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isFeatured, year])
+}
+
+/// Principal and teaching staff.
+model Faculty {
+  id            Int      @id @default(autoincrement())
+  name          String
+  designation   String
+  qualification String?
+  subject       String?
+  message       String?  @db.Text
+  photo         String?
+  isPrincipal   Boolean  @default(false)
+  isPublished   Boolean  @default(true)
+  sortOrder     Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([isPublished, sortOrder])
+}
+
+/// Pre-Primary … Senior Secondary cards.
+model AcademicStage {
+  id          Int     @id @default(autoincrement())
+  title       String
+  classRange  String
+  description String  @db.Text
+  emoji       String  @default("📘")
+  accentColor String  @default("#E3A81C")
+  isPublished Boolean @default(true)
+  sortOrder   Int     @default(0)
+
+  @@index([isPublished, sortOrder])
+}
+
+/// Class 11–12 streams.
+model Stream {
+  id          Int     @id @default(autoincrement())
+  title       String
+  slug        String  @unique
+  description String  @db.Text
+  subjects    Json
+  emoji       String  @default("📚")
+  isPublished Boolean @default(true)
+  sortOrder   Int     @default(0)
+}
+
+model Facility {
+  id          Int     @id @default(autoincrement())
+  title       String
+  description String  @db.Text
+  icon        String  @default("🏫")
+  image       String?
+  isPublished Boolean @default(true)
+  sortOrder   Int     @default(0)
+
+  @@index([isPublished, sortOrder])
+}
+
+/// Date sheets, syllabi, forms, results.
+model Download {
+  id            Int      @id @default(autoincrement())
+  title         String
+  filePath      String
+  fileSize      Int?
+  mimeType      String?
+  category      String   @default("general")
+  isPublic      Boolean  @default(true)
+  downloadCount Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  notices Notice[]
+
+  @@index([isPublic, category])
+}
+
+/// Generic uploaded media registry.
+model MediaFile {
+  id           Int      @id @default(autoincrement())
+  originalName String
+  path         String
+  mimeType     String
+  size         Int
+  folder       String   @default("misc")
+  createdAt    DateTime @default(now())
+}

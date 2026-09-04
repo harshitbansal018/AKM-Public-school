@@ -1,0 +1,133 @@
+.filters {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 34px;
+}
+
+.filter {
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--royal);
+  font-size: 0.85rem;
+  font-weight: 800;
+  box-shadow: var(--shadow);
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.filter:hover {
+  background: var(--sky-soft);
+  transform: translateY(-2px);
+}
+
+.active {
+  background: var(--royal);
+  color: #fff;
+}
+
+.active:hover {
+  background: var(--royal);
+  color: #fff;
+}
+
+.list {
+  list-style: none;
+  display: grid;
+  gap: 16px;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.item {
+  background: #fff;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    opacity 0.7s ease;
+}
+
+.item:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+}
+
+.link {
+  display: flex;
+  gap: 20px;
+  padding: 22px 26px;
+  align-items: flex-start;
+}
+
+.date {
+  background: var(--sky-soft);
+  color: var(--royal);
+  border-radius: var(--radius-sm);
+  text-align: center;
+  padding: 10px 14px;
+  font-weight: 800;
+  min-width: 74px;
+  flex-shrink: 0;
+}
+
+.date b {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.date span {
+  font-size: 0.72rem;
+  display: block;
+}
+
+.date small {
+  font-size: 0.66rem;
+  opacity: 0.7;
+}
+
+.badges {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.body h2 {
+  font-size: 1.1rem;
+  font-family: var(--font-body);
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.body p {
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.more {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 0.83rem;
+  font-weight: 800;
+  color: var(--royal);
+}
+
+.item:hover .more {
+  color: var(--azure);
+}
+
+@media (max-width: 600px) {
+  .link {
+    flex-direction: column;
+    gap: 14px;
+  }
+}

@@ -1,0 +1,28 @@
+.title {
+  display: block;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.excerpt {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 3px;
+  max-width: 420px;
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 22px;
+  flex-wrap: wrap;
+}
+
+.pageInfo {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--muted);
+}

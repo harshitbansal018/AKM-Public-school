@@ -1,0 +1,18 @@
+.skeleton {
+  display: block;
+  background: linear-gradient(90deg, #eef2f9 25%, #f8fbff 50%, #eef2f9 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+/* --------------------------------------------------------------
+   Keyframes must be declared in this file, not globals.css.
+   CSS Modules rewrites animation-name references to a hashed,
+   file-scoped name, so a global @keyframes of the same name is
+   never matched and the animation silently never runs.
+   -------------------------------------------------------------- */
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}

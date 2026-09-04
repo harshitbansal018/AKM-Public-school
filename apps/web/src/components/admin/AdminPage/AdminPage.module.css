@@ -1,0 +1,30 @@
+.page {
+  max-width: 1120px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+
+.title {
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+
+.description {
+  color: var(--muted);
+  font-size: 0.88rem;
+  margin-top: 4px;
+  max-width: 620px;
+}
+
+.action {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}

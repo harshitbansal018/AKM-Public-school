@@ -1,0 +1,51 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(11, 32, 89, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 22px;
+  z-index: 200;
+}
+
+.panel {
+  position: relative;
+  background: #fff;
+  border-radius: var(--radius-lg);
+  padding: 34px;
+  max-width: 560px;
+  width: 100%;
+  max-height: 88vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
+}
+
+.panel:focus {
+  outline: none;
+}
+
+.close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: var(--sky-soft);
+  color: var(--royal);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.close:hover {
+  background: var(--gold);
+}
+
+.title {
+  font-size: 1.25rem;
+  margin-bottom: 14px;
+  padding-right: 40px;
+}

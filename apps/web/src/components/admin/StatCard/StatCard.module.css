@@ -1,0 +1,57 @@
+.card {
+  background: #fff;
+  border-radius: var(--radius-md);
+  padding: 22px;
+  box-shadow: 0 4px 16px rgba(18, 48, 127, 0.07);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-left: 6px solid var(--royal);
+}
+
+.royal {
+  border-left-color: var(--royal);
+}
+.gold {
+  border-left-color: var(--gold);
+}
+.red {
+  border-left-color: var(--red);
+}
+.green {
+  border-left-color: #25d366;
+}
+
+.icon {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  border-radius: 50%;
+  background: var(--sky-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+}
+
+.value {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  color: var(--royal-dark);
+  line-height: 1.1;
+}
+
+.label {
+  display: block;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.hint {
+  display: block;
+  font-size: 0.74rem;
+  color: #9aa6c2;
+  margin-top: 2px;
+}

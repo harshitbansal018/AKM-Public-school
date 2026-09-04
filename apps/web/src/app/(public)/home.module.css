@@ -1,0 +1,19 @@
+/* Notices panel beside the admissions card. */
+.split {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 36px;
+  align-items: start;
+}
+
+@media (max-width: 980px) {
+  .split {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .split {
+    grid-template-columns: 1fr;
+  }
+}

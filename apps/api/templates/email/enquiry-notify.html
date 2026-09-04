@@ -1,0 +1,45 @@
+<div style="font-family:'Segoe UI',Arial,sans-serif;background:#f4f7fc;padding:28px">
+  <div style="max-width:560px;margin:0 auto;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 8px 24px rgba(18,48,127,.10)">
+
+    <div style="background:#12307f;color:#fff;padding:22px 28px">
+      <h1 style="margin:0;font-size:19px">New Admission Enquiry</h1>
+      <p style="margin:6px 0 0;font-size:13px;color:#c9dcf7">
+        Received {{receivedAt}} via the school website
+      </p>
+    </div>
+
+    <table style="width:100%;border-collapse:collapse;font-size:14px;color:#1a2340">
+      <tr>
+        <td style="padding:14px 28px;border-bottom:1px solid #eef2f9;font-weight:700;width:38%">Parent</td>
+        <td style="padding:14px 28px;border-bottom:1px solid #eef2f9">{{parentName}}</td>
+      </tr>
+      <tr>
+        <td style="padding:14px 28px;border-bottom:1px solid #eef2f9;font-weight:700">Phone</td>
+        <td style="padding:14px 28px;border-bottom:1px solid #eef2f9">
+          <a href="tel:{{phone}}" style="color:#12307f;font-weight:700;text-decoration:none">{{phone}}</a>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:14px 28px;border-bottom:1px solid #eef2f9;font-weight:700">Email</td>
+        <td style="padding:14px 28px;border-bottom:1px solid #eef2f9">{{email}}</td>
+      </tr>
+      <tr>
+        <td style="padding:14px 28px;border-bottom:1px solid #eef2f9;font-weight:700">Student</td>
+        <td style="padding:14px 28px;border-bottom:1px solid #eef2f9">{{studentName}}</td>
+      </tr>
+      <tr>
+        <td style="padding:14px 28px;border-bottom:1px solid #eef2f9;font-weight:700">Class applying for</td>
+        <td style="padding:14px 28px;border-bottom:1px solid #eef2f9">{{classGroup}}</td>
+      </tr>
+      <tr>
+        <td style="padding:14px 28px;font-weight:700;vertical-align:top">Message</td>
+        <td style="padding:14px 28px;color:#5e6a8c">{{message}}</td>
+      </tr>
+    </table>
+
+    <div style="background:#e7f3fd;padding:16px 28px;font-size:12px;color:#5e6a8c">
+      Please call the parent back within one working day. This enquiry is also
+      listed in the admin panel under <strong>Enquiries</strong>.
+    </div>
+  </div>
+</div>
