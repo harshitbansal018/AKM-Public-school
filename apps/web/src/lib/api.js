@@ -8,10 +8,32 @@
  * only ever deal with the payload itself.
  */
 
-export const API_URL = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '');
+/**
+ * What the browser calls. Everything is served from one origin, so this is a
+ * relative path — no domain, no CORS, and it keeps working when the site moves
+ * from localhost to the real domain.
+ */
+export const API_URL = (process.env.NEXT_PUBLIC_API_URL || '/api/v1').replace(/\/$/, '');
 
-/** True when no backend is configured — the site then runs on bundled content. */
-export const API_ENABLED = Boolean(API_URL);
+/**
+ * What server components call.
+ *
+ * Node's fetch cannot resolve a relative URL — `fetch('/api/v1/home')` throws
+ * "Failed to parse URL". Server-side requests therefore need an absolute
+ * address, and since the API lives in this same process the shortest route is
+ * straight back to localhost rather than out through the public domain.
+ */
+const INTERNAL_API_URL = (
+  process.env.INTERNAL_API_URL || `http://127.0.0.1:${process.env.PORT || 3000}/api/v1`
+).replace(/\/$/, '');
+
+const isServer = typeof window === 'undefined';
+
+/** Base for the current environment. */
+export const baseUrl = () => (isServer ? INTERNAL_API_URL : API_URL);
+
+/** The site always has an API now that both run in one process. */
+export const API_ENABLED = true;
 
 export class ApiClientError extends Error {
   constructor(message, status, details) {
@@ -29,13 +51,9 @@ export class ApiClientError extends Error {
  *   @param {number}  [options.revalidate] seconds; defaults to 60
  */
 export async function apiFetch(path, options = {}) {
-  if (!API_ENABLED) {
-    throw new ApiClientError('API not configured', 0);
-  }
-
   const { tags, revalidate = 60, headers, ...rest } = options;
 
-  const res = await fetch(`${API_URL}${path}`, {
+  const res = await fetch(`${baseUrl()}${path}`, {
     ...rest,
     headers: {
       'Content-Type': 'application/json',

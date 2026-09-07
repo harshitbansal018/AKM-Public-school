@@ -61,10 +61,35 @@ Blank `NEXT_PUBLIC_API_URL` in `apps/web/.env.local` and every page reads
 `apps/web/src/data/fallback.js` instead — the site still runs with the API stopped.
 Point it at `http://localhost:5000/api/v1` to use MySQL.
 
-> **Don't run `npm run build` while `npm run dev` is running.** Both write to
-> `apps/web/.next`, so the build overwrites the dev server's chunks and every page starts
-> throwing `Cannot find module './NNN.js'`. If it happens: stop the dev server, delete
+> **Don't run `npm run build` while the server is running.** Both write to
+> `apps/web/.next`, so the build overwrites the running chunks and every page starts
+> throwing `Cannot find module './NNN.js'`. If it happens: stop the server, delete
 > `apps/web/.next`, and start it again.
+
+## Deploying — the one step people miss
+
+`next build` pre-renders the public pages. Those pages fetch from the API, so if the
+server is **not running during the build**, every fetch fails and the pages are baked with
+the bundled fallback content from `apps/web/src/data/fallback.js` instead of the database.
+
+The build still succeeds — it just quietly ships stale content, and the school's edits
+appear to have vanished.
+
+So after starting the server, clear the caches once:
+
+```bash
+curl -X POST http://127.0.0.1:3000/api/revalidate \
+  -H "Content-Type: application/json" \
+  -H "x-revalidate-secret: $REVALIDATE_SECRET" \
+  -d '{"tags":["home","settings","notices","gallery","achievements","faculty","facilities","streams","stages","downloads","announcements"]}'
+```
+
+One call and every page re-reads from MySQL. Verified: before the ping the page showed the
+fallback phone number, after it showed the database one.
+
+(On a redeploy where the old server is still running, the build fetches from it and gets
+real data — so this mainly matters on the first deploy, or any deploy where you stop the
+server first. Running it every time is harmless.)
 
 ## How the frontend is organised
 

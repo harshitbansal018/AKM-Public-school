@@ -1,14 +1,31 @@
-import app from './app.js';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import next from 'next';
+
+import { createApp } from './app.js';
 import { env } from './config/env.js';
 import { prisma } from './config/prisma.js';
 import { logger } from './utils/logger.js';
 
+const here = path.dirname(fileURLToPath(import.meta.url)); // apps/api/src
+const webDir = path.resolve(here, '../../web'); // apps/web
+
 /**
- * Boot sequence: prove the database is reachable *before* accepting traffic,
- * so a bad DATABASE_URL fails immediately at startup instead of surfacing as
- * a 500 on the first visitor's request.
+ * One server, one port.
+ *
+ * Next.js is used as a library rather than as its own server: prepare() builds
+ * it, getRequestHandler() returns a plain function, and Express calls that
+ * function for anything that is not the API or an upload. So Next never opens
+ * a port of its own — there is a single process listening on env.port.
+ *
+ * Routing, in order:
+ *   /uploads/*   → files on disk
+ *   /api/v1/*    → this API
+ *   everything   → Next.js (pages, /api/revalidate, assets, 404)
  */
 async function start() {
+  // 1. Database first — a bad DATABASE_URL should fail at boot, not on the
+  //    first visitor's request.
   try {
     await prisma.$connect();
     logger.success('Database connected');
@@ -19,11 +36,31 @@ async function start() {
     process.exit(1);
   }
 
+  // 2. Build the frontend handler.
+  const dev = !env.isProduction;
+  const nextApp = next({ dev, dir: webDir });
+
+  logger.info(`Preparing the website (${dev ? 'development' : 'production'})…`);
+  try {
+    await nextApp.prepare();
+  } catch (error) {
+    logger.error('Next.js failed to start.');
+    logger.error(error.message);
+    if (env.isProduction) {
+      logger.info('Run "npm run build" before starting in production.');
+    }
+    process.exit(1);
+  }
+  logger.success('Website ready');
+
+  // 3. One Express app serving both.
+  const app = createApp({ nextHandler: nextApp.getRequestHandler() });
+
   const server = app.listen(env.port, () => {
-    logger.success(`API listening on http://localhost:${env.port}`);
-    logger.info(`Base path: ${env.apiPrefix}`);
-    logger.info(`Health:    http://localhost:${env.port}/health`);
-    logger.info(`CORS:      ${env.corsOrigins.join(', ')}`);
+    logger.success(`Running on http://localhost:${env.port}`);
+    logger.info(`Website:  http://localhost:${env.port}`);
+    logger.info(`API:      http://localhost:${env.port}${env.apiPrefix}`);
+    logger.info(`Admin:    http://localhost:${env.port}/admin/login`);
   });
 
   server.on('error', (error) => {
@@ -35,7 +72,7 @@ async function start() {
   });
 
   /** Finish in-flight requests before exiting, then close the DB pool. */
-  const shutdown = async (signal) => {
+  const shutdown = (signal) => {
     logger.warn(`${signal} received — shutting down`);
     server.close(async () => {
       await prisma.$disconnect();
