@@ -25,6 +25,55 @@ akm-school/
 The API is complete; what remains is the admin *interface* for it. Content is editable today
 through the endpoints directly.
 
+## Setting up after cloning
+
+```bash
+git clone <repo-url> akm
+cd akm
+npm install
+```
+
+Create the database (MySQL or MariaDB — XAMPP is fine):
+
+```sql
+CREATE DATABASE akm_school CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+Copy both env files — they are gitignored, so a fresh clone has neither:
+
+```bash
+cp apps/api/.env.example apps/api/.env
+cp apps/web/.env.example apps/web/.env.local
+```
+
+Then edit `apps/api/.env` and set **`DATABASE_URL`** to your MySQL user and password.
+XAMPP's root has no password, so that line becomes:
+
+```
+DATABASE_URL="mysql://root@localhost:3306/akm_school"
+```
+
+`REVALIDATE_SECRET` must be **the same string** in both files — anything will do locally.
+
+Create the tables and load the starter content:
+
+```bash
+cd apps/api
+npx prisma generate
+npx prisma migrate deploy
+node prisma/seed/index.js
+cd ../..
+```
+
+Run it:
+
+```bash
+npm run dev
+```
+
+Wait for `Website ready`, then open <http://localhost:3000>.
+Admin panel: <http://localhost:3000/admin/login> — `admin@akmpublicschool.in` / `Admin@12345`
+
 ## Quick start
 
 ```bash
