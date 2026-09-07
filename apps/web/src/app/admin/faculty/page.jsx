@@ -12,6 +12,22 @@ export default function FacultyAdminPage() {
       description="Teaching staff. The person marked as Principal supplies the message shown on the homepage."
       emptyIcon="👩‍🏫"
       columns={[
+        {
+          key: 'photo',
+          label: '',
+          width: '64px',
+          render: (r) =>
+            r.photo ? (
+              // eslint-disable-next-line @next/next/no-img-element -- small admin thumbnail
+              <img
+                src={r.photo}
+                alt=""
+                style={{ width: 44, height: 44, objectFit: 'cover', borderRadius: '50%' }}
+              />
+            ) : (
+              <span style={{ color: 'var(--muted)', fontSize: '1.2rem' }}>👤</span>
+            ),
+        },
         { key: 'name', label: 'Name' },
         { key: 'designation', label: 'Designation' },
         { key: 'subject', label: 'Subject' },
@@ -29,6 +45,13 @@ export default function FacultyAdminPage() {
         },
       ]}
       fields={[
+        {
+          name: 'photo',
+          label: 'Photo',
+          type: 'image',
+          folder: 'faculty',
+          hint: 'Shown on the homepage for the Principal. A square photo works best · max 5 MB.',
+        },
         { name: 'name', label: 'Name', type: 'text', required: true, half: true, placeholder: 'Mrs. Sunita Sharma' },
         { name: 'designation', label: 'Designation', type: 'text', required: true, half: true, placeholder: 'Principal' },
         { name: 'qualification', label: 'Heading / qualification', type: 'text', help: 'Used as the heading above the principal message.' },

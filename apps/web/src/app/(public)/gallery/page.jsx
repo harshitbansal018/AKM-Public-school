@@ -1,24 +1,27 @@
-import { getGalleryAlbums } from '@/lib/serverApi';
+import { getGalleryAlbums, getSettings } from '@/lib/serverApi';
 import { buildMetadata } from '@/lib/seo';
+import { text } from '@/lib/content';
 import PageHeader from '@/components/ui/PageHeader/PageHeader';
 import GalleryGrid from '@/components/home/GalleryGrid/GalleryGrid';
 import EmptyState from '@/components/ui/EmptyState/EmptyState';
 
-export const metadata = buildMetadata({
-  title: 'Gallery',
-  description:
-    'Photos of the campus, classrooms, sports day and cultural events at AKM Public Sr. Sec. School.',
-  path: '/gallery',
-});
+export async function generateMetadata() {
+  const settings = await getSettings();
+  return buildMetadata({
+    title: text(settings, 'page_gallery_title', 'Gallery'),
+    description: text(settings, 'page_gallery_subtitle'),
+    path: '/gallery',
+  });
+}
 
 export default async function GalleryPage() {
-  const albums = await getGalleryAlbums();
+  const [albums, settings] = await Promise.all([getGalleryAlbums(), getSettings()]);
 
   return (
     <>
       <PageHeader
-        title="Gallery"
-        subtitle="Life at AKM — campus, classrooms, events and student activities."
+        title={text(settings, 'page_gallery_title', 'Gallery')}
+        subtitle={text(settings, 'page_gallery_subtitle')}
         breadcrumbs={[{ label: 'Gallery' }]}
       />
 
@@ -27,8 +30,8 @@ export default async function GalleryPage() {
           {albums.length === 0 ? (
             <EmptyState
               icon="📷"
-              title="No albums yet"
-              description="Photo albums will appear here once the school office uploads them."
+              title={text(settings, 'gallery_empty_title', 'No albums yet')}
+              description={text(settings, 'gallery_empty_description')}
             />
           ) : (
             <GalleryGrid albums={albums} />

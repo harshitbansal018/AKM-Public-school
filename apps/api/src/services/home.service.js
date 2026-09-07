@@ -1,3 +1,4 @@
+import { toFileUrl } from '../utils/fileUrl.js';
 import * as settingService from './setting.service.js';
 import * as announcementService from './announcement.service.js';
 import * as noticeService from './notice.service.js';
@@ -53,6 +54,9 @@ function buildHero(settings) {
     titleLead: settings.hero_title_lead ?? 'A Strong Start,',
     titleAccent: settings.hero_title_accent ?? 'From Nursery to Class 12',
     description: settings.hero_description ?? '',
+    // Stored as a relative path ("misc/campus.jpg"); the frontend needs a URL.
+    // Empty until the school uploads one, and the caption shows in its place.
+    image: settings.hero_image ? toFileUrl(settings.hero_image) : null,
     imageCaption: settings.hero_image_caption ?? '',
     badges: [
       { id: 1, title: settings.hero_badge_1_title ?? 'HPBOSE', subtitle: settings.hero_badge_1_sub ?? 'Affiliated Board' },

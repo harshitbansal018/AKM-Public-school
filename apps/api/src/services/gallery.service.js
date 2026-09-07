@@ -52,6 +52,13 @@ export async function updateAlbum(id, input) {
       ? await uniqueSlug(input.title, galleryRepository.albumSlugExists, existing.slug)
       : existing.slug;
 
+  // A cover must be one of this album's own photos. Without this check the
+  // field would accept any path, including one pointing outside the gallery.
+  if (input.coverImage) {
+    const owned = existing.images.some((image) => image.imagePath === input.coverImage);
+    if (!owned) throw ApiError.badRequest('Choose a cover from this album’s own photos');
+  }
+
   return serializeAlbum(
     await galleryRepository.updateAlbum(id, {
       ...input,
@@ -103,6 +110,16 @@ export async function removeImage(imageId) {
 
   await galleryRepository.removeImage(imageId);
   await deleteFile(image.imagePath);
+
+  // coverImage holds a path, not a relation, so nothing in the database stops
+  // it pointing at an image that has just been deleted. Promote the next photo
+  // in the album, or clear it when the album is now empty.
+  const album = await galleryRepository.findAlbumById(image.albumId);
+  if (album && album.coverImage === image.imagePath) {
+    await galleryRepository.updateAlbum(album.id, {
+      coverImage: album.images[0]?.imagePath ?? null,
+    });
+  }
 
   return { deleted: true };
 }

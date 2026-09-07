@@ -1,6 +1,7 @@
 import { settingRepository } from '../repositories/index.js';
 import { serializeSettings } from '../serializers/index.js';
-import { SETTING_GROUPS } from '../config/constants.js';
+import { SETTING_GROUP_PATTERN } from '../config/constants.js';
+import { normaliseMapEmbed } from '../utils/mapEmbed.js';
 import { ApiError } from '../utils/ApiError.js';
 
 /** Flat { key: value } object for the public site. */
@@ -20,11 +21,24 @@ export async function getAdminSettings() {
 /**
  * @param {{key: string, value: string, group?: string, label?: string}[]} entries
  */
+/**
+ * Per-key clean-up applied before a value is stored, so the database only ever
+ * holds something the website can actually render.
+ */
+const TRANSFORMS = {
+  mapEmbedUrl: normaliseMapEmbed,
+};
+
 export async function updateMany(entries) {
-  const invalid = entries.find((entry) => entry.group && !SETTING_GROUPS.includes(entry.group));
+  const invalid = entries.find((entry) => entry.group && !SETTING_GROUP_PATTERN.test(entry.group));
   if (invalid) throw ApiError.badRequest(`Unknown settings group: ${invalid.group}`);
 
-  await settingRepository.upsertMany(entries);
+  const cleaned = entries.map((entry) => {
+    const transform = TRANSFORMS[entry.key];
+    return transform ? { ...entry, value: transform(entry.value) } : entry;
+  });
+
+  await settingRepository.upsertMany(cleaned);
   return getPublicSettings();
 }
 

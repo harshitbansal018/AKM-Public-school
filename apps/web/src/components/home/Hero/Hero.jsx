@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Deco from '@/components/layout/Deco/Deco';
 import Button from '@/components/ui/Button/Button';
 import styles from './Hero.module.css';
@@ -26,7 +27,22 @@ export default function Hero({ hero }) {
         </div>
 
         <div className={`${styles.media} ${styles.mediaIn}`}>
-          <div className={styles.photo}>{hero.imageCaption}</div>
+          {/* Once a photo is uploaded it fills the blob frame; until then the
+              caption stands in, so the layout never collapses. */}
+          <div className={styles.photo}>
+            {hero.image ? (
+              <Image
+                src={hero.image}
+                alt={hero.imageCaption || 'School campus'}
+                fill
+                sizes="(max-width: 980px) 420px, 45vw"
+                className={styles.photoImg}
+                priority
+              />
+            ) : (
+              hero.imageCaption
+            )}
+          </div>
           {hero.badges.map((badge, index) => (
             <div key={badge.id} className={`${styles.badge} ${index === 0 ? styles.b1 : styles.b2}`}>
               {badge.title}

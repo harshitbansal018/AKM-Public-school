@@ -39,9 +39,19 @@ export const env = {
     .map((origin) => origin.trim())
     .filter(Boolean),
 
-  /** Where to ping so the Next.js app drops its cache after a content change. */
+  /**
+   * Where to ping so the Next.js app drops its cache after a content change.
+   *
+   * Accepts a comma-separated list. In development Next hops ports whenever one
+   * is taken (3000 → 3001 → 3002), and a ping sent to the wrong port fails
+   * silently — the save works but the website keeps showing the old content.
+   * Listing the likely ports makes that impossible to get wrong.
+   */
   revalidate: {
-    url: optional('REVALIDATE_URL', ''),
+    urls: optional('REVALIDATE_URL', '')
+      .split(',')
+      .map((url) => url.trim())
+      .filter(Boolean),
     secret: optional('REVALIDATE_SECRET', ''),
   },
 

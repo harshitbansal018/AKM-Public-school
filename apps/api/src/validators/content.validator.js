@@ -3,7 +3,7 @@ import {
   NOTICE_CATEGORIES,
   DOWNLOAD_CATEGORIES,
   ACHIEVEMENT_TYPES,
-  SETTING_GROUPS,
+  SETTING_GROUP_PATTERN,
 } from '../config/constants.js';
 import {
   optionalText,
@@ -53,6 +53,9 @@ export const createAlbumSchema = z.object({
   title: z.string().trim().min(2, 'Give the album a title').max(150),
   description: optionalText(1000),
   eventDate: z.coerce.date().optional().nullable(),
+  // Relative path of one of the album's own photos. Set automatically on the
+  // first upload, and changeable from the admin panel afterwards.
+  coverImage: optionalText(300),
   isPublished: z.boolean().default(true),
   sortOrder: sortOrder.default(0),
 });
@@ -83,6 +86,8 @@ export const createFacultySchema = z.object({
   qualification: optionalText(200),
   subject: optionalText(150),
   message: optionalText(3000),
+  // Relative path returned by POST /admin/uploads/faculty, e.g. "faculty/x.jpg".
+  photo: optionalText(300),
   isPrincipal: z.boolean().default(false),
   isPublished: z.boolean().default(true),
   sortOrder: sortOrder.default(0),
@@ -96,6 +101,7 @@ export const createFacilitySchema = z.object({
   title: z.string().trim().min(2, 'Enter a title').max(150),
   description: z.string().trim().min(2, 'Enter a description').max(1000),
   icon: defaultedText('🏫'),
+  image: optionalText(300),
   isPublished: z.boolean().default(true),
   sortOrder: sortOrder.default(0),
 });
@@ -159,8 +165,11 @@ export const updateSettingsSchema = z.object({
           .min(1)
           .max(100)
           .regex(/^[A-Za-z0-9_]+$/, 'Keys may use letters, numbers and underscores'),
-        value: z.string().max(5000),
-        group: z.enum(SETTING_GROUPS).optional(),
+        value: z.string().max(20000),
+        group: z
+          .string()
+          .regex(SETTING_GROUP_PATTERN, 'Unknown settings group')
+          .optional(),
         label: optionalText(150),
       })
     )

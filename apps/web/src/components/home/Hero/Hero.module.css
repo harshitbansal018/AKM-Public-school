@@ -82,6 +82,8 @@
 }
 
 .photo {
+  position: relative;
+  overflow: hidden;
   aspect-ratio: 4 / 3.4;
   border-radius: 46% 54% 52% 48% / 44% 46% 54% 56%;
   background:
@@ -98,6 +100,11 @@
   border: 6px solid #fff;
   box-shadow: var(--shadow);
   animation: blob 9s ease-in-out infinite;
+}
+
+/* Fills the blob frame; the parent's border-radius clips it into shape. */
+.photoImg {
+  object-fit: cover;
 }
 
 .badge {

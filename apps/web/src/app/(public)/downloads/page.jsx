@@ -1,4 +1,5 @@
-import { getDownloads } from '@/lib/serverApi';
+import { getDownloads, getSettings } from '@/lib/serverApi';
+import { text } from '@/lib/content';
 import { API_URL } from '@/lib/api';
 import { formatFileSize } from '@/lib/format';
 import { buildMetadata } from '@/lib/seo';
@@ -25,13 +26,13 @@ const CATEGORY_TONE = {
 };
 
 export default async function DownloadsPage() {
-  const downloads = await getDownloads();
+  const [downloads, settings] = await Promise.all([getDownloads(), getSettings()]);
 
   return (
     <>
       <PageHeader
-        title="Downloads"
-        subtitle="Date sheets, forms and other documents for parents and students."
+        title={text(settings, 'page_downloads_title', 'Downloads')}
+        subtitle={text(settings, 'page_downloads_subtitle')}
         breadcrumbs={[{ label: 'Downloads' }]}
       />
 
@@ -40,8 +41,8 @@ export default async function DownloadsPage() {
           {downloads.length === 0 ? (
             <EmptyState
               icon="📄"
-              title="No downloads available yet"
-              description="Date sheets and forms will be published here through the school office."
+              title={text(settings, 'downloads_empty_title', 'No downloads available yet')}
+              description={text(settings, 'downloads_empty_description')}
               action={<Button href="/contact">Contact the office</Button>}
             />
           ) : (

@@ -12,7 +12,7 @@ export default function AnnouncementsAdminPage() {
   return (
     <ResourceManager
       endpoint="/admin/announcements"
-      title="Ticker"
+      title="Announcements"
       singular="announcement"
       description="The scrolling red strip at the top of every page."
       emptyIcon="📢"

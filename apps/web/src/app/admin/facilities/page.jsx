@@ -27,6 +27,13 @@ export default function FacilitiesAdminPage() {
         { name: 'icon', label: 'Icon', type: 'text', half: true, placeholder: '💻', help: 'A single emoji.' },
         { name: 'sortOrder', label: 'Order', type: 'number', half: true, help: 'Lower numbers appear first.' },
         { name: 'description', label: 'Description', type: 'textarea', required: true, rows: 3 },
+        {
+          name: 'image',
+          label: 'Photo (optional)',
+          type: 'image',
+          folder: 'misc',
+          hint: 'Leave empty to show the emoji icon instead.',
+        },
         { name: 'isPublished', label: 'Show on the website', type: 'checkbox', default: true },
       ]}
     />

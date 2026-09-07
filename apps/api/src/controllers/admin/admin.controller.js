@@ -7,6 +7,7 @@
 import { asyncHandler } from '../../utils/asyncHandler.js';
 import { sendOk } from '../../utils/ApiResponse.js';
 import { ApiError } from '../../utils/ApiError.js';
+import { toFileUrl } from '../../utils/fileUrl.js';
 import * as dashboardService from '../../services/dashboard.service.js';
 import * as noticeService from '../../services/notice.service.js';
 import * as enquiryService from '../../services/enquiry.service.js';
@@ -202,7 +203,10 @@ export const uploadFile = asyncHandler(async (req, res) => {
     res,
     {
       filename: req.file.filename,
-      path: `${req.params.folder ?? 'misc'}/${req.file.filename}`,
+      // req.uploadFolder is where the file actually landed, which is not
+      // necessarily what the URL asked for — unknown folders fall back to misc.
+      path: `${req.uploadFolder ?? 'misc'}/${req.file.filename}`,
+      url: toFileUrl(`${req.uploadFolder ?? 'misc'}/${req.file.filename}`),
       size: req.file.size,
       mimeType: req.file.mimetype,
     },

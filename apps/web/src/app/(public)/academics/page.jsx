@@ -1,35 +1,42 @@
-import { getAcademicStages, getStreams } from '@/lib/serverApi';
+import { getAcademicStages, getStreams, getSettings } from '@/lib/serverApi';
 import { buildMetadata } from '@/lib/seo';
+import { text } from '@/lib/content';
 import PageHeader from '@/components/ui/PageHeader/PageHeader';
 import SectionIntro from '@/components/ui/SectionIntro/SectionIntro';
 import StageGrid from '@/components/home/StageGrid/StageGrid';
 import StreamGrid from '@/components/home/StreamGrid/StreamGrid';
 import Button from '@/components/ui/Button/Button';
 
-export const metadata = buildMetadata({
-  title: 'Academics',
-  description:
-    'HPBOSE curriculum from Nursery to Class 12, with Science (Medical), Science (Non-Medical) and Arts streams in Classes 11 and 12.',
-  path: '/academics',
-});
+export async function generateMetadata() {
+  const settings = await getSettings();
+  return buildMetadata({
+    title: text(settings, 'page_academics_title', 'Academics'),
+    description: text(settings, 'page_academics_subtitle'),
+    path: '/academics',
+  });
+}
 
 export default async function AcademicsPage() {
-  const [stages, streams] = await Promise.all([getAcademicStages(), getStreams()]);
+  const [stages, streams, settings] = await Promise.all([
+    getAcademicStages(),
+    getStreams(),
+    getSettings(),
+  ]);
 
   return (
     <>
       <PageHeader
-        title="Academics"
-        subtitle="A structured HPBOSE journey — from playful early learning to board exam preparation."
+        title={text(settings, 'page_academics_title', 'Academics')}
+        subtitle={text(settings, 'page_academics_subtitle')}
         breadcrumbs={[{ label: 'Academics' }]}
       />
 
       <section className="section">
         <div className="container">
           <SectionIntro
-            tag="Learning Stages"
-            title="One School, Every Learning Stage"
-            description="Each stage builds on the one before it, so nothing is rushed and nothing is skipped."
+            tag={text(settings, 'academics_stages_tag', 'Learning Stages')}
+            title={text(settings, 'academics_stages_title', 'One School, Every Learning Stage')}
+            description={text(settings, 'academics_stages_description')}
           />
           <StageGrid stages={stages} />
         </div>
@@ -38,9 +45,9 @@ export default async function AcademicsPage() {
       <section className="section bg-sky">
         <div className="container">
           <SectionIntro
-            tag="Classes 11 & 12"
-            title="Choose Your Stream"
-            description="Students study subjects prescribed by HPBOSE for their selected stream, in English or Hindi medium."
+            tag={text(settings, 'academics_streams_tag', 'Classes 11 & 12')}
+            title={text(settings, 'academics_streams_title', 'Choose Your Stream')}
+            description={text(settings, 'academics_streams_description')}
           />
           <StreamGrid streams={streams} />
         </div>
@@ -49,9 +56,9 @@ export default async function AcademicsPage() {
       <section className="section bg-white">
         <div className="container">
           <SectionIntro
-            tag="Medium of Instruction"
-            title="English and Hindi, Side by Side"
-            description="Parents choose the medium at the time of admission. Both follow the same HPBOSE syllabus and sit the same board examinations."
+            tag={text(settings, 'academics_medium_tag', 'Medium of Instruction')}
+            title={text(settings, 'academics_medium_title', 'English and Hindi, Side by Side')}
+            description={text(settings, 'academics_medium_description')}
           />
           <div style={{ textAlign: 'center' }}>
             <Button href="/admissions">Apply for Admission</Button>

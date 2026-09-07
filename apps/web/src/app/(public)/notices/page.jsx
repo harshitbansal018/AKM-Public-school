@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { getNotices } from '@/lib/serverApi';
+import { getNotices, getSettings } from '@/lib/serverApi';
+import { text } from '@/lib/content';
 import { toDateBadge, toISODate } from '@/lib/format';
 import { noticeCategories } from '@/constants/classGroups';
 import { buildMetadata } from '@/lib/seo';
@@ -29,13 +30,16 @@ export default async function NoticesPage({ searchParams }) {
   const page = Math.max(1, Number(params?.page) || 1);
   const category = params?.category || '';
 
-  const { items, meta } = await getNotices({ page, limit: PER_PAGE, category });
+  const [{ items, meta }, settings] = await Promise.all([
+    getNotices({ page, limit: PER_PAGE, category }),
+    getSettings(),
+  ]);
 
   return (
     <>
       <PageHeader
-        title="News & Notices"
-        subtitle="Announcements, date sheets, results and school events."
+        title={text(settings, 'page_notices_title', 'News & Notices')}
+        subtitle={text(settings, 'page_notices_subtitle')}
         breadcrumbs={[{ label: 'News & Events' }]}
       />
 
@@ -61,8 +65,8 @@ export default async function NoticesPage({ searchParams }) {
           {items.length === 0 ? (
             <EmptyState
               icon="📭"
-              title="No notices in this category"
-              description="Try another category, or check back after the next school announcement."
+              title={text(settings, 'notices_empty_title', 'No notices in this category')}
+              description={text(settings, 'notices_empty_description')}
             />
           ) : (
             <ul className={styles.list}>

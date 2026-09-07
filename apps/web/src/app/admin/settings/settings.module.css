@@ -1,64 +1,320 @@
-.tabs {
+.unsaved {
+  background: rgba(227, 168, 28, 0.14);
+  border-left: 5px solid var(--gold);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  font-size: 0.84rem;
+  color: #6b4c07;
+  margin-bottom: 18px;
+}
+
+/* ---- two-column shell: page list, then the fields ---- */
+
+.layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 22px;
+  align-items: start;
+}
+
+.pageNav {
   display: flex;
-  gap: 8px;
+  flex-direction: column;
+  gap: 6px;
+  position: sticky;
+  top: 84px;
+}
+
+.pageTab {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--ink);
+  cursor: pointer;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.pageTab:hover {
+  background: var(--sky-soft);
+  border-color: var(--sky-soft);
+}
+
+.pageTabActive {
+  background: var(--royal);
+  border-color: var(--royal);
+  color: #fff;
+}
+
+.pageTabActive:hover {
+  background: var(--royal);
+  color: #fff;
+}
+
+.pageIcon {
+  font-size: 1.05rem;
+}
+
+.pageLabel {
+  flex: 1;
+}
+
+/* unsaved-changes marker on a page tab */
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--gold);
+  flex-shrink: 0;
+}
+
+/* ---- right side ---- */
+
+.content {
+  min-width: 0;
+}
+
+.pageHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
   flex-wrap: wrap;
   margin-bottom: 18px;
 }
 
-.tab {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  border: 1px solid var(--line);
-  background: #fff;
-  color: var(--royal);
-  border-radius: 999px;
-  padding: 8px 16px;
-  font-size: 0.84rem;
+.pageHead h2 {
+  font-size: 1.25rem;
+}
+
+.pageHead p {
+  color: var(--muted);
+  font-size: 0.86rem;
+  margin-top: 4px;
+  max-width: 560px;
+}
+
+.viewLink {
+  font-size: 0.8rem;
   font-weight: 800;
-  cursor: pointer;
-  transition:
-    background 0.18s ease,
-    color 0.18s ease;
+  color: var(--royal);
+  white-space: nowrap;
 }
 
-.tab:hover {
-  background: var(--sky-soft);
+.viewLink:hover {
+  text-decoration: underline;
 }
 
-.activeTab {
-  background: var(--royal);
-  color: #fff;
-  border-color: var(--royal);
-}
-
-.activeTab:hover {
-  background: var(--royal);
-  color: #fff;
-}
-
-.count {
-  background: rgba(0, 0, 0, 0.12);
-  border-radius: 999px;
-  padding: 1px 8px;
-  font-size: 0.72rem;
-}
-
-.panel {
+.section {
   background: #fff;
   border-radius: var(--radius-md);
   box-shadow: 0 4px 16px rgba(18, 48, 127, 0.07);
-  padding: 26px;
+  padding: 24px;
+  margin-bottom: 18px;
+}
+
+.sectionHead {
+  padding-bottom: 14px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.sectionHead h3 {
+  font-size: 1.05rem;
+}
+
+.sectionHead p {
+  color: var(--muted);
+  font-size: 0.82rem;
+  margin-top: 4px;
 }
 
 .fields {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 18px;
 }
 
-.wide {
+.full {
   grid-column: 1 / -1;
+}
+
+.half {
+  grid-column: span 1;
+}
+
+/* gold rail marking a field edited but not yet saved */
+.changed {
+  position: relative;
+}
+
+.changed::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 4px;
+  bottom: 4px;
+  width: 3px;
+  border-radius: 3px;
+  background: var(--gold);
+}
+
+/* ---- Google Map field ---- */
+
+.howto {
+  margin-top: 10px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.howto summary {
+  cursor: pointer;
+  font-weight: 800;
+  color: var(--royal);
+}
+
+.howto ol {
+  margin: 10px 0 8px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mapPreview {
+  margin-top: 14px;
+}
+
+.previewLabel {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.mapPreview iframe {
+  width: 100%;
+  height: 220px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+
+.mapWarn {
+  margin-top: 12px;
+  background: rgba(227, 168, 28, 0.14);
+  border-left: 4px solid var(--gold);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-size: 0.82rem;
+  color: #6b4c07;
+}
+
+/* ---- repeatable title + description list ---- */
+
+.pairsLabel {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--royal-dark);
+  margin-bottom: 10px;
+}
+
+.pairs {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.pair {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: #f7fafd;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+}
+
+.pairNumber {
+  flex: 0 0 26px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--royal);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 800;
+  margin-top: 22px;
+}
+
+.pairFields {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pairTools {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 22px;
+}
+
+.pairTools button {
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 6px;
+  color: var(--royal);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: background 0.18s ease;
+}
+
+.pairTools button:hover:not(:disabled) {
+  background: var(--sky-soft);
+}
+
+.pairTools button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.pairRemove {
+  color: var(--red) !important;
+}
+
+.pairRemove:hover:not(:disabled) {
+  background: var(--red) !important;
+  color: #fff !important;
+}
+
+.help {
+  display: block;
+  margin-top: 5px;
+  font-size: 0.76rem;
+  color: var(--muted);
+  line-height: 1.5;
 }
 
 .key {
@@ -82,21 +338,25 @@
   font-weight: 700;
 }
 
-.footNote {
-  margin-top: 18px;
-  font-size: 0.82rem;
-  color: var(--muted);
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .pageNav {
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .pageTab {
+    width: auto;
+  }
 }
 
-.footNote code {
-  background: var(--sky-soft);
-  padding: 1px 6px;
-  border-radius: 4px;
-  color: var(--royal);
-}
-
-@media (max-width: 700px) {
+@media (max-width: 620px) {
   .fields {
     grid-template-columns: 1fr;
+  }
+  .half {
+    grid-column: 1 / -1;
   }
 }

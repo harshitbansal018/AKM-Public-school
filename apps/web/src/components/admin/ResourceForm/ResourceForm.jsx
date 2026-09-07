@@ -5,6 +5,7 @@ import Modal from '@/components/ui/Modal/Modal';
 import Input from '@/components/ui/Input/Input';
 import Select from '@/components/ui/Select/Select';
 import Textarea from '@/components/ui/Textarea/Textarea';
+import ImageUploader from '@/components/admin/ImageUploader/ImageUploader';
 import styles from './ResourceForm.module.css';
 
 /**
@@ -149,6 +150,17 @@ function renderField(field, value, setField, error) {
         />
       );
 
+    case 'image':
+      return (
+        <ImageUploader
+          label={field.label}
+          folder={field.folder ?? 'misc'}
+          value={value}
+          hint={field.hint}
+          onChange={(path) => setField(field.name, path)}
+        />
+      );
+
     case 'color':
       return (
         <div className={styles.colorRow}>
@@ -182,15 +194,26 @@ function renderField(field, value, setField, error) {
 /** API value -> form value */
 function normaliseIn(field, raw) {
   if (field.type === 'checkbox') return raw ?? field.default ?? false;
+  // The API hands back a full URL for images, but the database should store the
+  // relative path — otherwise every stored row breaks when the domain changes.
+  if (field.type === 'image') return stripUploadOrigin(raw);
   if (field.type === 'list') return Array.isArray(raw) ? raw.join('\n') : (raw ?? '');
   if (field.type === 'date') return raw ? String(raw).slice(0, 10) : '';
   if (raw === null || raw === undefined) return field.default ?? '';
   return raw;
 }
 
+/** "http://host/uploads/faculty/x.jpg" -> "faculty/x.jpg" */
+function stripUploadOrigin(value) {
+  if (!value) return '';
+  const match = String(value).match(/\/uploads\/(.+)$/);
+  return match ? match[1] : value;
+}
+
 /** Form value -> API value */
 function normaliseOut(field, value) {
   if (field.type === 'checkbox') return Boolean(value);
+  if (field.type === 'image') return stripUploadOrigin(value) || null;
   if (field.type === 'list') {
     return String(value ?? '')
       .split('\n')

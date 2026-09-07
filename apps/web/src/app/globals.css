@@ -134,11 +134,10 @@ button {
 .btn-primary {
   background: var(--gold);
   color: #3a2a00;
-  box-shadow: 0 6px 0 var(--gold-dark);
+  /* box-shadow: 0 6px 0 var(--gold-dark); */
 }
 .btn-primary:hover:not(:disabled) {
   transform: translateY(-3px);
-  box-shadow: 0 9px 0 var(--gold-dark);
 }
 .btn-primary:active:not(:disabled) {
   transform: translateY(2px);
@@ -158,15 +157,15 @@ button {
 .btn-wa {
   background: #25d366;
   color: #053b1d;
-  box-shadow: 0 6px 0 #17934a;
+  /* box-shadow: 0 6px 0 #17934a; */
 }
 .btn-wa:hover:not(:disabled) {
   transform: translateY(-3px);
-  box-shadow: 0 9px 0 #17934a;
+  
 }
 
 .btn-sm {
-  padding: 10px 22px;
+  padding: 9px 13px;
   font-size: 0.92rem;
 }
 

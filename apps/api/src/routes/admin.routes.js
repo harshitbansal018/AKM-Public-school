@@ -17,7 +17,11 @@ import { requireRole } from '../middlewares/role.middleware.js';
 import { validate } from '../middlewares/validate.middleware.js';
 import { loginLimiter } from '../middlewares/rateLimit.middleware.js';
 import { revalidateOnWrite } from '../middlewares/revalidate.middleware.js';
-import { uploadImage, uploadImages, uploadDocument } from '../middlewares/upload.middleware.js';
+import {
+  uploadImages,
+  uploadDocument,
+  uploadImageToParamFolder,
+} from '../middlewares/upload.middleware.js';
 
 import { idParamSchema, reorderSchema } from '../validators/common.validator.js';
 import { loginSchema, changePasswordSchema } from '../validators/auth.validator.js';
@@ -126,7 +130,7 @@ router.get('/settings', admin.getSettings);
 router.put('/settings', validate(schema.updateSettingsSchema), admin.updateSettings);
 
 // ---------- uploads ----------
-router.post('/uploads/:folder', uploadImage('misc'), admin.uploadFile);
+router.post('/uploads/:folder', uploadImageToParamFolder('file'), admin.uploadFile);
 
 /* ---------------------------------------------------------------
    Managing accounts is administrator-only, even for signed-in editors.

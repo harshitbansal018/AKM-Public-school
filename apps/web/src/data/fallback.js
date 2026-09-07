@@ -54,6 +54,8 @@ export const hero = {
   titleAccent: 'From Nursery to Class 12',
   description:
     'Quality education under the Himachal Pradesh Board of School Education (HPBOSE), in both English and Hindi medium — with a focus on academics, discipline, practical learning and the overall growth of every student.',
+  // Uploaded through the admin panel; null falls back to the caption below.
+  image: null,
   imageCaption: 'Real school / campus photo here (students & activities)',
   badges: [
     { id: 1, title: 'HPBOSE', subtitle: 'Affiliated Board' },

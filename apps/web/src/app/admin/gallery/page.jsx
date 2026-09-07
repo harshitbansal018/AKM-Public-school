@@ -182,6 +182,7 @@ function PhotoManager({ albumId, albumTitle, onClose }) {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [removing, setRemoving] = useState(null);
+  const [settingCover, setSettingCover] = useState(null);
 
   const load = async () => {
     setLoading(true);
@@ -225,6 +226,27 @@ function PhotoManager({ albumId, albumTitle, onClose }) {
     } finally {
       setUploading(false);
       if (fileInput.current) fileInput.current.value = '';
+    }
+  };
+
+  /** The API returns full URLs; the cover is stored as a relative path. */
+  const toStoredPath = (url) => String(url ?? '').split('/uploads/').pop() ?? '';
+
+  const isCover = (image) =>
+    Boolean(album?.coverImage) && toStoredPath(album.coverImage) === toStoredPath(image.imagePath);
+
+  const setCover = async (image) => {
+    setSettingCover(image.id);
+    try {
+      const updated = await adminApi.put(`/admin/gallery/${albumId}`, {
+        coverImage: toStoredPath(image.imagePath),
+      });
+      setAlbum((current) => ({ ...current, coverImage: updated.coverImage }));
+      toast.success('Cover updated');
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      setSettingCover(null);
     }
   };
 
@@ -274,6 +296,20 @@ function PhotoManager({ albumId, albumTitle, onClose }) {
           {images.map((image) => (
             <li key={image.id} className={styles.photo}>
               <Image src={image.imagePath} alt={image.caption || ''} width={160} height={120} className={styles.photoImg} />
+
+              {isCover(image) ? (
+                <span className={styles.coverBadge}>Cover</span>
+              ) : (
+                <button
+                  type="button"
+                  className={styles.makeCover}
+                  onClick={() => setCover(image)}
+                  disabled={settingCover === image.id}
+                >
+                  {settingCover === image.id ? '…' : 'Make cover'}
+                </button>
+              )}
+
               <button
                 type="button"
                 className={styles.photoDelete}

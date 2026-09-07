@@ -24,6 +24,8 @@
   display: flex;
   gap: 26px;
   align-items: center;
+  /* The row must not be compressed narrower than its items. */
+  flex-shrink: 0;
 }
 
 .link {
@@ -33,6 +35,9 @@
   position: relative;
   padding: 6px 0;
   display: inline-block;
+  /* Without this, a two-word item like "News & Events" breaks onto a second
+     line as soon as the row gets tight. */
+  white-space: nowrap;
 }
 
 .link::after {
@@ -68,6 +73,31 @@
   color: var(--royal);
   cursor: pointer;
   line-height: 1;
+}
+
+/* Eight nav items, the crest and the CTA together just about fill 1180px.
+   Between the mobile breakpoint and that width, tighten the row rather than
+   letting an item wrap or the header overflow. */
+@media (max-width: 1180px) {
+  .menu {
+    gap: 18px;
+  }
+  .link {
+    font-size: 0.88rem;
+  }
+}
+
+@media (max-width: 1060px) {
+  .menu {
+    gap: 13px;
+  }
+  .link {
+    font-size: 0.83rem;
+  }
+  .cta {
+    padding: 9px 16px;
+    font-size: 0.85rem;
+  }
 }
 
 @media (max-width: 980px) {

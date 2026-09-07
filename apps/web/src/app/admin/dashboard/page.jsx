@@ -22,8 +22,8 @@ const EMPTY = {
 const SHORTCUTS = [
   { href: '/admin/notices', icon: '📌', label: 'Post a notice' },
   { href: '/admin/gallery', icon: '🖼️', label: 'Add photos' },
-  { href: '/admin/announcements', icon: '📢', label: 'Edit the ticker' },
-  { href: '/admin/settings', icon: '⚙️', label: 'Contact details' },
+  { href: '/admin/announcements', icon: '📢', label: 'Edit announcements' },
+  { href: '/admin/settings', icon: '📝', label: 'Edit website content ' },
 ];
 
 export default function DashboardPage() {

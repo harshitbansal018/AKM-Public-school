@@ -1,6 +1,6 @@
 /* Shared prose styling for the privacy / terms / disclaimer pages. */
 .prose {
-  max-width: 760px;
+  /* max-width: 760px; */
   background: #fff;
   border-radius: var(--radius-lg);
   padding: 40px;

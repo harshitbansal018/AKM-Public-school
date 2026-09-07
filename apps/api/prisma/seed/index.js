@@ -83,6 +83,8 @@ const SETTINGS = [
     'general',
     'Hero image caption',
   ],
+  // Uploaded from the admin panel; blank shows the caption placeholder instead.
+  ['hero_image', '', 'general', 'Hero image'],
   ['hero_badge_1_title', 'HPBOSE', 'general', 'Hero badge 1'],
   ['hero_badge_1_sub', 'Affiliated Board', 'general', 'Hero badge 1 subtitle'],
   ['hero_badge_2_title', 'English + Hindi', 'general', 'Hero badge 2'],
@@ -104,6 +106,111 @@ const SETTINGS = [
   ],
 
   ['copyrightYear', '2026', 'general', 'Copyright year'],
+
+  /* ------------------------------------------------------------------
+     Per-page copy.
+     Everything below used to be hardcoded inside the page components.
+     Encoding for the list fields:
+       lines  →  "one|two|three"
+       pairs  →  "Heading::Body text|Heading::Body text"
+     ------------------------------------------------------------------ */
+
+  // ---- About ----
+  ['page_about_title', 'About Our School', 'page_about', 'Page title'],
+  ['page_about_subtitle', 'Quality HPBOSE education from Nursery to Class 12, in English and Hindi medium.', 'page_about', 'Page subtitle'],
+  ['about_intro_heading', 'Who We Are', 'page_about', 'Intro heading'],
+  [
+    'about_intro_body',
+    'AKM Public Sr. Sec. School is affiliated to the Himachal Pradesh Board of School Education (HPBOSE) and teaches every class from Nursery through Class 12. Families can choose English or Hindi medium, and senior students choose between Science (Medical), Science (Non-Medical) and Arts.\n\nClass sizes stay small enough that every child is known by name. That is the part of the school we are proudest of.',
+    'page_about',
+    'Intro paragraphs',
+  ],
+  ['about_values_heading', 'What We Stand For', 'page_about', 'Values heading'],
+  [
+    'about_values_items',
+    'Academics that hold up.::A full HPBOSE curriculum, taught thoroughly, with focused board preparation in Classes 10 and 12.|Discipline with warmth.::Clear expectations, held kindly — so students feel secure rather than scared.|Learning by doing.::Science and computer labs, projects and practical work from the middle school years onward.|The whole child.::Sports, cultural events and competitions, because school is more than examinations.',
+    'page_about',
+    'Values list',
+  ],
+  ['about_structure_tag', 'Academic Structure', 'page_about', 'Structure — label'],
+  ['about_structure_title', 'Every Stage, Under One Roof', 'page_about', 'Structure — heading'],
+  ['about_structure_description', 'A child can join at Nursery and finish Class 12 without ever changing schools.', 'page_about', 'Structure — description'],
+
+  // ---- Academics ----
+  ['page_academics_title', 'Academics', 'page_academics', 'Page title'],
+  ['page_academics_subtitle', 'A structured HPBOSE journey — from playful early learning to board exam preparation.', 'page_academics', 'Page subtitle'],
+  ['academics_stages_tag', 'Learning Stages', 'page_academics', 'Stages — label'],
+  ['academics_stages_title', 'One School, Every Learning Stage', 'page_academics', 'Stages — heading'],
+  ['academics_stages_description', 'Each stage builds on the one before it, so nothing is rushed and nothing is skipped.', 'page_academics', 'Stages — description'],
+  ['academics_streams_tag', 'Classes 11 & 12', 'page_academics', 'Streams — label'],
+  ['academics_streams_title', 'Choose Your Stream', 'page_academics', 'Streams — heading'],
+  ['academics_streams_description', 'Students study subjects prescribed by HPBOSE for their selected stream, in English or Hindi medium.', 'page_academics', 'Streams — description'],
+  ['academics_medium_tag', 'Medium of Instruction', 'page_academics', 'Medium — label'],
+  ['academics_medium_title', 'English and Hindi, Side by Side', 'page_academics', 'Medium — heading'],
+  ['academics_medium_description', 'Parents choose the medium at the time of admission. Both follow the same HPBOSE syllabus and sit the same board examinations.', 'page_academics', 'Medium — description'],
+
+  // ---- Admissions ----
+  ['page_admissions_subtitle', 'Open for Nursery to Class 12, in English and Hindi medium.', 'page_admissions', 'Page subtitle'],
+  ['admissions_steps_tag', 'How It Works', 'page_admissions', 'Steps — label'],
+  ['admissions_steps_title', 'Four Steps, Start to Finish', 'page_admissions', 'Steps — heading'],
+  ['admissions_steps_description', 'No agents, no queues — parents deal directly with the school office.', 'page_admissions', 'Steps — description'],
+  [
+    'admissions_steps_items',
+    'Send an enquiry::Fill the form on this page, call the school office, or send a WhatsApp message. We will call you back.|Visit the campus::Come and see the classrooms and labs, and meet the class teacher for the class you are applying to.|Submit documents::Birth certificate, previous report card, transfer certificate (if applicable) and two passport photographs.|Confirm the seat::Pay the admission fee at the office and collect the fee receipt, book list and uniform details.',
+    'page_admissions',
+    'The steps',
+  ],
+  ['admissions_form_heading', 'Admission Enquiry', 'page_admissions', 'Enquiry form — heading'],
+  ['admissions_form_intro', 'Leave your number and the class you are applying for. Someone from the office will call you, usually within one working day.', 'page_admissions', 'Enquiry form — intro'],
+  ['admissions_docs_tag', 'Documents', 'page_admissions', 'Documents — label'],
+  ['admissions_docs_title', 'What to Bring', 'page_admissions', 'Documents — heading'],
+  [
+    'admissions_docs_items',
+    'Birth certificate (original + one photocopy)|Previous school report card / marksheet|Transfer certificate, for students joining from another school|Two recent passport-size photographs of the student|Aadhaar card of the student and one parent|Caste or category certificate, where applicable',
+    'page_admissions',
+    'Documents list',
+  ],
+
+  // ---- Campus & facilities ----
+  ['page_facilities_title', 'Campus & Facilities', 'page_facilities', 'Page title'],
+  ['page_facilities_subtitle', 'A supportive environment where students can learn, practise and play.', 'page_facilities', 'Page subtitle'],
+  ['facilities_main_tag', 'On Campus', 'page_facilities', 'Facilities — label'],
+  ['facilities_main_title', 'Everything a School Day Needs', 'page_facilities', 'Facilities — heading'],
+  ['facilities_main_description', 'Facilities are shared across all classes, so even primary students get lab and computer time.', 'page_facilities', 'Facilities — description'],
+  ['facilities_visit_tag', 'Visit Us', 'page_facilities', 'Visit — label'],
+  ['facilities_visit_title', 'See It for Yourself', 'page_facilities', 'Visit — heading'],
+  ['facilities_visit_description', 'Parents are welcome to visit the campus on any working day between 8:00 AM and 2:00 PM.', 'page_facilities', 'Visit — description'],
+
+  // ---- Results & toppers ----
+  ['page_achievements_title', 'Results & Toppers', 'page_achievements', 'Page title'],
+  ['page_achievements_subtitle', 'Board results, competition wins and the students behind them.', 'page_achievements', 'Page subtitle'],
+  ['achievements_section_title', 'Our Proud Moments', 'page_achievements', 'Section heading'],
+  ['achievements_empty_title', 'No achievements published yet', 'page_achievements', 'Empty — heading'],
+  ['achievements_empty_description', 'Results and toppers will appear here as soon as they are announced.', 'page_achievements', 'Empty — description'],
+
+  // ---- News & notices ----
+  ['page_notices_title', 'News & Notices', 'page_notices', 'Page title'],
+  ['page_notices_subtitle', 'Announcements, date sheets, results and school events.', 'page_notices', 'Page subtitle'],
+  ['notices_empty_title', 'No notices in this category', 'page_notices', 'Empty — heading'],
+  ['notices_empty_description', 'Try another category, or check back after the next school announcement.', 'page_notices', 'Empty — description'],
+
+  // ---- Gallery ----
+  ['page_gallery_title', 'Gallery', 'page_gallery', 'Page title'],
+  ['page_gallery_subtitle', 'Life at AKM — campus, classrooms, events and student activities.', 'page_gallery', 'Page subtitle'],
+  ['gallery_empty_title', 'No albums yet', 'page_gallery', 'Empty — heading'],
+  ['gallery_empty_description', 'Photo albums will appear here once the school office uploads them.', 'page_gallery', 'Empty — description'],
+
+  // ---- Downloads ----
+  ['page_downloads_title', 'Downloads', 'page_downloads', 'Page title'],
+  ['page_downloads_subtitle', 'Date sheets, forms and other documents for parents and students.', 'page_downloads', 'Page subtitle'],
+  ['downloads_empty_title', 'No downloads available yet', 'page_downloads', 'Empty — heading'],
+  ['downloads_empty_description', 'Date sheets and forms will be published here through the school office.', 'page_downloads', 'Empty — description'],
+
+  // ---- Contact ----
+  ['page_contact_title', 'Contact Us', 'page_contact', 'Page title'],
+  ['page_contact_subtitle', 'Call, write, or send an enquiry — the school office answers on working days.', 'page_contact', 'Page subtitle'],
+  ['contact_section_tag', 'Get in Touch', 'page_contact', 'Section label'],
+  ['contact_section_title', 'Contact & Admission Enquiry', 'page_contact', 'Section heading'],
 ];
 
 async function seedSettings() {

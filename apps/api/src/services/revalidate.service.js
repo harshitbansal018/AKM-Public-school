@@ -30,27 +30,37 @@ export function tagsForPath(path = '') {
  * an error for the person who made it — the page just refreshes a bit later.
  */
 export async function revalidate(tags) {
-  if (!env.revalidate.url || !env.revalidate.secret) return;
-  if (!tags?.length) return;
+  const { urls, secret } = env.revalidate;
+  if (!urls.length || !secret || !tags?.length) return;
 
-  try {
-    const res = await fetch(env.revalidate.url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-revalidate-secret': env.revalidate.secret,
-      },
-      body: JSON.stringify({ tags }),
-      signal: AbortSignal.timeout(4000),
-    });
+  // Every configured target is pinged; in development most are dead ports and
+  // that is fine — one of them is the running frontend.
+  const results = await Promise.all(
+    urls.map(async (url) => {
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-revalidate-secret': secret,
+          },
+          body: JSON.stringify({ tags }),
+          signal: AbortSignal.timeout(4000),
+        });
+        return res.ok;
+      } catch {
+        return false;
+      }
+    })
+  );
 
-    if (!res.ok) {
-      logger.warn(`Revalidation returned ${res.status} for [${tags.join(', ')}]`);
-    } else {
-      logger.debug(`Revalidated [${tags.join(', ')}]`);
-    }
-  } catch (error) {
-    logger.warn(`Could not reach the frontend to revalidate: ${error.message}`);
+  if (results.some(Boolean)) {
+    logger.debug(`Revalidated [${tags.join(', ')}]`);
+  } else {
+    logger.warn(
+      `Saved, but no frontend answered the cache refresh for [${tags.join(', ')}]. ` +
+        `Tried: ${urls.join(', ')}. The website will catch up when its cache expires.`
+    );
   }
 }
 

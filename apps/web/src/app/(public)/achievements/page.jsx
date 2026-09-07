@@ -1,19 +1,22 @@
-import { getAchievements } from '@/lib/serverApi';
+import { getAchievements, getSettings } from '@/lib/serverApi';
 import { buildMetadata } from '@/lib/seo';
+import { text } from '@/lib/content';
 import PageHeader from '@/components/ui/PageHeader/PageHeader';
 import SectionIntro from '@/components/ui/SectionIntro/SectionIntro';
 import AchievementGrid from '@/components/home/AchievementGrid/AchievementGrid';
 import EmptyState from '@/components/ui/EmptyState/EmptyState';
 
-export const metadata = buildMetadata({
-  title: 'Results & Toppers',
-  description:
-    'HPBOSE board toppers, sports victories and cultural wins from AKM Public Sr. Sec. School.',
-  path: '/achievements',
-});
+export async function generateMetadata() {
+  const settings = await getSettings();
+  return buildMetadata({
+    title: text(settings, 'page_achievements_title', 'Results & Toppers'),
+    description: text(settings, 'page_achievements_subtitle'),
+    path: '/achievements',
+  });
+}
 
 export default async function AchievementsPage() {
-  const achievements = await getAchievements();
+  const [achievements, settings] = await Promise.all([getAchievements(), getSettings()]);
 
   // Newest year first, so the current batch always leads the page.
   const byYear = achievements.reduce((groups, item) => {
@@ -26,8 +29,8 @@ export default async function AchievementsPage() {
   return (
     <>
       <PageHeader
-        title="Results & Toppers"
-        subtitle="Board results, competition wins and the students behind them."
+        title={text(settings, 'page_achievements_title', 'Results & Toppers')}
+        subtitle={text(settings, 'page_achievements_subtitle')}
         breadcrumbs={[{ label: 'Achievements' }]}
       />
 
@@ -36,8 +39,8 @@ export default async function AchievementsPage() {
           <div className="container">
             <EmptyState
               icon="🏆"
-              title="No achievements published yet"
-              description="Results and toppers will appear here as soon as they are announced."
+              title={text(settings, 'achievements_empty_title', 'No achievements published yet')}
+              description={text(settings, 'achievements_empty_description')}
             />
           </div>
         </section>
@@ -45,7 +48,10 @@ export default async function AchievementsPage() {
         years.map((year, index) => (
           <section key={year} className={`section ${index % 2 === 0 ? '' : 'bg-white'}`}>
             <div className="container">
-              <SectionIntro tag={`Session ${year}`} title="Our Proud Moments" />
+              <SectionIntro
+                tag={`Session ${year}`}
+                title={text(settings, 'achievements_section_title', 'Our Proud Moments')}
+              />
               <AchievementGrid achievements={byYear[year]} />
             </div>
           </section>
