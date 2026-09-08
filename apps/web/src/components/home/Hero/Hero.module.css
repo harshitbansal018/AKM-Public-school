@@ -84,7 +84,13 @@
 .photo {
   position: relative;
   overflow: hidden;
+  width: 100%;
   aspect-ratio: 4 / 3.4;
+  /* With a photo uploaded, the <img> is absolutely positioned, so nothing is
+     left in normal flow and the height rests entirely on aspect-ratio. If that
+     does not apply the blob collapses to nothing and the photo disappears —
+     this floor keeps it visible either way. */
+  min-height: 280px;
   border-radius: 46% 54% 52% 48% / 44% 46% 54% 56%;
   background:
     linear-gradient(rgba(11, 32, 89, 0.18), rgba(11, 32, 89, 0.18)),
