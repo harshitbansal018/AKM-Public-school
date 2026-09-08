@@ -19,10 +19,13 @@ function optional(key, fallback) {
   return value === undefined || value === '' ? fallback : value;
 }
 
+// Read first, because other defaults below are derived from it.
+const port = Number(optional('PORT', 3000));
+
 export const env = {
   nodeEnv: optional('NODE_ENV', 'development'),
   isProduction: optional('NODE_ENV', 'development') === 'production',
-  port: Number(optional('PORT', 5000)),
+  port,
   apiPrefix: optional('API_PREFIX', '/api/v1'),
 
   databaseUrl: required('DATABASE_URL'),
@@ -47,8 +50,18 @@ export const env = {
    * silently — the save works but the website keeps showing the old content.
    * Listing the likely ports makes that impossible to get wrong.
    */
+  /**
+   * Where to ping so the website drops its cached pages after a content change.
+   *
+   * Defaults to this very process. The frontend is served from the same server,
+   * so "ourselves" is always the right answer — and hardcoding a port in .env is
+   * how this broke before: the port moved, the ping went to a dead address, and
+   * saves stopped appearing on the site with no error anywhere.
+   *
+   * Set REVALIDATE_URL only to override (a comma-separated list is allowed).
+   */
   revalidate: {
-    urls: optional('REVALIDATE_URL', '')
+    urls: (optional('REVALIDATE_URL', '') || `http://127.0.0.1:${port}/api/revalidate`)
       .split(',')
       .map((url) => url.trim())
       .filter(Boolean),
@@ -56,7 +69,16 @@ export const env = {
   },
 
   uploadDir: optional('UPLOAD_DIR', 'uploads'),
-  maxUploadBytes: Number(optional('MAX_UPLOAD_MB', 5)) * 1024 * 1024,
+
+  /**
+   * Images and documents have separate ceilings on purpose — a photo of the
+   * school should be small enough to load quickly, while a scanned date sheet
+   * legitimately runs to several megabytes.
+   */
+  maxImageMb: Number(optional('MAX_IMAGE_MB', 2)),
+  maxImageBytes: Number(optional('MAX_IMAGE_MB', 2)) * 1024 * 1024,
+  maxDocumentMb: Number(optional('MAX_DOCUMENT_MB', 20)),
+  maxDocumentBytes: Number(optional('MAX_DOCUMENT_MB', 20)) * 1024 * 1024,
   publicBaseUrl: optional('PUBLIC_BASE_URL', 'http://localhost:5000').replace(/\/$/, ''),
 
   mail: {

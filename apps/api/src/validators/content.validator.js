@@ -11,6 +11,7 @@ import {
   defaultedText,
   defaultedEnum,
   withDefault,
+  multipartBoolean,
 } from './common.validator.js';
 
 // ---------- notices ----------
@@ -145,10 +146,14 @@ export const updateStageSchema = createStageSchema.partial();
 
 // ---------- downloads ----------
 
+/**
+ * Reached through a multipart upload, so every field arrives as a string —
+ * hence multipartBoolean rather than z.boolean().
+ */
 export const createDownloadSchema = z.object({
   title: z.string().trim().min(2, 'Enter a title').max(200),
   category: defaultedEnum(DOWNLOAD_CATEGORIES, 'general'),
-  isPublic: z.boolean().default(true),
+  isPublic: multipartBoolean(true),
 });
 
 export const updateDownloadSchema = createDownloadSchema.partial();

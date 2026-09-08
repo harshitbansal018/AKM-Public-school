@@ -8,6 +8,7 @@ import { getAccessToken } from '@/lib/auth';
 import { useToast } from '@/hooks/useToast';
 import { useAdminResource } from '@/hooks/useAdminResource';
 import { formatLongDate } from '@/lib/format';
+import { IMAGE_TYPES, IMAGE_ACCEPT, IMAGE_RULE, MAX_IMAGE_MB, MAX_IMAGE_BYTES } from '@/constants/uploads';
 import AdminPage from '@/components/admin/AdminPage/AdminPage';
 import DataTable from '@/components/admin/DataTable/DataTable';
 import ResourceForm from '@/components/admin/ResourceForm/ResourceForm';
@@ -204,6 +205,24 @@ function PhotoManager({ albumId, albumTitle, onClose }) {
     const files = Array.from(event.target.files ?? []);
     if (files.length === 0) return;
 
+    // Reject the whole batch rather than letting the API fail partway and
+    // leave the album with some photos uploaded and some not.
+    const wrongType = files.find((file) => !IMAGE_TYPES.includes(file.type));
+    if (wrongType) {
+      toast.error(`"${wrongType.name}" is not a JPG or PNG`);
+      if (fileInput.current) fileInput.current.value = '';
+      return;
+    }
+
+    const tooBig = files.find((file) => file.size > MAX_IMAGE_BYTES);
+    if (tooBig) {
+      toast.error(
+        `"${tooBig.name}" is ${(tooBig.size / 1024 / 1024).toFixed(1)} MB — the limit is ${MAX_IMAGE_MB} MB`
+      );
+      if (fileInput.current) fileInput.current.value = '';
+      return;
+    }
+
     const form = new FormData();
     files.forEach((file) => form.append('files', file));
 
@@ -274,7 +293,7 @@ function PhotoManager({ albumId, albumTitle, onClose }) {
         <input
           ref={fileInput}
           type="file"
-          accept="image/*"
+          accept={IMAGE_ACCEPT}
           multiple
           onChange={upload}
           disabled={uploading}
@@ -284,7 +303,7 @@ function PhotoManager({ albumId, albumTitle, onClose }) {
         <label htmlFor="album-photos" className="btn btn-primary btn-sm">
           {uploading ? 'Uploading…' : '+ Add photos'}
         </label>
-        <span className={styles.uploadHint}>JPG, PNG or WebP · up to 5 MB each · pick several at once</span>
+        <span className={styles.uploadHint}>{IMAGE_RULE} each · pick several at once</span>
       </div>
 
       {loading ? (

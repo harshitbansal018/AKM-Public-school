@@ -61,3 +61,19 @@ export const sortOrder = z.preprocess(
 export const booleanish = z
   .union([z.boolean(), z.enum(['true', 'false', '1', '0'])])
   .transform((value) => value === true || value === 'true' || value === '1');
+
+/**
+ * A checkbox that may arrive as a real boolean (JSON body) or as a string
+ * (multipart form).
+ *
+ * Every field in a multipart upload is a string — "true", never true — so a
+ * plain z.boolean() rejects the request with "Expected boolean, received
+ * string" and the upload fails for a reason that has nothing to do with the
+ * file. Any route reached through FormData must use this instead.
+ */
+export const multipartBoolean = (fallback = true) =>
+  z.preprocess((value) => {
+    if (value === undefined || value === null || value === '') return fallback;
+    if (typeof value === 'boolean') return value;
+    return value === 'true' || value === '1';
+  }, z.boolean());

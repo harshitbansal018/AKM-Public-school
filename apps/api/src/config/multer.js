@@ -6,7 +6,15 @@ import { env } from './env.js';
 import { UPLOAD_FOLDERS } from './constants.js';
 import { ApiError } from '../utils/ApiError.js';
 
-const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif'];
+/**
+ * JPG and PNG only.
+ *
+ * Deliberately narrow: these two cover every photo a phone or camera produces,
+ * every browser renders them, and keeping the list short means fewer surprises
+ * for whoever is uploading from the school office.
+ */
+const IMAGE_TYPES = ['image/jpeg', 'image/png'];
+const IMAGE_LABEL = 'JPG or PNG';
 const DOC_TYPES = [
   'application/pdf',
   'application/msword',
@@ -46,27 +54,31 @@ function buildStorage(folder) {
   });
 }
 
-function buildFilter(allowed) {
+/**
+ * @param {string[]} allowed  accepted mime types
+ * @param {string} label      what to name them when rejecting, e.g. "JPG or PNG"
+ */
+function buildFilter(allowed, label) {
   return (_req, file, cb) => {
     if (allowed.includes(file.mimetype)) return cb(null, true);
-    return cb(ApiError.badRequest(`Unsupported file type: ${file.mimetype}`));
+    return cb(ApiError.badRequest(`Only ${label} files are allowed — you uploaded ${file.mimetype}`));
   };
 }
 
 export function imageUploader(folder = 'misc') {
   return multer({
     storage: buildStorage(folder),
-    limits: { fileSize: env.maxUploadBytes, files: 20 },
-    fileFilter: buildFilter(IMAGE_TYPES),
+    limits: { fileSize: env.maxImageBytes, files: 20 },
+    fileFilter: buildFilter(IMAGE_TYPES, IMAGE_LABEL),
   });
 }
 
 export function documentUploader(folder = 'downloads') {
   return multer({
     storage: buildStorage(folder),
-    limits: { fileSize: env.maxUploadBytes * 4, files: 1 },
-    fileFilter: buildFilter([...DOC_TYPES, ...IMAGE_TYPES]),
+    limits: { fileSize: env.maxDocumentBytes, files: 1 },
+    fileFilter: buildFilter([...DOC_TYPES, ...IMAGE_TYPES], 'PDF, Word, Excel, JPG or PNG'),
   });
 }
 
-export { IMAGE_TYPES, DOC_TYPES };
+export { IMAGE_TYPES, DOC_TYPES, IMAGE_LABEL };

@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import { API_URL } from '@/lib/api';
 import { getAccessToken } from '@/lib/auth';
 import { cn } from '@/lib/cn';
+import { IMAGE_TYPES, IMAGE_ACCEPT, MAX_IMAGE_MB, MAX_IMAGE_BYTES } from '@/constants/uploads';
 import styles from './ImageUploader.module.css';
 
 /**
@@ -43,12 +44,14 @@ export default function ImageUploader({
     const file = event.target.files?.[0];
     if (!file) return;
 
-    if (!file.type.startsWith('image/')) {
-      setError('Choose an image file');
+    // The API enforces both of these too; checking here just saves the user a
+    // pointless upload and gives an instant, specific message.
+    if (!IMAGE_TYPES.includes(file.type)) {
+      setError('Only JPG and PNG images are allowed');
       return;
     }
-    if (file.size > 5 * 1024 * 1024) {
-      setError('That image is larger than 5 MB');
+    if (file.size > MAX_IMAGE_BYTES) {
+      setError(`That image is ${(file.size / 1024 / 1024).toFixed(1)} MB — the limit is ${MAX_IMAGE_MB} MB`);
       return;
     }
 
@@ -106,7 +109,7 @@ export default function ImageUploader({
             ref={inputRef}
             id={inputId}
             type="file"
-            accept="image/*"
+            accept={IMAGE_ACCEPT}
             onChange={upload}
             disabled={busy}
             className={styles.input}

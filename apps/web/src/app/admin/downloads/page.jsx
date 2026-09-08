@@ -7,6 +7,7 @@ import { getAccessToken } from '@/lib/auth';
 import { useToast } from '@/hooks/useToast';
 import { useAdminResource } from '@/hooks/useAdminResource';
 import { formatFileSize, formatLongDate } from '@/lib/format';
+import { DOCUMENT_ACCEPT, DOCUMENT_RULE } from '@/constants/uploads';
 import AdminPage from '@/components/admin/AdminPage/AdminPage';
 import DataTable from '@/components/admin/DataTable/DataTable';
 import ConfirmDialog from '@/components/admin/ConfirmDialog/ConfirmDialog';
@@ -197,14 +198,14 @@ function UploadDialog({ open, onClose, onDone }) {
             ref={fileInput}
             id="dlFile"
             type="file"
-            accept=".pdf,.doc,.docx,.xls,.xlsx,image/*"
+            accept={DOCUMENT_ACCEPT}
             className={styles.fileInput}
             onChange={(e) => setFileName(e.target.files?.[0]?.name ?? '')}
           />
           <label htmlFor="dlFile" className={styles.filePicker}>
             {fileName || 'Choose a file…'}
           </label>
-          <small className={styles.hint}>PDF, Word, Excel or an image · up to 20 MB</small>
+          <small className={styles.hint}>{DOCUMENT_RULE}</small>
         </div>
 
         {error ? (

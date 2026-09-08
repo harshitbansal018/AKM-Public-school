@@ -2,6 +2,7 @@
 
 import ResourceManager from '@/components/admin/ResourceManager/ResourceManager';
 import StatusPill from '@/components/admin/StatusPill/StatusPill';
+import { IMAGE_RULE } from '@/constants/uploads';
 
 export default function FacultyAdminPage() {
   return (
@@ -50,7 +51,7 @@ export default function FacultyAdminPage() {
           label: 'Photo',
           type: 'image',
           folder: 'faculty',
-          hint: 'Shown on the homepage for the Principal. A square photo works best · max 5 MB.',
+          hint: `Shown on the homepage for the Principal. A square photo works best · ${IMAGE_RULE}.`,
         },
         { name: 'name', label: 'Name', type: 'text', required: true, half: true, placeholder: 'Mrs. Sunita Sharma' },
         { name: 'designation', label: 'Designation', type: 'text', required: true, half: true, placeholder: 'Principal' },

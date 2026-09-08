@@ -63,8 +63,12 @@ function translate(err) {
     return ApiError.badRequest('Request body is not valid JSON');
   }
 
+  // Multer aborts mid-upload, so the message has to name the limit itself —
+  // by this point the request no longer says which route it was for.
   if (err.code === 'LIMIT_FILE_SIZE') {
-    return ApiError.badRequest('That file is too large');
+    return ApiError.badRequest(
+      `That file is too large. Images may be up to ${env.maxImageMb} MB and documents up to ${env.maxDocumentMb} MB.`
+    );
   }
 
   return new ApiError(err.statusCode || 500, err.statusCode ? err.message : 'Something went wrong');
