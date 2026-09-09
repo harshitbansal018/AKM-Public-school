@@ -5,7 +5,7 @@
  * These mirror apps/api/src/config/multer.js and MAX_IMAGE_MB in the API's
  * .env — the API is what actually enforces them. Anything here is a courtesy
  * to save a doomed upload, not a security control.
- */
+ */ 
 
 export const IMAGE_TYPES = ['image/jpeg', 'image/png'];
 

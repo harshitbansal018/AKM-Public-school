@@ -82,13 +82,32 @@ export const getDownloads = asyncHandler(async (req, res) => {
   sendOk(res, await downloadService.listPublic(req.query.category), 'Downloads');
 });
 
-/** Streams the file and bumps its counter. */
+/**
+ * Streams a download and bumps its counter.
+ *
+ * `attachment` makes the browser save the file rather than trying to display
+ * it, and the filename is the school's own title so it is recognisable in a
+ * parent's Downloads folder.
+ */
 export const downloadFile = asyncHandler(async (req, res) => {
-  const { absolutePath, filename, title } = await downloadService.resolveFile(req.params.id);
+  const { absolutePath, filename, mimeType, size } = await downloadService.resolveFile(
+    req.params.id
+  );
 
-  res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
-  res.setHeader('X-Download-Title', encodeURIComponent(title));
-  fs.createReadStream(absolutePath).pipe(res);
+  res.setHeader('Content-Type', mimeType);
+  res.setHeader('Content-Length', size);
+  res.setHeader(
+    'Content-Disposition',
+    // The plain filename covers old browsers; filename* carries anything
+    // non-ASCII correctly.
+    `attachment; filename="${filename}"; filename*=UTF-8''${encodeURIComponent(filename)}`
+  );
+
+  const stream = fs.createReadStream(absolutePath);
+  // If the client disconnects mid-download, stop reading from disk.
+  stream.on('error', () => res.destroy());
+  res.on('close', () => stream.destroy());
+  stream.pipe(res);
 });
 
 export const createEnquiry = asyncHandler(async (req, res) => {

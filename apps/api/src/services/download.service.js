@@ -44,9 +44,30 @@ export async function resolveFile(id) {
     throw ApiError.notFound('That file is missing from the server');
   }
 
+  const stats = await fs.stat(absolute);
   downloadRepository.incrementCount(id); // not awaited
 
-  return { absolutePath: absolute, filename: path.basename(row.filePath), title: row.title };
+  return {
+    absolutePath: absolute,
+    // Stored names are generated ("doc-1788784728220-91b3.pdf"), which is
+    // meaningless in a parent's Downloads folder. Serve it under the title
+    // the school gave it instead.
+    filename: `${safeFilename(row.title)}${path.extname(row.filePath)}`,
+    mimeType: row.mimeType || 'application/octet-stream',
+    size: stats.size,
+    title: row.title,
+  };
+}
+
+/** "Date Sheet 2026 (Class 10)" -> "Date-Sheet-2026-Class-10" */
+function safeFilename(title) {
+  return (
+    String(title)
+      .replace(/[^\w\s.-]/g, '')
+      .trim()
+      .replace(/\s+/g, '-')
+      .slice(0, 80) || 'download'
+  );
 }
 
 export function create(data) {

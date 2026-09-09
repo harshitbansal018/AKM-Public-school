@@ -171,6 +171,35 @@ const SETTINGS = [
     'Documents list',
   ],
 
+  // ---- Faculty & Staff ----
+  ['page_faculty_title', 'Faculty & Staff', 'page_faculty', 'Page title'],
+  ['page_faculty_subtitle', 'The teachers and staff who run the school day to day.', 'page_faculty', 'Page subtitle'],
+  ['faculty_principal_tag', 'Head of the School', 'page_faculty', 'Principal — small label'],
+  ['faculty_team_tag', 'Our Team', 'page_faculty', 'Team — small label'],
+  ['faculty_team_title', 'Teaching & Support Staff', 'page_faculty', 'Team — heading'],
+  [
+    'faculty_team_description',
+    'Our teachers are grouped by the subject they teach, so parents can find the right person quickly.',
+    'page_faculty',
+    'Team — description',
+  ],
+  ['faculty_admin_group_label', 'Administration & Support', 'page_faculty', 'Group name for staff with no subject'],
+  ['faculty_empty_title', 'Staff details coming soon', 'page_faculty', 'Empty — heading'],
+  [
+    'faculty_empty_description',
+    'The school is preparing the staff list. Please contact the office in the meantime.',
+    'page_faculty',
+    'Empty — description',
+  ],
+  ['faculty_join_tag', 'Work With Us', 'page_faculty', 'Careers — small label'],
+  ['faculty_join_title', 'Interested in Teaching Here?', 'page_faculty', 'Careers — heading'],
+  [
+    'faculty_join_description',
+    'We welcome enquiries from qualified teachers. Write to the school office with your details.',
+    'page_faculty',
+    'Careers — description',
+  ],
+
   // ---- Campus & facilities ----
   ['page_facilities_title', 'Campus & Facilities', 'page_facilities', 'Page title'],
   ['page_facilities_subtitle', 'A supportive environment where students can learn, practise and play.', 'page_facilities', 'Page subtitle'],

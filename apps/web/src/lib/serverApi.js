@@ -68,6 +68,11 @@ export function getPrincipal() {
   return withFallback(() => apiFetch('/faculty/principal', { tags: ['faculty'] }), fallback.principal);
 }
 
+/** Every published staff member, principal included. */
+export function getFaculty() {
+  return withFallback(() => apiFetch('/faculty', { tags: ['faculty'] }), fallback.faculty);
+}
+
 export function getAchievements() {
   return withFallback(
     () => apiFetch('/achievements', { tags: ['achievements'] }),

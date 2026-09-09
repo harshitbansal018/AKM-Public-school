@@ -35,6 +35,40 @@
   color: var(--royal);
 }
 
+/* ---------- Grouped items ---------- */
+
+.group {
+  padding: 6px 0 2px;
+}
+
+.groupLabel {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--muted);
+  padding: 8px 0 2px;
+}
+
+.subList {
+  list-style: none;
+}
+
+.subList li {
+  border-bottom: none;
+}
+
+.subLink {
+  padding: 9px 0 9px 14px;
+  border-left: 2px solid var(--line);
+  font-size: 0.92rem;
+}
+
+.subLink:hover {
+  border-left-color: var(--gold);
+}
+
 @media (min-width: 981px) {
   .panel,
   .open {

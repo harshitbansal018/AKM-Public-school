@@ -117,6 +117,21 @@ export const principal = {
     'At AKM Public Sr. Sec. School, we believe education is not just about textbooks — it is about building confidence, discipline, values and curiosity. Our dedicated team of 22 teachers works every day to give each of our 310 students individual attention and a supportive environment to learn, explore and grow.',
 };
 
+/** Staff list for the Faculty page — the principal alone until the school adds more. */
+export const faculty = [
+  {
+    id: 1,
+    name: principal.name,
+    designation: principal.designation,
+    qualification: null,
+    subject: null,
+    message: principal.message,
+    photo: null,
+    isPrincipal: true,
+    sortOrder: 0,
+  },
+];
+
 export const streams = [
   {
     id: 1,

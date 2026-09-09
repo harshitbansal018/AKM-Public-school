@@ -103,10 +103,6 @@ export default function DashboardPage() {
               </li>
             ))}
           </ul>
-          <p className={styles.note}>
-            Anything you change here appears on the public website within a few seconds — there is
-            nothing to publish or re-upload.
-          </p>
         </section>
       </div>
     </div>

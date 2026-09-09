@@ -280,6 +280,66 @@ export const cmsPages = [
   },
 
   {
+    id: 'faculty',
+    label: 'Faculty page',
+    icon: '👩‍🏫',
+    href: '/faculty',
+    description:
+      'Teaching and support staff. The people themselves are added under “Faculty” in the sidebar.',
+    sections: [
+      {
+        id: 'header',
+        label: 'Page heading',
+        fields: [
+          { key: 'page_faculty_title', label: 'Page title', type: 'text', half: true },
+          { key: 'page_faculty_subtitle', label: 'Subtitle', type: 'text', half: true },
+        ],
+      },
+      {
+        id: 'principal',
+        label: 'Principal block',
+        help: 'The large photo and message at the top. Edited under Faculty → the person marked Principal.',
+        fields: [
+          { key: 'faculty_principal_tag', label: 'Small label above the name', type: 'text' },
+        ],
+      },
+      {
+        id: 'team',
+        label: 'Staff list band',
+        help: 'Teachers are grouped by the subject set on each person.',
+        fields: [
+          { key: 'faculty_team_tag', label: 'Small label', type: 'text', half: true },
+          { key: 'faculty_team_title', label: 'Heading', type: 'text', half: true },
+          { key: 'faculty_team_description', label: 'Description', type: 'textarea', rows: 2 },
+          {
+            key: 'faculty_admin_group_label',
+            label: 'Group name for staff with no subject',
+            type: 'text',
+            help: 'Anyone without a subject is listed under this heading, at the end.',
+          },
+        ],
+      },
+      {
+        id: 'careers',
+        label: 'Work with us band',
+        fields: [
+          { key: 'faculty_join_tag', label: 'Small label', type: 'text', half: true },
+          { key: 'faculty_join_title', label: 'Heading', type: 'text', half: true },
+          { key: 'faculty_join_description', label: 'Description', type: 'textarea', rows: 2 },
+        ],
+      },
+      {
+        id: 'empty',
+        label: 'When no staff are published',
+        fields: [
+          { key: 'faculty_empty_title', label: 'Heading', type: 'text', half: true },
+          { key: 'faculty_empty_description', label: 'Description', type: 'text', half: true },
+        ],
+      },
+    ],
+  },
+
+  {
     id: 'facilities',
     label: 'Campus page',
     icon: '🏫',

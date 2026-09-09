@@ -64,14 +64,14 @@ export default async function DownloadsPage() {
                     </div>
                   </div>
 
-                  {item.filePath && API_URL ? (
+                  {/* `hasFile` is what the API sends — the raw path is never
+                      exposed, downloads go through the counted route. */}
+                  {item.hasFile ? (
                     <a
                       className="btn btn-outline btn-sm"
                       href={`${API_URL}/downloads/${item.id}/file`}
-                      target="_blank"
-                      rel="noopener noreferrer"
                     >
-                      Download
+                      ⬇ Download
                     </a>
                   ) : (
                     <span className={styles.pending}>Available at the school office</span>

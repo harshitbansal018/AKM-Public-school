@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/cn';
@@ -18,18 +18,46 @@ export default function Header({ settings }) {
   const pathname = usePathname();
   const scrolled = useScrolled(40);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const navRef = useRef(null);
 
-  // Close the mobile menu whenever the route changes.
-  useEffect(() => setMenuOpen(false), [pathname]);
+  // Close everything whenever the route changes.
+  useEffect(() => {
+    setMenuOpen(false);
+    setOpenDropdown(null);
+  }, [pathname]);
+
+  // A dropdown left open behind a click elsewhere, or on Escape, is a nuisance.
+  useEffect(() => {
+    if (!openDropdown) return undefined;
+
+    const onClickAway = (event) => {
+      if (!navRef.current?.contains(event.target)) setOpenDropdown(null);
+    };
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') setOpenDropdown(null);
+    };
+
+    document.addEventListener('mousedown', onClickAway);
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', onClickAway);
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [openDropdown]);
 
   const isActive = (href) => (href === '/' ? pathname === '/' : pathname.startsWith(href));
+
+  /** A parent is highlighted when it, or any of its children, is the current page. */
+  const isGroupActive = (item) =>
+    item.children ? item.children.some((child) => isActive(child.href)) : isActive(item.href);
 
   return (
     <header className={cn(styles.header, scrolled && styles.scrolled)}>
       <div className={`container ${styles.nav}`}>
         <Logo schoolName={settings.schoolName} tagline={settings.tagline} />
 
-        <nav aria-label="Main">
+        <nav aria-label="Main" ref={navRef}>
           <button
             type="button"
             className={styles.toggle}
@@ -42,17 +70,63 @@ export default function Header({ settings }) {
           </button>
 
           <ul id="main-menu" className={styles.menu}>
-            {navLinks.map((link) => (
-              <li key={link.href}>
-                <Link
-                  href={link.href}
-                  className={cn(styles.link, isActive(link.href) && styles.active)}
-                  aria-current={isActive(link.href) ? 'page' : undefined}
+            {navLinks.map((item) => {
+              const active = isGroupActive(item);
+
+              if (!item.children) {
+                return (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      className={cn(styles.link, active && styles.active)}
+                      aria-current={active ? 'page' : undefined}
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                );
+              }
+
+              const open = openDropdown === item.label;
+
+              return (
+                <li
+                  key={item.label}
+                  className={styles.hasDropdown}
+                  // Hover opens it on desktop; the button below covers keyboard
+                  // and touch, where hover does not exist.
+                  onMouseEnter={() => setOpenDropdown(item.label)}
+                  onMouseLeave={() => setOpenDropdown(null)}
                 >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
+                  <button
+                    type="button"
+                    className={cn(styles.link, styles.dropdownToggle, active && styles.active)}
+                    aria-expanded={open}
+                    aria-haspopup="true"
+                    onClick={() => setOpenDropdown(open ? null : item.label)}
+                  >
+                    {item.label}
+                  </button>
+
+                  <ul className={cn(styles.dropdown, open && styles.dropdownOpen)}>
+                    {item.children.map((child) => (
+                      <li key={child.href}>
+                        <Link
+                          href={child.href}
+                          className={cn(
+                            styles.dropdownLink,
+                            isActive(child.href) && styles.dropdownActive
+                          )}
+                          onClick={() => setOpenDropdown(null)}
+                        >
+                          {child.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              );
+            })}
           </ul>
         </nav>
 

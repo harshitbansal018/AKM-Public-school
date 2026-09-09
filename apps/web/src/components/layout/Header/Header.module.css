@@ -22,7 +22,7 @@
 .menu {
   list-style: none;
   display: flex;
-  gap: 26px;
+  gap: 18px;
   align-items: center;
   /* The row must not be compressed narrower than its items. */
   flex-shrink: 0;
@@ -38,6 +38,83 @@
   /* Without this, a two-word item like "News & Events" breaks onto a second
      line as soon as the row gets tight. */
   white-space: nowrap;
+}
+
+/* ---------- Dropdowns ---------- */
+
+.hasDropdown {
+  position: relative;
+}
+
+/* The toggle is a <button> for keyboard and touch, styled as a nav link. */
+.dropdownToggle {
+  display: inline-block;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(6px);
+  min-width: 190px;
+  list-style: none;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(18, 48, 127, 0.08);
+  padding: 4px;
+
+  /* Hidden by default; visibility (not display) so it can fade. */
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease,
+    visibility 0.18s;
+  z-index: 60;
+}
+
+/* A small bridge so the pointer can travel from the label to the panel
+   without passing over a gap and closing the menu. */
+.dropdown::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: 0;
+  right: 0;
+  height: 12px;
+}
+
+.dropdownOpen {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.dropdownLink {
+  display: block;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+  transition:
+    background 0.16s ease,
+    color 0.16s ease;
+}
+
+.dropdownLink:hover {
+  background: #f3f7fc;
+  color: var(--royal);
+}
+
+.dropdownActive {
+  color: var(--royal);
 }
 
 .link::after {
