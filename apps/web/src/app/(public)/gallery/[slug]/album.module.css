@@ -1,15 +1,18 @@
+/* Three across rather than four: a bigger tile means the 4/3 frame below is
+   close to the shape a camera actually produces, so almost nothing is cropped
+   away. Four square tiles used to cut the sides off every landscape photo. */
 .grid {
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
 }
 
 .thumb {
   position: relative;
   display: block;
   width: 100%;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 4 / 3;
   border: none;
   padding: 0;
   border-radius: var(--radius-md);
@@ -46,12 +49,12 @@
 
 @media (max-width: 980px) {
   .grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 600px) {
   .grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
   }
 }

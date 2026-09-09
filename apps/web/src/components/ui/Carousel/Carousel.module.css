@@ -1,0 +1,143 @@
+.carousel {
+  /* Set inline by the component as --per-view-wide, then narrowed at the same
+     breakpoints the grids use, so a slider shows the same number of cards a
+     grid row would. Read through a second variable rather than overriding the
+     inline one, which would need !important. */
+  --per-view: var(--per-view-wide, 3);
+  --gap: 20px;
+}
+
+.viewport {
+  position: relative;
+}
+
+.track {
+  display: flex;
+  gap: var(--gap);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+
+  /* Cards lift on hover and cast a shadow. overflow-x also clips vertically,
+     so the track needs room above and below or both get cut off. */
+  padding: 10px 2px 18px;
+
+  /* The arrows and dots are the control surface; a bar under every section
+     would be noise. */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.track::-webkit-scrollbar {
+  display: none;
+}
+
+.track:focus-visible {
+  outline: 2px solid var(--royal);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Whatever card the section renders becomes one slide. */
+.track > * {
+  flex: 0 0 calc((100% - (var(--per-view) - 1) * var(--gap)) / var(--per-view));
+  scroll-snap-align: start;
+  min-width: 0;
+}
+
+/* ---------- arrows ---------- */
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--royal);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 4px 12px rgba(18, 48, 127, 0.14);
+  z-index: 2;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    opacity 0.18s ease;
+}
+
+.arrow:hover {
+  background: var(--royal);
+  color: #fff;
+  border-color: var(--royal);
+}
+
+/* Hidden rather than greyed out at either end — a dead button invites clicks. */
+.arrow:disabled {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.prev {
+  left: -17px;
+}
+
+.next {
+  right: -17px;
+}
+
+/* ---------- dots ---------- */
+
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: #cdd6e8;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    width 0.2s ease;
+}
+
+.dot:hover {
+  background: var(--azure);
+}
+
+.dotActive {
+  width: 24px;
+  border-radius: 999px;
+  background: var(--royal);
+}
+
+/* Same breakpoints as every grid in the site: 2 up on a tablet, 1 on a phone. */
+@media (max-width: 980px) {
+  .carousel {
+    --per-view: 2;
+  }
+}
+
+@media (max-width: 700px) {
+  /* Touch users swipe; floating arrows would only cover a card. */
+  .arrow {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .carousel {
+    --per-view: 1;
+  }
+}

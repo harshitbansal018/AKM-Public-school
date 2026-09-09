@@ -1,5 +1,6 @@
 import { toTelHref } from '@/lib/format';
 import Reveal from '@/components/ui/Reveal/Reveal';
+import SchoolMap from '@/components/ui/SchoolMap/SchoolMap';
 import EnquiryForm from '@/components/forms/EnquiryForm/EnquiryForm';
 import styles from './ContactSection.module.css';
 
@@ -60,17 +61,7 @@ export default function ContactSection({ settings }) {
           </div>
         </div>
 
-        {settings.mapEmbedUrl ? (
-          <iframe
-            className={styles.map}
-            src={settings.mapEmbedUrl}
-            title="School location on Google Maps"
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          />
-        ) : (
-          <div className={styles.mapPlaceholder}>🗺️ Google Map Embed Here</div>
-        )}
+        <SchoolMap src={settings.mapEmbedUrl} height={220} className={styles.map} />
       </Reveal>
 
       <Reveal delay={1} className={styles.card}>

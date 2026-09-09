@@ -17,10 +17,10 @@
 .danger {
   background: var(--red);
   color: #fff;
-  box-shadow: 0 6px 0 #a02821;
+  /* box-shadow: 0 6px 0 #a02821; */
 }
 
 .danger:hover:not(:disabled) {
   transform: translateY(-3px);
-  box-shadow: 0 9px 0 #a02821;
+  /* box-shadow: 0 9px 0 #a02821; */
 }

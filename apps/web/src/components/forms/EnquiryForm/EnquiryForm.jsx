@@ -10,11 +10,13 @@ import Select from '@/components/ui/Select/Select';
 import Textarea from '@/components/ui/Textarea/Textarea';
 import styles from './EnquiryForm.module.css';
 
+/** Field order here is the order the school asked for on the form. */
 const EMPTY = {
-  parentName: '',
-  phone: '',
   studentName: '',
+  phone: '',
+  parentName: '',
   classGroup: '',
+  address: '',
   message: '',
   website: '', // honeypot — real people never fill this
 };
@@ -23,13 +25,17 @@ const EMPTY = {
 function validate(values) {
   const errors = {};
 
-  if (!values.parentName.trim()) {
-    errors.parentName = 'Please enter the parent name';
+  if (!values.studentName.trim()) {
+    errors.studentName = 'Please enter the student name';
   }
 
   const digits = values.phone.replace(/\D/g, '');
   if (!digits) errors.phone = 'Please enter a phone number';
   else if (digits.length < 10) errors.phone = 'Enter a valid 10-digit phone number';
+
+  if (!values.parentName.trim()) {
+    errors.parentName = 'Please enter the parent name';
+  }
 
   if (!values.classGroup) errors.classGroup = 'Please choose a class';
 
@@ -74,10 +80,11 @@ export default function EnquiryForm({ settings }) {
     setSubmitting(true);
     try {
       await apiPost('/enquiries', {
-        parentName: values.parentName.trim(),
+        studentName: values.studentName.trim(),
         phone: values.phone.trim(),
-        studentName: values.studentName.trim() || null,
+        parentName: values.parentName.trim(),
         classGroup: values.classGroup,
+        address: values.address.trim() || null,
         message: values.message.trim() || null,
       });
       setValues(EMPTY);
@@ -112,14 +119,13 @@ export default function EnquiryForm({ settings }) {
     <form className={styles.form} onSubmit={handleSubmit} noValidate>
       <div className={styles.row}>
         <Input
-          id="parentName"
-          name="parentName"
-          label="Parent&rsquo;s Name"
-          placeholder="e.g. Rajesh Kumar"
-          value={values.parentName}
-          onChange={update('parentName')}
-          error={errors.parentName}
-          autoComplete="name"
+          id="studentName"
+          name="studentName"
+          label="Student Name"
+          placeholder="e.g. Aarav Sharma"
+          value={values.studentName}
+          onChange={update('studentName')}
+          error={errors.studentName}
           required
         />
         <Input
@@ -138,12 +144,15 @@ export default function EnquiryForm({ settings }) {
 
       <div className={styles.row}>
         <Input
-          id="studentName"
-          name="studentName"
-          label="Student Name"
-          placeholder="Optional"
-          value={values.studentName}
-          onChange={update('studentName')}
+          id="parentName"
+          name="parentName"
+          label="Parent&rsquo;s Name"
+          placeholder="e.g. Rajesh Kumar"
+          value={values.parentName}
+          onChange={update('parentName')}
+          error={errors.parentName}
+          autoComplete="name"
+          required
         />
         <Select
           id="classGroup"
@@ -157,6 +166,17 @@ export default function EnquiryForm({ settings }) {
           required
         />
       </div>
+
+      <Textarea
+        id="address"
+        name="address"
+        label="Address"
+        rows={2}
+        placeholder="Village / town, tehsil and district (optional)"
+        value={values.address}
+        onChange={update('address')}
+        autoComplete="street-address"
+      />
 
       <Textarea
         id="message"

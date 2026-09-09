@@ -270,6 +270,10 @@ function EnquiryDetail({ enquiry, busy, onSave, onClose }) {
           <dd>{formatLongDate(enquiry.createdAt)}</dd>
         </div>
         <div className={styles.wide}>
+          <dt>Address</dt>
+          <dd>{enquiry.address || '—'}</dd>
+        </div>
+        <div className={styles.wide}>
           <dt>Message</dt>
           <dd>{enquiry.message || '—'}</dd>
         </div>

@@ -8,6 +8,10 @@ import { optionalText } from './common.validator.js';
  * there are 10 real digits behind it.
  */
 export const createEnquirySchema = z.object({
+  // Required on the form, but the column stays nullable: enquiries taken before
+  // the student name was compulsory would fail to load otherwise.
+  studentName: z.string().trim().min(2, 'Enter the student name').max(120),
+
   parentName: z.string().trim().min(2, 'Enter the parent name').max(120),
 
   phone: z
@@ -21,9 +25,9 @@ export const createEnquirySchema = z.object({
     }, 'Enter a valid 10-digit phone number'),
 
   email: z.string().trim().toLowerCase().email('Enter a valid email').optional().nullable(),
-  studentName: optionalText(120),
   classGroup: z.enum(CLASS_GROUPS, { errorMap: () => ({ message: 'Choose a class' }) }),
   medium: z.enum(Object.values(MEDIUM)).optional().nullable(),
+  address: optionalText(500),
   message: optionalText(2000),
 
   // Honeypot — the middleware handles it; accepted here so validation passes.

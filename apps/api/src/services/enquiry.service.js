@@ -48,12 +48,13 @@ async function notifySchool(enquiry) {
     subject: `New admission enquiry — ${enquiry.parentName}`,
     template: 'enquiry-notify',
     values: {
-      parentName: enquiry.parentName,
-      phone: enquiry.phone,
-      email: enquiry.email,
       studentName: enquiry.studentName,
+      phone: enquiry.phone,
+      parentName: enquiry.parentName,
       classGroup: CLASS_LABELS[enquiry.classGroup] ?? enquiry.classGroup,
-      message: enquiry.message,
+      email: enquiry.email || '—',
+      address: enquiry.address || '—',
+      message: enquiry.message || '—',
       receivedAt: enquiry.createdAt.toLocaleString('en-IN'),
     },
   });
@@ -94,15 +95,17 @@ export async function remove(id) {
 export async function toCsv() {
   const rows = await enquiryRepository.findAllForExport();
 
+  // Same order as the public form, so the office reads the two side by side.
   const header = [
     'Reference',
     'Received',
-    'Parent Name',
-    'Phone',
-    'Email',
     'Student Name',
+    'Phone',
+    'Parent Name',
     'Class',
+    'Address',
     'Message',
+    'Email',
     'Status',
     'Admin Note',
   ];
@@ -122,12 +125,13 @@ export async function toCsv() {
       [
         `ENQ-${String(row.id).padStart(5, '0')}`,
         row.createdAt.toISOString(),
-        row.parentName,
-        row.phone,
-        row.email,
         row.studentName,
+        row.phone,
+        row.parentName,
         CLASS_LABELS[row.classGroup] ?? row.classGroup,
+        row.address,
         row.message,
+        row.email,
         row.status,
         row.adminNote,
       ]

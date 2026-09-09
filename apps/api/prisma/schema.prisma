@@ -101,6 +101,9 @@ model Enquiry {
   studentName String?
   classGroup  String?
   medium      MediumType?
+  // Optional on the form, and nullable here so the enquiries taken before this
+  // field existed still load.
+  address     String?       @db.Text
   message     String?       @db.Text
   status      EnquiryStatus @default(NEW)
   adminNote   String?       @db.Text

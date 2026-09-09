@@ -6,18 +6,34 @@ import styles from './Select.module.css';
  * @param {{value: string, label: string}[]} props.options
  * @param {string}   [props.placeholder] shown as a disabled first option
  */
-export default function Select({ label, id, error, options = [], placeholder, className, ...rest }) {
+export default function Select({
+  label,
+  id,
+  error,
+  options = [],
+  placeholder,
+  className,
+  required,
+  ...rest
+}) {
   return (
     <div className={cn(styles.field, className)}>
       {label ? (
         <label className={styles.label} htmlFor={id}>
           {label}
+          {required ? (
+            <span className={styles.required} aria-hidden="true">
+              {' '}
+              *
+            </span>
+          ) : null}
         </label>
       ) : null}
       <select
         id={id}
         className={cn(styles.select, error && styles.invalid)}
         aria-invalid={error ? 'true' : undefined}
+        required={required}
         {...rest}
       >
         {placeholder ? <option value="">{placeholder}</option> : null}

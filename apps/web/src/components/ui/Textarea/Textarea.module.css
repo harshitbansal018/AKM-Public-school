@@ -10,6 +10,11 @@
   color: var(--royal-dark);
 }
 
+/* Marks a compulsory field. Red because that is what people scan a form for. */
+.required {
+  color: var(--red);
+}
+
 .textarea {
   width: 100%;
   min-height: 96px;

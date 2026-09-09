@@ -1,0 +1,22 @@
+.map {
+  display: block;
+  width: 100%;
+  border: 0;
+  border-radius: var(--radius-md);
+}
+
+/* Shown until the school pastes an embed link, so the section never collapses
+   into an empty gap. */
+.placeholder {
+  width: 100%;
+  border-radius: var(--radius-md);
+  background:
+    repeating-linear-gradient(0deg, #e3eaf6 0 2px, #f7faff 2px 22px),
+    repeating-linear-gradient(90deg, #e3eaf6 0 2px, transparent 2px 22px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  font-weight: 800;
+  font-size: 0.85rem;
+}

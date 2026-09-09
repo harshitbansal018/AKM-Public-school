@@ -27,7 +27,7 @@ export default function AlbumViewer({ images = [], albumTitle }) {
                 src={image.imagePath}
                 alt={image.caption || ''}
                 fill
-                sizes="(max-width: 600px) 50vw, (max-width: 980px) 33vw, 25vw"
+                sizes="(max-width: 600px) 100vw, (max-width: 980px) 50vw, 33vw"
                 className={styles.image}
               />
               {image.caption ? <span className={styles.caption}>{image.caption}</span> : null}

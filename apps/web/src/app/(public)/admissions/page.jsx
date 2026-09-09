@@ -1,13 +1,23 @@
 import { getSettings } from '@/lib/serverApi';
 import { admission } from '@/data/fallback';
 import { buildMetadata } from '@/lib/seo';
+import { cn } from '@/lib/cn';
 import { text, toList, toPairs } from '@/lib/content';
 import PageHeader from '@/components/ui/PageHeader/PageHeader';
 import SectionIntro from '@/components/ui/SectionIntro/SectionIntro';
 import Reveal from '@/components/ui/Reveal/Reveal';
+import LineIcon from '@/components/ui/LineIcon/LineIcon';
+import SchoolMap from '@/components/ui/SchoolMap/SchoolMap';
 import AdmissionCard from '@/components/home/AdmissionCard/AdmissionCard';
 import EnquiryForm from '@/components/forms/EnquiryForm/EnquiryForm';
 import styles from './admissions.module.css';
+
+/**
+ * One icon per step, in order — the admission process is a fixed sequence, so
+ * the icon follows the position rather than being stored with the text. A step
+ * added beyond this list simply shows its number and no icon.
+ */
+const STEP_ICONS = ['enquiry', 'campus', 'documents', 'seat'];
 
 export async function generateMetadata() {
   const settings = await getSettings();
@@ -51,13 +61,26 @@ export default async function AdmissionsPage() {
             />
 
             <ol className={styles.steps}>
-              {steps.map((step, index) => (
-                <Reveal key={step.id} as="li" delay={Math.min(index, 4)} className={styles.step}>
-                  <span className={styles.number}>{index + 1}</span>
-                  <h3>{step.title}</h3>
-                  <p>{step.description}</p>
-                </Reveal>
-              ))}
+              {steps.map((step, index) => {
+                const icon = STEP_ICONS[index];
+
+                return (
+                  <Reveal key={step.id} as="li" delay={Math.min(index, 4)} className={styles.step}>
+                    {/* With an icon the number moves to the corner, so the two
+                        never compete for the same spot. */}
+                    <span className={cn(styles.number, icon && styles.numberCorner)}>
+                      {index + 1}
+                    </span>
+                    {icon ? (
+                      <span className={styles.icon}>
+                        <LineIcon name={icon} size={26} />
+                      </span>
+                    ) : null}
+                    <h3>{step.title}</h3>
+                    <p>{step.description}</p>
+                  </Reveal>
+                );
+              })}
             </ol>
           </div>
         </section>
@@ -65,7 +88,16 @@ export default async function AdmissionsPage() {
 
       <section className="section bg-sky">
         <div className={`container ${styles.split}`}>
-          <AdmissionCard admission={admissionBlock} settings={settings} />
+          {/* The admission card is much shorter than the form beside it. The
+              map fills that leftover column so both sides finish level, and a
+              parent reading the form can see where to bring it. */}
+          <div className={styles.leftColumn}>
+            <AdmissionCard admission={admissionBlock} settings={settings} />
+
+            <Reveal delay={1} className={styles.mapCard}>
+              <SchoolMap src={settings.mapEmbedUrl} height="100%" className={styles.mapFrame} />
+            </Reveal>
+          </div>
 
           <Reveal delay={1} className={styles.formCard}>
             <h3>{text(settings, 'admissions_form_heading', 'Admission Enquiry')}</h3>

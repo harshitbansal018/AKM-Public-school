@@ -46,7 +46,9 @@ export default async function HomePage() {
             title="One School, Every Learning Stage"
             description="A structured HPBOSE academic journey — from playful early learning to board exam preparation."
           />
-          <StageGrid stages={data.academicStages} />
+          {/* slider: sections here stay a tidy single row however many cards
+              the school adds later. The full-page versions keep the grid. */}
+          <StageGrid stages={data.academicStages} slider />
         </div>
       </section>
 
@@ -60,7 +62,7 @@ export default async function HomePage() {
             title="Choose Your Stream"
             description="Students study subjects prescribed by HPBOSE for their selected stream, in English or Hindi medium."
           />
-          <StreamGrid streams={data.streams} />
+          <StreamGrid streams={data.streams} slider />
         </div>
       </section>
 
@@ -69,7 +71,7 @@ export default async function HomePage() {
         <Deco shape="ring" motion="spin" size={130} style={{ bottom: '6%', left: '3%' }} />
         <div className="container">
           <SectionIntro tag="Campus & Facilities" title="A Supportive Learning Environment" />
-          <FacilityGrid facilities={data.facilities} />
+          <FacilityGrid facilities={data.facilities} slider />
         </div>
       </section>
 
@@ -81,7 +83,7 @@ export default async function HomePage() {
             title="Our Proud Moments"
             description="Board toppers, sports victories and cultural wins — our students shine everywhere."
           />
-          <AchievementGrid achievements={data.achievements} />
+          <AchievementGrid achievements={data.achievements} slider />
         </div>
       </section>
 
@@ -101,7 +103,7 @@ export default async function HomePage() {
             title="Life at AKM"
             description="Real photos of our campus, classrooms, events and student activities."
           />
-          <GalleryGrid albums={data.galleryAlbums} />
+          <GalleryGrid albums={data.galleryAlbums} slider />
         </div>
       </section>
 

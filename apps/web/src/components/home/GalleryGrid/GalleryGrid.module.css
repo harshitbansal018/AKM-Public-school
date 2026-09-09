@@ -5,7 +5,9 @@
 }
 
 .tile {
-  aspect-ratio: 1 / 1;
+  /* Landscape, like the photos the school actually uploads. A square frame
+     cropped the left and right off every cover. */
+  aspect-ratio: 4 / 3;
   border-radius: var(--radius-md);
   display: flex;
   align-items: flex-end;
