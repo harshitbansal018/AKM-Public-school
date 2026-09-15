@@ -19,14 +19,14 @@ import {
  * content and live data without a single component change.
  */
 export async function getHomePayload() {
-  const [settings, announcements, stages, streams, facilities, principal, achievements, notices, albums] =
+  const [settings, announcements, stages, streams, facilities, leadership, achievements, notices, albums] =
     await Promise.all([
       settingService.getPublicSettings(),
       announcementService.listActive(),
       academicStageService.listPublic(),
       streamService.listPublic(),
       facilityService.listPublic(),
-      facultyService.getPrincipal(),
+      facultyService.getLeadership(),
       achievementService.listPublic(),
       noticeService.latest(4),
       galleryService.listPublic(),
@@ -38,7 +38,16 @@ export async function getHomePayload() {
     announcements,
     hero: buildHero(settings),
     academicStages: stages,
-    principal: buildPrincipal(principal),
+    principal: buildLeader(leadership.principal, {
+      photoCaption: "Principal's Photo Here",
+      heading: "Nurturing Every Child's Potential",
+    }),
+    // null until someone is ticked as MD — the section then shows the
+    // principal alone, exactly as before.
+    director: buildLeader(leadership.director, {
+      photoCaption: "MD's Photo Here",
+      heading: 'A Word from the Management',
+    }),
     streams: streams.map(withParsedSubjects),
     facilities,
     achievements,
@@ -65,15 +74,19 @@ function buildHero(settings) {
   };
 }
 
-function buildPrincipal(person) {
+/**
+ * One message card — the principal's or the MD's. The admin form's
+ * "Heading / qualification" field doubles as the card heading.
+ */
+function buildLeader(person, { photoCaption, heading }) {
   if (!person) return null;
   return {
     id: person.id,
     name: person.name,
     designation: person.designation,
     photo: person.photo,
-    photoCaption: "Principal's Photo Here",
-    heading: person.qualification || "Nurturing Every Child's Potential",
+    photoCaption,
+    heading: person.qualification || heading,
     message: person.message ?? '',
   };
 }

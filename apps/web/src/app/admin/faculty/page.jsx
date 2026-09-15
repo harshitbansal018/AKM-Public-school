@@ -10,7 +10,7 @@ export default function FacultyAdminPage() {
       endpoint="/admin/faculty"
       title="Faculty"
       singular="staff member"
-      description="Teaching staff. The person marked as Principal supplies the message shown on the homepage."
+      description="Teaching staff. The people ticked as Principal and MD supply the two messages shown on the homepage and the About page."
       emptyIcon="👩‍🏫"
       columns={[
         {
@@ -36,7 +36,11 @@ export default function FacultyAdminPage() {
           key: 'isPrincipal',
           label: 'Role',
           width: '110px',
-          render: (r) => (r.isPrincipal ? <StatusPill value="active" label="Principal" /> : '—'),
+          render: (r) => {
+            if (r.isPrincipal) return <StatusPill value="active" label="Principal" />;
+            if (r.isDirector) return <StatusPill value="active" label="MD" />;
+            return '—';
+          },
         },
         {
           key: 'isPublished',
@@ -51,15 +55,21 @@ export default function FacultyAdminPage() {
           label: 'Photo',
           type: 'image',
           folder: 'faculty',
-          hint: `Shown on the homepage for the Principal. A square photo works best · ${IMAGE_RULE}.`,
+          hint: `Shown on the homepage for the Principal and the MD. A square photo works best · ${IMAGE_RULE}.`,
         },
         { name: 'name', label: 'Name', type: 'text', required: true, half: true, placeholder: 'Mrs. Sunita Sharma' },
         { name: 'designation', label: 'Designation', type: 'text', required: true, half: true, placeholder: 'Principal' },
-        { name: 'qualification', label: 'Heading / qualification', type: 'text', help: 'Used as the heading above the principal message.' },
+        { name: 'qualification', label: 'Heading / qualification', type: 'text', help: "Used as the heading above the Principal's or MD's message." },
         { name: 'subject', label: 'Subject taught', type: 'text', half: true },
         { name: 'sortOrder', label: 'Order', type: 'number', half: true },
-        { name: 'message', label: 'Message', type: 'textarea', rows: 5, help: 'Shown on the homepage when this person is the Principal.' },
+        { name: 'message', label: 'Message', type: 'textarea', rows: 5, help: 'Shown on the homepage when this person is the Principal or the MD.' },
         { name: 'isPrincipal', label: 'This is the Principal', type: 'checkbox' },
+        {
+          name: 'isDirector',
+          label: 'This is the Managing Director (MD)',
+          type: 'checkbox',
+          help: 'Tick one person only. Someone ticked as both is treated as the Principal.',
+        },
         { name: 'isPublished', label: 'Show on the website', type: 'checkbox', default: true },
       ]}
     />

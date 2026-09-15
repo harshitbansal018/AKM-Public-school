@@ -52,6 +52,11 @@ export default function SettingsAdminPage() {
     })();
   }, []);
 
+  useEffect(() => {
+    const section = new URLSearchParams(window.location.search).get('section');
+    if (cmsPages.some((page) => page.id === section)) setActivePage(section);
+  }, []);
+
   const rowByKey = useMemo(() => {
     const map = {};
     for (const row of rows) map[row.key] = row;

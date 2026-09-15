@@ -175,6 +175,8 @@ model Faculty {
   message       String?  @db.Text
   photo         String?
   isPrincipal   Boolean  @default(false)
+  /// Managing Director — supplies the second message beside the principal's.
+  isDirector    Boolean  @default(false)
   isPublished   Boolean  @default(true)
   sortOrder     Int      @default(0)
   createdAt     DateTime @default(now())
@@ -248,4 +250,101 @@ model MediaFile {
   size         Int
   folder       String   @default("misc")
   createdAt    DateTime @default(now())
+}
+
+model Student {
+  id           Int      @id @default(autoincrement())
+  name         String
+  classGroup   String
+  rollNumber   String?
+  guardianName String
+  phone        String?
+  address      String?  @db.Text
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([classGroup, name])
+}
+
+model Homework {
+  id          Int       @id @default(autoincrement())
+  title       String
+  classGroup  String
+  subject     String
+  dueDate     DateTime?
+  description String?   @db.Text
+  isPublished Boolean   @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([classGroup, dueDate])
+}
+
+model Result {
+  id          Int       @id @default(autoincrement())
+  studentName String
+  classGroup  String
+  exam        String
+  score       String
+  resultDate  DateTime?
+  remarks     String?   @db.Text
+  isPublished Boolean   @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([classGroup, exam])
+}
+
+model FeeRecord {
+  id          Int       @id @default(autoincrement())
+  studentName String
+  classGroup  String
+  amount      Decimal   @db.Decimal(10, 2)
+  dueDate     DateTime?
+  status      String    @default("DUE")
+  notes       String?   @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([classGroup, status])
+}
+
+model FacultySalary {
+  id          Int       @id @default(autoincrement())
+  facultyName String
+  month       String
+  amount      Decimal   @db.Decimal(10, 2)
+  paymentDate DateTime?
+  status      String    @default("DUE")
+  notes       String?   @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([facultyName, month])
+}
+
+model JobApplication {
+  id        Int      @id @default(autoincrement())
+  name      String
+  position  String
+  email     String?
+  phone     String?
+  status    String   @default("NEW")
+  notes     String?  @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, createdAt])
+}
+
+model Policy {
+  id            Int       @id @default(autoincrement())
+  title         String
+  effectiveDate DateTime?
+  status        String    @default("DRAFT")
+  content       String    @db.LongText
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([status])
 }

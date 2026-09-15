@@ -1,0 +1,5 @@
+'use client';
+import InternalRecordManager from '@/components/admin/InternalRecordManager/InternalRecordManager';
+export default function JobApplicationsPage() {
+  return <InternalRecordManager endpoint="/admin/job-applications" title="Job Applications" singular="application" description="Store and review applications for school vacancies." columns={[{ key: 'name', label: 'Applicant' }, { key: 'position', label: 'Position' }, { key: 'email', label: 'Email' }, { key: 'phone', label: 'Phone' }, { key: 'status', label: 'Status' }]} fields={[{ name: 'name', label: 'Applicant name', type: 'text', required: true }, { name: 'position', label: 'Position applied for', type: 'text', required: true }, { name: 'email', label: 'Email', type: 'text', half: true }, { name: 'phone', label: 'Phone', type: 'text', half: true }, { name: 'status', label: 'Status', type: 'select', half: true, options: [{ value: 'NEW', label: 'New' }, { value: 'REVIEWING', label: 'Reviewing' }, { value: 'SHORTLISTED', label: 'Shortlisted' }, { value: 'CLOSED', label: 'Closed' }] }, { name: 'notes', label: 'Notes', type: 'textarea', rows: 4 }]} />;
+}

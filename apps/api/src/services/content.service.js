@@ -79,6 +79,18 @@ export const facultyService = {
     const principal = staff.find((person) => person.isPrincipal) ?? staff[0] ?? null;
     return principal ? serializeFaculty(principal) : null;
   },
+
+  /** Public leadership messages. A person marked as both remains the Principal. */
+  async getLeadership() {
+    const staff = await facultyRepository.findPublished();
+    const principal = staff.find((person) => person.isPrincipal) ?? staff[0] ?? null;
+    const director = staff.find((person) => person.isDirector && !person.isPrincipal) ?? null;
+
+    return {
+      principal: serializeFaculty(principal),
+      director: serializeFaculty(director),
+    };
+  },
 };
 
 export const achievementService = {

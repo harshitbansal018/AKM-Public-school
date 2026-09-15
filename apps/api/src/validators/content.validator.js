@@ -90,6 +90,7 @@ export const createFacultySchema = z.object({
   // Relative path returned by POST /admin/uploads/faculty, e.g. "faculty/x.jpg".
   photo: optionalText(300),
   isPrincipal: z.boolean().default(false),
+  isDirector: z.boolean().default(false),
   isPublished: z.boolean().default(true),
   sortOrder: sortOrder.default(0),
 });
@@ -180,6 +181,84 @@ export const updateSettingsSchema = z.object({
     )
     .min(1, 'Send at least one setting'),
 });
+
+// ---------- internal school management ----------
+
+export const createStudentSchema = z.object({
+  name: z.string().trim().min(2).max(150),
+  classGroup: z.string().trim().min(1).max(80),
+  rollNumber: optionalText(50),
+  guardianName: z.string().trim().min(2).max(150),
+  phone: optionalText(30),
+  address: optionalText(2000),
+});
+export const updateStudentSchema = createStudentSchema.partial();
+
+export const createHomeworkSchema = z.object({
+  title: z.string().trim().min(2).max(200),
+  classGroup: z.string().trim().min(1).max(80),
+  subject: z.string().trim().min(2).max(120),
+  dueDate: z.coerce.date().optional().nullable(),
+  description: optionalText(5000),
+  isPublished: z.boolean().default(false),
+});
+export const updateHomeworkSchema = createHomeworkSchema.partial();
+
+export const createResultSchema = z.object({
+  studentName: z.string().trim().min(2).max(150),
+  classGroup: z.string().trim().min(1).max(80),
+  exam: z.string().trim().min(2).max(150),
+  score: z.string().trim().min(1).max(100),
+  resultDate: z.coerce.date().optional().nullable(),
+  remarks: optionalText(2000),
+  isPublished: z.boolean().default(false),
+});
+export const updateResultSchema = createResultSchema.partial();
+
+export const createFeeRecordSchema = z.object({
+  studentName: z.string().trim().min(2).max(150),
+  classGroup: z.string().trim().min(1).max(80),
+  amount: z.coerce.number().positive().max(10000000),
+  dueDate: z.coerce.date().optional().nullable(),
+  status: defaultedEnum(['DUE', 'PAID', 'PARTIAL'], 'DUE'),
+  notes: optionalText(2000),
+});
+export const updateFeeRecordSchema = createFeeRecordSchema.partial();
+
+export const createFacultySalarySchema = z.object({
+  facultyName: z.string().trim().min(2).max(150),
+  month: z.string().trim().min(3).max(40),
+  amount: z.coerce.number().positive().max(10000000),
+  paymentDate: z.coerce.date().optional().nullable(),
+  status: defaultedEnum(['DUE', 'PAID'], 'DUE'),
+  notes: optionalText(2000),
+});
+export const updateFacultySalarySchema = createFacultySalarySchema.partial();
+
+export const createJobApplicationSchema = z.object({
+  name: z.string().trim().min(2).max(150),
+  position: z.string().trim().min(2).max(150),
+  email: z.string().trim().email().optional().nullable(),
+  phone: optionalText(30),
+  status: defaultedEnum(['NEW', 'REVIEWING', 'SHORTLISTED', 'CLOSED'], 'NEW'),
+  notes: optionalText(5000),
+});
+export const updateJobApplicationSchema = createJobApplicationSchema.partial();
+export const createPublicJobApplicationSchema = createJobApplicationSchema.pick({
+  name: true,
+  position: true,
+  email: true,
+  phone: true,
+  notes: true,
+});
+
+export const createPolicySchema = z.object({
+  title: z.string().trim().min(2).max(200),
+  effectiveDate: z.coerce.date().optional().nullable(),
+  status: defaultedEnum(['DRAFT', 'ACTIVE', 'ARCHIVED'], 'DRAFT'),
+  content: z.string().trim().min(2).max(50000),
+});
+export const updatePolicySchema = createPolicySchema.partial();
 
 // ---------- users ----------
 

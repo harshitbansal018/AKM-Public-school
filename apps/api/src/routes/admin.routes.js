@@ -11,6 +11,15 @@ import {
   facultyService,
   achievementService,
 } from '../services/content.service.js';
+import {
+  studentService,
+  homeworkService,
+  resultService,
+  feeRecordService,
+  facultySalaryService,
+  jobApplicationService,
+  policyService,
+} from '../services/internalRecords.service.js';
 
 import { authenticate } from '../middlewares/auth.middleware.js';
 import { requireRole } from '../middlewares/role.middleware.js';
@@ -120,6 +129,26 @@ for (const [path, service, label, createSchema, updateSchema] of resources) {
   router.get(`/${path}`, c.list);
   router.post(`/${path}`, validate(createSchema), c.create);
   router.patch(`/${path}/reorder`, validate(reorderSchema), c.reorder);
+  router.get(`/${path}/:id`, id, c.get);
+  router.put(`/${path}/:id`, id, validate(updateSchema), c.update);
+  router.delete(`/${path}/:id`, id, c.remove);
+}
+
+// ---------- internal school-management records ----------
+const internalResources = [
+  ['students', studentService, 'Student', schema.createStudentSchema, schema.updateStudentSchema],
+  ['homework', homeworkService, 'Homework', schema.createHomeworkSchema, schema.updateHomeworkSchema],
+  ['results', resultService, 'Result', schema.createResultSchema, schema.updateResultSchema],
+  ['fees', feeRecordService, 'Fee record', schema.createFeeRecordSchema, schema.updateFeeRecordSchema],
+  ['faculty-salary', facultySalaryService, 'Salary record', schema.createFacultySalarySchema, schema.updateFacultySalarySchema],
+  ['job-applications', jobApplicationService, 'Job application', schema.createJobApplicationSchema, schema.updateJobApplicationSchema],
+  ['policies', policyService, 'Policy', schema.createPolicySchema, schema.updatePolicySchema],
+];
+
+for (const [path, service, label, createSchema, updateSchema] of internalResources) {
+  const c = createCrudController(service, label);
+  router.get(`/${path}`, c.list);
+  router.post(`/${path}`, validate(createSchema), c.create);
   router.get(`/${path}/:id`, id, c.get);
   router.put(`/${path}/:id`, id, validate(updateSchema), c.update);
   router.delete(`/${path}/:id`, id, c.remove);

@@ -52,7 +52,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <PrincipalMessage principal={data.principal} />
+      <PrincipalMessage principal={data.principal} director={data.director} />
 
       {/* Streams */}
       <section className="section bg-sky">

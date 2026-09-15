@@ -1,0 +1,5 @@
+'use client';
+import InternalRecordManager from '@/components/admin/InternalRecordManager/InternalRecordManager';
+export default function FeesPage() {
+  return <InternalRecordManager endpoint="/admin/fees" title="Fees" singular="fee record" description="Track fees due and payments received." columns={[{ key: 'studentName', label: 'Student' }, { key: 'classGroup', label: 'Class' }, { key: 'amount', label: 'Amount' }, { key: 'dueDate', label: 'Due date' }, { key: 'status', label: 'Status' }]} fields={[{ name: 'studentName', label: 'Student name', type: 'text', required: true }, { name: 'classGroup', label: 'Class / section', type: 'text', required: true, half: true }, { name: 'amount', label: 'Amount', type: 'number', required: true, half: true }, { name: 'dueDate', label: 'Due date', type: 'date', half: true }, { name: 'status', label: 'Status', type: 'select', half: true, options: [{ value: 'DUE', label: 'Due' }, { value: 'PAID', label: 'Paid' }, { value: 'PARTIAL', label: 'Partially paid' }] }, { name: 'notes', label: 'Notes', type: 'textarea', rows: 3 }]} />;
+}

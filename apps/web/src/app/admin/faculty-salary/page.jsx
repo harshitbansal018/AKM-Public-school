@@ -1,0 +1,5 @@
+'use client';
+import InternalRecordManager from '@/components/admin/InternalRecordManager/InternalRecordManager';
+export default function FacultySalaryPage() {
+  return <InternalRecordManager endpoint="/admin/faculty-salary" title="Faculty Salary" singular="salary record" description="Track faculty salary payments." columns={[{ key: 'facultyName', label: 'Faculty member' }, { key: 'month', label: 'Month' }, { key: 'amount', label: 'Amount' }, { key: 'paymentDate', label: 'Paid on' }, { key: 'status', label: 'Status' }]} fields={[{ name: 'facultyName', label: 'Faculty member', type: 'text', required: true }, { name: 'month', label: 'Salary month', type: 'text', required: true, half: true, placeholder: 'September 2026' }, { name: 'amount', label: 'Amount', type: 'number', required: true, half: true }, { name: 'paymentDate', label: 'Payment date', type: 'date', half: true }, { name: 'status', label: 'Status', type: 'select', half: true, options: [{ value: 'DUE', label: 'Due' }, { value: 'PAID', label: 'Paid' }] }, { name: 'notes', label: 'Notes', type: 'textarea', rows: 3 }]} />;
+}

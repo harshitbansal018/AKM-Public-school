@@ -4,7 +4,7 @@ import { validate } from '../middlewares/validate.middleware.js';
 import { honeypot } from '../middlewares/honeypot.middleware.js';
 import { enquiryLimiter } from '../middlewares/rateLimit.middleware.js';
 import { idParamSchema, slugParamSchema } from '../validators/common.validator.js';
-import { listNoticesSchema } from '../validators/content.validator.js';
+import { listNoticesSchema, createPublicJobApplicationSchema } from '../validators/content.validator.js';
 import { createEnquirySchema } from '../validators/enquiry.validator.js';
 
 const router = Router();
@@ -21,6 +21,10 @@ router.get('/facilities', controller.getFacilities);
 router.get('/faculty', controller.getFaculty);
 router.get('/faculty/principal', controller.getPrincipal);
 router.get('/achievements', controller.getAchievements);
+router.get('/homework', controller.getHomework);
+router.get('/results', controller.getResults);
+router.get('/policies', controller.getPolicies);
+router.post('/job-applications', enquiryLimiter, honeypot, validate(createPublicJobApplicationSchema), controller.createJobApplication);
 
 // Notices — the /:slug route is declared last so it cannot shadow the list.
 router.get('/notices', validate(listNoticesSchema, 'query'), controller.getNotices);

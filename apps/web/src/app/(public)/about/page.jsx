@@ -59,7 +59,7 @@ export default async function AboutPage() {
 
       <StatsCounter stats={data.stats} />
 
-      <PrincipalMessage principal={data.principal} />
+      <PrincipalMessage principal={data.principal} director={data.director} />
 
       <section className="section">
         <div className="container">

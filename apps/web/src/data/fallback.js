@@ -348,6 +348,8 @@ export const homePayload = {
   hero,
   academicStages,
   principal,
+  // No MD until the school adds one, so the section keeps its single layout.
+  director: null,
   streams,
   facilities,
   achievements,

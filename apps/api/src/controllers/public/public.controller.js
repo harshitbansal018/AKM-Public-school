@@ -15,6 +15,7 @@ import * as noticeService from '../../services/notice.service.js';
 import * as galleryService from '../../services/gallery.service.js';
 import * as downloadService from '../../services/download.service.js';
 import * as enquiryService from '../../services/enquiry.service.js';
+import { listPublishedHomework, listPublishedResults, listActivePolicies, jobApplicationService } from '../../services/internalRecords.service.js';
 import {
   academicStageService,
   streamService,
@@ -59,6 +60,13 @@ export const getPrincipal = asyncHandler(async (_req, res) => {
 export const getAchievements = asyncHandler(async (req, res) => {
   const { year, type } = req.query;
   sendOk(res, await achievementService.listPublicFiltered({ year, type }), 'Achievements');
+});
+
+export const getHomework = asyncHandler(async (_req, res) => sendOk(res, await listPublishedHomework(), 'Published homework'));
+export const getResults = asyncHandler(async (_req, res) => sendOk(res, await listPublishedResults(), 'Published results'));
+export const getPolicies = asyncHandler(async (_req, res) => sendOk(res, await listActivePolicies(), 'Active policies'));
+export const createJobApplication = asyncHandler(async (req, res) => {
+  sendOk(res, await jobApplicationService.create(req.body), 'Application received', 201);
 });
 
 export const getNotices = asyncHandler(async (req, res) => {

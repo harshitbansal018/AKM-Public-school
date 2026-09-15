@@ -15,6 +15,7 @@ export const navLinks = [
     children: [
       { href: '/about', label: 'About Our School' },
       { href: '/faculty', label: 'Faculty & Staff' },
+      { href: '/careers', label: 'Careers' },
     ],
   },
   { href: '/academics', label: 'Academics' },

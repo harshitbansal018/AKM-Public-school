@@ -1,0 +1,5 @@
+'use client';
+import InternalRecordManager from '@/components/admin/InternalRecordManager/InternalRecordManager';
+export default function ResultsPage() {
+  return <InternalRecordManager endpoint="/admin/results" title="Results" singular="result" description="Record examination results for internal management." columns={[{ key: 'studentName', label: 'Student' }, { key: 'classGroup', label: 'Class' }, { key: 'exam', label: 'Examination' }, { key: 'score', label: 'Score' }, { key: 'resultDate', label: 'Date' }]} fields={[{ name: 'studentName', label: 'Student name', type: 'text', required: true }, { name: 'classGroup', label: 'Class / section', type: 'text', required: true, half: true }, { name: 'exam', label: 'Examination', type: 'text', required: true, half: true }, { name: 'score', label: 'Score / grade', type: 'text', required: true, half: true }, { name: 'resultDate', label: 'Result date', type: 'date', half: true }, { name: 'remarks', label: 'Remarks', type: 'textarea', rows: 3 }]} />;
+}

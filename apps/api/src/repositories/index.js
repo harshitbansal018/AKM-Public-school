@@ -27,3 +27,12 @@ export const achievementRepository = createRepository('achievement', {
   orderBy: [{ sortOrder: 'asc' }, { year: 'desc' }, { id: 'desc' }],
   publishedField: 'isFeatured',
 });
+
+/** Internal management tables — independent so they remain queryable and extensible. */
+export const studentRepository = createRepository('student', { orderBy: [{ id: 'desc' }], publishedField: null });
+export const homeworkRepository = createRepository('homework', { orderBy: [{ dueDate: 'desc' }, { id: 'desc' }] });
+export const resultRepository = createRepository('result', { orderBy: [{ resultDate: 'desc' }, { id: 'desc' }] });
+export const feeRecordRepository = createRepository('feeRecord', { orderBy: [{ dueDate: 'desc' }, { id: 'desc' }], publishedField: null });
+export const facultySalaryRepository = createRepository('facultySalary', { orderBy: [{ paymentDate: 'desc' }, { id: 'desc' }], publishedField: null });
+export const jobApplicationRepository = createRepository('jobApplication', { orderBy: [{ id: 'desc' }], publishedField: null });
+export const policyRepository = createRepository('policy', { orderBy: [{ id: 'desc' }], publishedField: null });

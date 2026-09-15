@@ -1,0 +1,2 @@
+ALTER TABLE `Homework` ADD COLUMN `isPublished` BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE `Result` ADD COLUMN `isPublished` BOOLEAN NOT NULL DEFAULT false;

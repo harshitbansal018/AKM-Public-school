@@ -24,16 +24,12 @@ async function withFallback(fetcher, fallbackValue) {
     return fallbackValue;
   }
 }
-
-/** Everything the homepage renders, in one round trip. */
 export function getHomeData() {
   return withFallback(
     () => apiFetch('/home', { tags: ['home'], revalidate: 300 }),
     fallback.homePayload
   );
 }
-
-/** Site-wide settings used by the topbar, header and footer. */
 export function getSettings() {
   return withFallback(
     () => apiFetch('/settings', { tags: ['settings'], revalidate: 3600 }),
@@ -138,3 +134,7 @@ export function getAlbumBySlug(slug) {
 export function getDownloads() {
   return withFallback(() => apiFetch('/downloads', { tags: ['downloads'] }), fallback.downloads);
 }
+
+export const getPublicHomework = () => withFallback(() => apiFetch('/homework', { tags: ['homework'] }), []);
+export const getPublicResults = () => withFallback(() => apiFetch('/results', { tags: ['results'] }), []);
+export const getPublicPolicies = () => withFallback(() => apiFetch('/policies', { tags: ['policies'] }), []);
