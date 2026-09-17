@@ -15,7 +15,7 @@ import * as noticeService from '../../services/notice.service.js';
 import * as galleryService from '../../services/gallery.service.js';
 import * as downloadService from '../../services/download.service.js';
 import * as enquiryService from '../../services/enquiry.service.js';
-import { listPublishedHomework, listPublishedResults, listActivePolicies, jobApplicationService } from '../../services/internalRecords.service.js';
+import { listPublishedHomework, listActivePolicies, jobApplicationService } from '../../services/internalRecords.service.js';
 import {
   academicStageService,
   streamService,
@@ -63,10 +63,22 @@ export const getAchievements = asyncHandler(async (req, res) => {
 });
 
 export const getHomework = asyncHandler(async (_req, res) => sendOk(res, await listPublishedHomework(), 'Published homework'));
-export const getResults = asyncHandler(async (_req, res) => sendOk(res, await listPublishedResults(), 'Published results'));
-export const getPolicies = asyncHandler(async (_req, res) => sendOk(res, await listActivePolicies(), 'Active policies'));
+export const getPolicies = asyncHandler(async (_req, res) => {
+  const [tabs, policies] = await Promise.all([settingService.listPolicyTabs(), listActivePolicies()]);
+  sendOk(res, { tabs, policies }, 'Active policies');
+});
+/**
+ * Careers form. The CV arrives as a multipart file; only its stored path and
+ * original name are kept, and the applicant gets back a reference number.
+ */
 export const createJobApplication = asyncHandler(async (req, res) => {
-  sendOk(res, await jobApplicationService.create(req.body), 'Application received', 201);
+  const application = await jobApplicationService.create({
+    ...req.body,
+    ...(req.file
+      ? { resumePath: `resumes/${req.file.filename}`, resumeName: req.file.originalname }
+      : {}),
+  });
+  sendOk(res, { reference: application.reference }, 'Application received', 201);
 });
 
 export const getNotices = asyncHandler(async (req, res) => {

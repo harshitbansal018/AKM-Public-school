@@ -11,6 +11,7 @@ import AdminPage from '@/components/admin/AdminPage/AdminPage';
 import Input from '@/components/ui/Input/Input';
 import Textarea from '@/components/ui/Textarea/Textarea';
 import ImageUploader from '@/components/admin/ImageUploader/ImageUploader';
+import LineIcon from '@/components/ui/LineIcon/LineIcon';
 import styles from './settings.module.css';
 
 /**
@@ -169,7 +170,7 @@ export default function SettingsAdminPage() {
                 onClick={() => setActivePage(item.id)}
               >
                 <span className={styles.pageIcon} aria-hidden="true">
-                  {item.icon}
+                  <LineIcon name={item.icon} size={18} />
                 </span>
                 <span className={styles.pageLabel}>{item.label}</span>
                 {dirty ? <span className={styles.dot} title="Unsaved changes" /> : null}
@@ -184,7 +185,7 @@ export default function SettingsAdminPage() {
               onClick={() => setActivePage('__other')}
             >
               <span className={styles.pageIcon} aria-hidden="true">
-                ⚙️
+                <LineIcon name="settings" size={18} />
               </span>
               <span className={styles.pageLabel}>Other</span>
             </button>
@@ -434,7 +435,7 @@ function PairsEditor({ field, value, onChange }) {
 
             <div className={styles.pairTools}>
               <button type="button" onClick={() => move(index, -1)} disabled={index === 0} title="Move up">
-                ↑
+                <LineIcon name="arrow-up" size={16} strokeWidth={2} />
               </button>
               <button
                 type="button"
@@ -442,7 +443,7 @@ function PairsEditor({ field, value, onChange }) {
                 disabled={index === items.length - 1}
                 title="Move down"
               >
-                ↓
+                <LineIcon name="arrow-down" size={16} strokeWidth={2} />
               </button>
               <button
                 type="button"
@@ -450,7 +451,7 @@ function PairsEditor({ field, value, onChange }) {
                 onClick={() => remove(index)}
                 title="Remove"
               >
-                ✕
+                <LineIcon name="close" size={16} strokeWidth={2} />
               </button>
             </div>
           </li>

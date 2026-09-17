@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import * as authController from '../controllers/admin/auth.controller.js';
+import { createAuthController, changePassword } from '../controllers/auth.controller.js';
 import * as admin from '../controllers/admin/admin.controller.js';
 import { createCrudController } from '../controllers/admin/crud.controller.js';
 
@@ -12,6 +12,7 @@ import {
   achievementService,
 } from '../services/content.service.js';
 import {
+  parentService,
   studentService,
   homeworkService,
   resultService,
@@ -22,6 +23,7 @@ import {
 } from '../services/internalRecords.service.js';
 
 import { authenticate } from '../middlewares/auth.middleware.js';
+import { TOKEN_KIND } from '../utils/jwt.js';
 import { requireRole } from '../middlewares/role.middleware.js';
 import { validate } from '../middlewares/validate.middleware.js';
 import { loginLimiter } from '../middlewares/rateLimit.middleware.js';
@@ -43,16 +45,12 @@ const id = validate(idParamSchema, 'params');
 /* ---------------------------------------------------------------
    Auth — the only routes in this file that are reachable signed out.
    --------------------------------------------------------------- */
-router.post('/auth/login', loginLimiter, validate(loginSchema), authController.login);
-router.post('/auth/refresh', authController.refresh);
-router.post('/auth/logout', authController.logout);
-router.get('/auth/me', authenticate, authController.me);
-router.patch(
-  '/auth/password',
-  authenticate,
-  validate(changePasswordSchema),
-  authController.changePassword
-);
+const auth = createAuthController({ kind: TOKEN_KIND.USER, portal: 'admin', cookie: 'akm_refresh' });
+router.post('/auth/login', loginLimiter, validate(loginSchema), auth.login);
+router.post('/auth/refresh', auth.refresh);
+router.post('/auth/logout', auth.logout);
+router.get('/auth/me', authenticate, auth.me);
+router.patch('/auth/password', authenticate, validate(changePasswordSchema), changePassword);
 
 /* ---------------------------------------------------------------
    Everything below requires a signed-in user.
@@ -136,6 +134,7 @@ for (const [path, service, label, createSchema, updateSchema] of resources) {
 
 // ---------- internal school-management records ----------
 const internalResources = [
+  ['parents', parentService, 'Parent account', schema.createParentSchema, schema.updateParentSchema],
   ['students', studentService, 'Student', schema.createStudentSchema, schema.updateStudentSchema],
   ['homework', homeworkService, 'Homework', schema.createHomeworkSchema, schema.updateHomeworkSchema],
   ['results', resultService, 'Result', schema.createResultSchema, schema.updateResultSchema],
@@ -154,9 +153,17 @@ for (const [path, service, label, createSchema, updateSchema] of internalResourc
   router.delete(`/${path}/:id`, id, c.remove);
 }
 
+// The applicant's CV — streamed here rather than served statically.
+router.get('/job-applications/:id/resume', id, admin.downloadResume);
+
+// The salary-payment step: Due → Paid with a payment date.
+router.patch('/faculty-salary/:id/pay', id, validate(schema.paySalarySchema), admin.paySalary);
+
 // ---------- settings ----------
 router.get('/settings', admin.getSettings);
 router.put('/settings', validate(schema.updateSettingsSchema), admin.updateSettings);
+router.get('/class-sections', admin.listClassSections);
+router.get('/policy-tabs', admin.listPolicyTabs);
 
 // ---------- uploads ----------
 router.post('/uploads/:folder', uploadImageToParamFolder('file'), admin.uploadFile);

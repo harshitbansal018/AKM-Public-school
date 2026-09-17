@@ -16,6 +16,7 @@ import ConfirmDialog from '@/components/admin/ConfirmDialog/ConfirmDialog';
 import StatusPill from '@/components/admin/StatusPill/StatusPill';
 import Modal from '@/components/ui/Modal/Modal';
 import { RowActions, RowButton } from '@/components/admin/RowActions/RowActions';
+import LineIcon from '@/components/ui/LineIcon/LineIcon';
 import styles from './gallery.module.css';
 
 const FIELDS = [
@@ -67,7 +68,6 @@ export default function GalleryAdminPage() {
         rows={items}
         loading={loading}
         error={error}
-        emptyIcon="🖼️"
         emptyTitle="No albums yet"
         emptyDescription="Create an album such as “Sports Day”, then upload photos into it."
         columns={[
@@ -336,7 +336,7 @@ function PhotoManager({ albumId, albumTitle, onClose }) {
                 disabled={removing === image.id}
                 aria-label="Delete photo"
               >
-                {removing === image.id ? '…' : '✕'}
+                {removing === image.id ? '…' : <LineIcon name="close" size={16} strokeWidth={2} />}
               </button>
             </li>
           ))}

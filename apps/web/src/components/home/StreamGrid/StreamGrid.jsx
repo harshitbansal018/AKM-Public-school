@@ -1,5 +1,6 @@
 import Reveal from '@/components/ui/Reveal/Reveal';
 import Carousel from '@/components/ui/Carousel/Carousel';
+import { contentEmoji } from '@/constants/contentIcons';
 import styles from './StreamGrid.module.css';
 
 /** Cards in one desktop row. Past this, `slider` turns the section into one. */
@@ -17,7 +18,7 @@ export default function StreamGrid({ streams = [], slider = false }) {
   const cards = streams.map((stream, index) => (
     <Reveal key={stream.id} delay={Math.min(index, 4)} disabled={asSlider} className={styles.stream}>
       <h3>
-        <span aria-hidden="true">{stream.emoji}</span> {stream.title}
+        <span aria-hidden="true">{contentEmoji(stream.icon, 'book')}</span> {stream.title}
       </h3>
       <p>{stream.description}</p>
       <ul>

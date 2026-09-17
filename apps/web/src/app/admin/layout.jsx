@@ -1,5 +1,6 @@
 import { AuthProvider } from '@/context/AuthContext';
 import AdminShell from '@/components/admin/AdminShell/AdminShell';
+import { adminNav } from '@/constants/adminNav';
 
 export const metadata = {
   title: 'Admin — AKM Public Sr. Sec. School',
@@ -9,8 +10,14 @@ export const metadata = {
 /** Admin panel layout. No public chrome — the sidebar shell replaces it. */
 export default function AdminLayout({ children }) {
   return (
-    <AuthProvider>
-      <AdminShell>{children}</AdminShell>
+    <AuthProvider portal="admin">
+      <AdminShell
+        nav={adminNav}
+        brand={{ name: 'AKM Admin', tagline: 'Content Manager' }}
+        title="Content Manager"
+      >
+        {children}
+      </AdminShell>
     </AuthProvider>
   );
 }

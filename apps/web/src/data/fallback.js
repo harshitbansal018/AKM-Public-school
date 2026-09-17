@@ -69,7 +69,7 @@ export const academicStages = [
     title: 'Pre-Primary',
     classRange: 'Nursery – UKG',
     description: 'Language, numbers, creativity and social skills through play-based activities.',
-    emoji: '🧸',
+    icon: 'blocks',
     accentColor: '#e3a81c',
   },
   {
@@ -77,7 +77,7 @@ export const academicStages = [
     title: 'Primary',
     classRange: 'Classes 1 – 5',
     description: 'Strong foundations in languages, maths, EVS and general knowledge.',
-    emoji: '📖',
+    icon: 'book',
     accentColor: '#d0342c',
   },
   {
@@ -85,7 +85,7 @@ export const academicStages = [
     title: 'Middle School',
     classRange: 'Classes 6 – 8',
     description: 'Concept-based learning, projects, practical work and independent study.',
-    emoji: '🔬',
+    icon: 'microscope',
     accentColor: '#12307f',
   },
   {
@@ -93,7 +93,7 @@ export const academicStages = [
     title: 'Secondary',
     classRange: 'Classes 9 – 10',
     description: 'Full HPBOSE curriculum with focused board exam preparation.',
-    emoji: '📝',
+    icon: 'pencil',
     accentColor: '#4a3324',
   },
   {
@@ -101,7 +101,7 @@ export const academicStages = [
     title: 'Senior Secondary',
     classRange: 'Classes 11 – 12',
     description: 'Science (Medical & Non-Medical) and Arts streams as per HPBOSE.',
-    emoji: '🎓',
+    icon: 'graduation',
     accentColor: '#1466bc',
   },
 ];
@@ -137,7 +137,7 @@ export const streams = [
     id: 1,
     slug: 'science-medical',
     title: 'Science — Medical',
-    emoji: '🩺',
+    icon: 'medical',
     description: 'For students aiming at medical and life-science careers.',
     subjects: ['Physics, Chemistry, Biology', 'Science laboratory practicals', 'HPBOSE prescribed subjects'],
   },
@@ -145,7 +145,7 @@ export const streams = [
     id: 2,
     slug: 'science-non-medical',
     title: 'Science — Non-Medical',
-    emoji: '⚙️',
+    icon: 'gear',
     description: 'For students aiming at engineering and technical fields.',
     subjects: ['Physics, Chemistry, Mathematics', 'Practical & analytical learning', 'HPBOSE prescribed subjects'],
   },
@@ -153,7 +153,7 @@ export const streams = [
     id: 3,
     slug: 'arts',
     title: 'Arts',
-    emoji: '🎨',
+    icon: 'art',
     description: 'For students interested in humanities and social sciences.',
     subjects: ['Humanities subject group', 'Communication & language skills', 'HPBOSE prescribed subjects'],
   },
@@ -162,25 +162,25 @@ export const streams = [
 export const facilities = [
   {
     id: 1,
-    icon: '💻',
+    icon: 'laptop',
     title: 'Computer & IT Lab',
     description: 'Digital skills and computer-based learning for every level.',
   },
   {
     id: 2,
-    icon: '🧪',
+    icon: 'flask',
     title: 'Science Laboratories',
     description: 'Hands-on practicals that take concepts beyond textbooks.',
   },
   {
     id: 3,
-    icon: '🏸',
+    icon: 'sports',
     title: 'Indoor Playground',
     description: 'Recreational and physical activities inside the campus.',
   },
   {
     id: 4,
-    icon: '🏫',
+    icon: 'school',
     title: 'Classrooms',
     description: 'Disciplined, engaging classrooms with individual attention.',
   },
@@ -189,7 +189,7 @@ export const facilities = [
 export const achievements = [
   {
     id: 1,
-    medal: '🥇',
+    medal: 'medal-gold',
     studentName: 'Anjali Thakur',
     classLabel: 'Class 12',
     score: '94.2%',
@@ -199,7 +199,7 @@ export const achievements = [
   },
   {
     id: 2,
-    medal: '🥈',
+    medal: 'medal-silver',
     studentName: 'Rohit Verma',
     classLabel: 'Class 10',
     score: '92.8%',
@@ -209,7 +209,7 @@ export const achievements = [
   },
   {
     id: 3,
-    medal: '🏆',
+    medal: 'trophy',
     studentName: 'District Level Winners',
     classLabel: null,
     score: '12+',

@@ -35,9 +35,8 @@ const FIELDS = [
   {
     name: 'body',
     label: 'Full notice',
-    type: 'textarea',
-    rows: 8,
-    help: 'Shown on the notice’s own page. Blank lines separate paragraphs.',
+    type: 'richtext',
+    help: 'Shown on the notice’s own page. Use the toolbar for headings, bullet points, links and tables.',
   },
   { name: 'isPinned', label: 'Pin to the top', type: 'checkbox' },
   { name: 'isPublished', label: 'Publish on the website', type: 'checkbox', default: true },
@@ -104,7 +103,6 @@ export default function NoticesAdminPage() {
         rows={items}
         loading={loading}
         error={error}
-        emptyIcon="📌"
         emptyTitle="No notices yet"
         emptyDescription="Add the first notice and it appears on the homepage board straight away."
         columns={[

@@ -64,7 +64,6 @@ export default async function NoticesPage({ searchParams }) {
 
           {items.length === 0 ? (
             <EmptyState
-              icon="📭"
               title={text(settings, 'notices_empty_title', 'No notices in this category')}
               description={text(settings, 'notices_empty_description')}
             />

@@ -29,7 +29,16 @@ export const achievementRepository = createRepository('achievement', {
 });
 
 /** Internal management tables — independent so they remain queryable and extensible. */
-export const studentRepository = createRepository('student', { orderBy: [{ id: 'desc' }], publishedField: null });
+export const parentRepository = createRepository('parent', {
+  orderBy: [{ name: 'asc' }],
+  publishedField: null,
+  include: { _count: { select: { children: true } } },
+});
+export const studentRepository = createRepository('student', {
+  orderBy: [{ id: 'desc' }],
+  publishedField: null,
+  include: { parent: { select: { id: true, name: true, email: true } } },
+});
 export const homeworkRepository = createRepository('homework', { orderBy: [{ dueDate: 'desc' }, { id: 'desc' }] });
 export const resultRepository = createRepository('result', { orderBy: [{ resultDate: 'desc' }, { id: 'desc' }] });
 export const feeRecordRepository = createRepository('feeRecord', { orderBy: [{ dueDate: 'desc' }, { id: 'desc' }], publishedField: null });

@@ -53,10 +53,12 @@ export class ApiClientError extends Error {
 export async function apiFetch(path, options = {}) {
   const { tags, revalidate = 60, headers, ...rest } = options;
 
+  // A FormData body sets its own multipart boundary; forcing JSON would break it.
+  const isFormData = typeof FormData !== 'undefined' && rest.body instanceof FormData;
   const res = await fetch(`${baseUrl()}${path}`, {
     ...rest,
     headers: {
-      'Content-Type': 'application/json',
+      ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
       ...headers,
     },
     next: { revalidate, ...(tags ? { tags } : {}) },
@@ -80,11 +82,11 @@ export async function apiFetch(path, options = {}) {
   return body?.data ?? body;
 }
 
-/** POST helper for public form submissions. */
+/** POST helper for public form submissions. Pass a FormData to send files. */
 export async function apiPost(path, payload) {
   return apiFetch(path, {
     method: 'POST',
-    body: JSON.stringify(payload),
+    body: payload instanceof FormData ? payload : JSON.stringify(payload),
     cache: 'no-store',
     revalidate: 0,
   });

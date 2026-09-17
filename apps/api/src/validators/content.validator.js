@@ -4,6 +4,7 @@ import {
   DOWNLOAD_CATEGORIES,
   ACHIEVEMENT_TYPES,
   SETTING_GROUP_PATTERN,
+  JOB_APPLICATION_STATUSES,
 } from '../config/constants.js';
 import {
   optionalText,
@@ -13,6 +14,10 @@ import {
   withDefault,
   multipartBoolean,
 } from './common.validator.js';
+
+/** Icons are stored as a LineIcon name, e.g. 'laptop' — never a raw character. */
+const iconName = (fallback) =>
+  withDefault(z.string().trim().regex(/^[a-z-]{2,40}$/, 'Choose an icon from the list'), fallback);
 
 // ---------- notices ----------
 
@@ -70,7 +75,7 @@ export const createAchievementSchema = z.object({
   classLabel: optionalText(50),
   score: optionalText(30),
   description: optionalText(1000),
-  medal: defaultedText('🥇'),
+  medal: iconName('medal-gold'),
   year: z.coerce.number().int().min(1950).max(2100).optional().nullable(),
   type: defaultedEnum(ACHIEVEMENT_TYPES, 'academic'),
   isFeatured: z.boolean().default(true),
@@ -80,6 +85,21 @@ export const createAchievementSchema = z.object({
 export const updateAchievementSchema = createAchievementSchema.partial();
 
 // ---------- faculty ----------
+
+const password = z
+  .string()
+  .min(8, 'Use at least 8 characters')
+  .regex(/[a-zA-Z]/, 'Include at least one letter')
+  .regex(/[0-9]/, 'Include at least one number');
+
+/**
+ * A blank password box means "keep the current one" and arrives as null or '',
+ * so it is stripped rather than validated.
+ */
+const optionalPassword = z.preprocess(
+  (value) => (value === null || value === '' ? undefined : value),
+  password.optional()
+);
 
 export const createFacultySchema = z.object({
   name: z.string().trim().min(2, 'Enter a name').max(150),
@@ -91,6 +111,12 @@ export const createFacultySchema = z.object({
   photo: optionalText(300),
   isPrincipal: z.boolean().default(false),
   isDirector: z.boolean().default(false),
+  // Teacher-portal sign-in. The service checks that access is only switched on
+  // for a member who has both an email and a password.
+  accountEmail: z.string().trim().toLowerCase().email('Enter a valid email').optional().nullable(),
+  password: optionalPassword,
+  teacherAccess: z.boolean().default(false),
+  assignedClasses: z.array(z.string().trim().min(1).max(80)).max(30).default([]),
   isPublished: z.boolean().default(true),
   sortOrder: sortOrder.default(0),
 });
@@ -102,7 +128,7 @@ export const updateFacultySchema = createFacultySchema.partial();
 export const createFacilitySchema = z.object({
   title: z.string().trim().min(2, 'Enter a title').max(150),
   description: z.string().trim().min(2, 'Enter a description').max(1000),
-  icon: defaultedText('🏫'),
+  icon: iconName('school'),
   image: optionalText(300),
   isPublished: z.boolean().default(true),
   sortOrder: sortOrder.default(0),
@@ -121,7 +147,7 @@ export const createStreamSchema = z.object({
     .max(150),
   description: z.string().trim().min(2, 'Enter a description').max(1000),
   subjects: z.array(z.string().trim().min(1).max(200)).min(1, 'List at least one subject'),
-  emoji: defaultedText('📚'),
+  icon: iconName('book'),
   isPublished: z.boolean().default(true),
   sortOrder: sortOrder.default(0),
 });
@@ -134,7 +160,7 @@ export const createStageSchema = z.object({
   title: z.string().trim().min(2, 'Enter a title').max(150),
   classRange: z.string().trim().min(2, 'Enter the class range').max(100),
   description: z.string().trim().min(2, 'Enter a description').max(1000),
-  emoji: defaultedText('📘'),
+  icon: iconName('book'),
   accentColor: withDefault(
     z.string().trim().regex(/^#[0-9a-fA-F]{6}$/, 'Use a hex colour like #e3a81c'),
     '#e3a81c'
@@ -184,6 +210,22 @@ export const updateSettingsSchema = z.object({
 
 // ---------- internal school management ----------
 
+/** Parent-portal account. Children are linked from the student's record. */
+export const createParentSchema = z.object({
+  name: z.string().trim().min(2, 'Enter a name').max(150),
+  email: z.string().trim().toLowerCase().email('Enter a valid email'),
+  phone: optionalText(30),
+  password,
+  isActive: z.boolean().default(true),
+});
+export const updateParentSchema = createParentSchema.partial().extend({ password: optionalPassword });
+
+/** Blank select → null, so "no parent linked" round-trips cleanly. */
+const optionalId = z.preprocess(
+  (value) => (value === '' || value === null || value === undefined ? null : value),
+  z.coerce.number().int().positive().nullable()
+);
+
 export const createStudentSchema = z.object({
   name: z.string().trim().min(2).max(150),
   classGroup: z.string().trim().min(1).max(80),
@@ -191,6 +233,7 @@ export const createStudentSchema = z.object({
   guardianName: z.string().trim().min(2).max(150),
   phone: optionalText(30),
   address: optionalText(2000),
+  parentId: optionalId.optional(),
 });
 export const updateStudentSchema = createStudentSchema.partial();
 
@@ -204,56 +247,105 @@ export const createHomeworkSchema = z.object({
 });
 export const updateHomeworkSchema = createHomeworkSchema.partial();
 
-export const createResultSchema = z.object({
-  studentName: z.string().trim().min(2).max(150),
-  classGroup: z.string().trim().min(1).max(80),
-  exam: z.string().trim().min(2).max(150),
-  score: z.string().trim().min(1).max(100),
-  resultDate: z.coerce.date().optional().nullable(),
-  remarks: optionalText(2000),
-  isPublished: z.boolean().default(false),
-});
-export const updateResultSchema = createResultSchema.partial();
+/**
+ * Results and fees are filed against a registered student (`studentId`); the
+ * service copies the student's name and class onto the row. Name + class are
+ * still accepted on their own for records of students not in the register.
+ */
+const studentLink = {
+  studentId: optionalId.optional(),
+  studentName: z.string().trim().min(2).max(150).optional(),
+  classGroup: z.string().trim().min(1).max(80).optional(),
+};
 
-export const createFeeRecordSchema = z.object({
-  studentName: z.string().trim().min(2).max(150),
-  classGroup: z.string().trim().min(1).max(80),
-  amount: z.coerce.number().positive().max(10000000),
-  dueDate: z.coerce.date().optional().nullable(),
-  status: defaultedEnum(['DUE', 'PAID', 'PARTIAL'], 'DUE'),
-  notes: optionalText(2000),
-});
-export const updateFeeRecordSchema = createFeeRecordSchema.partial();
+const requireStudent = (data, ctx) => {
+  if (!data.studentId && !(data.studentName && data.classGroup)) {
+    ctx.addIssue({ code: 'custom', path: ['studentId'], message: 'Choose a student' });
+  }
+};
 
-export const createFacultySalarySchema = z.object({
-  facultyName: z.string().trim().min(2).max(150),
-  month: z.string().trim().min(3).max(40),
-  amount: z.coerce.number().positive().max(10000000),
+export const createResultSchema = z
+  .object({
+    ...studentLink,
+    exam: z.string().trim().min(2).max(150),
+    score: z.string().trim().min(1).max(100),
+    resultDate: z.coerce.date().optional().nullable(),
+    remarks: optionalText(2000),
+    isPublished: z.boolean().default(false),
+  })
+  .superRefine(requireStudent);
+export const updateResultSchema = createResultSchema.innerType().partial();
+
+export const createFeeRecordSchema = z
+  .object({
+    ...studentLink,
+    amount: z.coerce.number().positive().max(10000000),
+    paidAmount: withDefault(z.coerce.number().min(0).max(10000000), 0),
+    dueDate: z.coerce.date().optional().nullable(),
+    status: defaultedEnum(['DUE', 'PARTIAL', 'PAID'], 'DUE'),
+    notes: optionalText(2000),
+  })
+  .superRefine(requireStudent);
+export const updateFeeRecordSchema = createFeeRecordSchema.innerType().partial();
+
+/** A salary month is filed against a faculty record; the name is copied from it. */
+export const createFacultySalarySchema = z
+  .object({
+    facultyId: optionalId.optional(),
+    facultyName: z.string().trim().min(2).max(150).optional(),
+    month: z.string().trim().min(3).max(40),
+    amount: z.coerce.number().positive().max(10000000),
+    paymentDate: z.coerce.date().optional().nullable(),
+    status: defaultedEnum(['DUE', 'PAID'], 'DUE'),
+    notes: optionalText(2000),
+  })
+  .superRefine((data, ctx) => {
+    if (!data.facultyId && !data.facultyName) {
+      ctx.addIssue({ code: 'custom', path: ['facultyId'], message: 'Choose a faculty member' });
+    }
+  });
+export const updateFacultySalarySchema = createFacultySalarySchema.innerType().partial();
+
+/** Marking a salary as paid: today unless a date is given. */
+export const paySalarySchema = z.object({
   paymentDate: z.coerce.date().optional().nullable(),
-  status: defaultedEnum(['DUE', 'PAID'], 'DUE'),
-  notes: optionalText(2000),
 });
-export const updateFacultySalarySchema = createFacultySalarySchema.partial();
 
-export const createJobApplicationSchema = z.object({
-  name: z.string().trim().min(2).max(150),
-  position: z.string().trim().min(2).max(150),
-  email: z.string().trim().email().optional().nullable(),
-  phone: optionalText(30),
-  status: defaultedEnum(['NEW', 'REVIEWING', 'SHORTLISTED', 'CLOSED'], 'NEW'),
+/**
+ * The public Careers form. It arrives as multipart (the CV travels with it),
+ * so every field is a string and a blank optional field is '' — optionalText
+ * turns that into null.
+ */
+export const createPublicJobApplicationSchema = z.object({
+  name: z.string().trim().min(2, 'Enter your full name').max(150),
+  phone: z
+    .string()
+    .trim()
+    .regex(/^[+d][ds-]{7,19}$/, 'Enter a valid phone number'),
+  email: z.string().trim().toLowerCase().email('Enter a valid email address'),
+  position: z.string().trim().min(2, 'Tell us the position you are applying for').max(150),
+  subject: optionalText(150),
+  qualification: z.string().trim().min(2, 'Enter your highest qualification').max(200),
+  experience: optionalText(100),
+  currentSchool: optionalText(200),
+  address: optionalText(500),
   notes: optionalText(5000),
 });
+
+/** The office can file an application by hand too, and moves it through the statuses. */
+export const createJobApplicationSchema = createPublicJobApplicationSchema
+  .extend({
+    email: z.string().trim().toLowerCase().email().optional().nullable(),
+    phone: optionalText(30),
+    qualification: optionalText(200),
+    status: defaultedEnum(JOB_APPLICATION_STATUSES, 'NEW'),
+    adminNote: optionalText(5000),
+  });
 export const updateJobApplicationSchema = createJobApplicationSchema.partial();
-export const createPublicJobApplicationSchema = createJobApplicationSchema.pick({
-  name: true,
-  position: true,
-  email: true,
-  phone: true,
-  notes: true,
-});
 
 export const createPolicySchema = z.object({
   title: z.string().trim().min(2).max(200),
+  category: z.string().trim().min(1, 'Choose a tab').max(80),
   effectiveDate: z.coerce.date().optional().nullable(),
   status: defaultedEnum(['DRAFT', 'ACTIVE', 'ARCHIVED'], 'DRAFT'),
   content: z.string().trim().min(2).max(50000),
@@ -265,27 +357,9 @@ export const updatePolicySchema = createPolicySchema.partial();
 export const createUserSchema = z.object({
   name: z.string().trim().min(2, 'Enter a name').max(120),
   email: z.string().trim().toLowerCase().email('Enter a valid email'),
-  password: z
-    .string()
-    .min(8, 'Use at least 8 characters')
-    .regex(/[a-zA-Z]/, 'Include at least one letter')
-    .regex(/[0-9]/, 'Include at least one number'),
+  password,
   role: defaultedEnum(['ADMIN', 'EDITOR'], 'EDITOR'),
   isActive: z.boolean().default(true),
 });
 
-/**
- * Editing a user leaves the password box blank to keep the current one, which
- * arrives as null — so it is stripped rather than validated.
- */
-export const updateUserSchema = createUserSchema.partial().extend({
-  password: z.preprocess(
-    (value) => (value === null || value === '' ? undefined : value),
-    z
-      .string()
-      .min(8, 'Use at least 8 characters')
-      .regex(/[a-zA-Z]/, 'Include at least one letter')
-      .regex(/[0-9]/, 'Include at least one number')
-      .optional()
-  ),
-});
+export const updateUserSchema = createUserSchema.partial().extend({ password: optionalPassword });

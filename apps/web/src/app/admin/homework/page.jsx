@@ -1,5 +1,21 @@
 'use client';
+
 import InternalRecordManager from '@/components/admin/InternalRecordManager/InternalRecordManager';
+import { useClassSections } from '@/hooks/useClassSections';
+import { homeworkColumns, homeworkFields } from '@/constants/academicRecords';
+
+/** Every class's homework, including what teachers set from their portal. */
 export default function HomeworkPage() {
-  return <InternalRecordManager endpoint="/admin/homework" title="Homework" singular="homework item" description="Create and track homework assigned to classes." columns={[{ key: 'title', label: 'Assignment' }, { key: 'classGroup', label: 'Class' }, { key: 'subject', label: 'Subject' }, { key: 'dueDate', label: 'Due date' }]} fields={[{ name: 'title', label: 'Assignment title', type: 'text', required: true }, { name: 'classGroup', label: 'Class / section', type: 'text', required: true, half: true }, { name: 'subject', label: 'Subject', type: 'text', required: true, half: true }, { name: 'dueDate', label: 'Due date', type: 'date', half: true }, { name: 'description', label: 'Instructions', type: 'textarea', rows: 5 }]} />;
+  const classOptions = useClassSections();
+
+  return (
+    <InternalRecordManager
+      endpoint="/admin/homework"
+      title="Homework"
+      singular="homework item"
+      description="Homework set by teachers and the office. Published items appear on the website's Homework page."
+      columns={homeworkColumns}
+      fields={homeworkFields({ classOptions })}
+    />
+  );
 }

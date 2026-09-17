@@ -15,10 +15,13 @@ import {
 } from '../repositories/index.js';
 import {
   serializeFaculty,
+  serializeFacultyAdmin,
   serializeAchievement,
   serializeFacility,
 } from '../serializers/index.js';
 import { ApiError } from '../utils/ApiError.js';
+import { hashPassword } from '../utils/password.js';
+import { resolveClassGroups } from './setting.service.js';
 
 function createContentService(repository, label, serialize = (row) => row) {
   return {
@@ -70,8 +73,28 @@ export const streamService = createContentService(streamRepository, 'Stream');
 
 export const academicStageService = createContentService(academicStageRepository, 'Stage');
 
+/**
+ * Faculty doubles as the teacher-portal account, so the admin view carries the
+ * sign-in fields while the public list never does.
+ */
 export const facultyService = {
-  ...createContentService(facultyRepository, 'Faculty member', serializeFaculty),
+  ...createContentService(facultyRepository, 'Faculty member', serializeFacultyAdmin),
+
+  async listPublic() {
+    return (await facultyRepository.findPublished()).map(serializeFaculty);
+  },
+
+  async create(input) {
+    const data = await facultyAccessData(input, null);
+    return serializeFacultyAdmin(await facultyRepository.create(data));
+  },
+
+  async update(id, input) {
+    const row = await facultyRepository.findById(id);
+    if (!row) throw ApiError.notFound('Faculty member not found');
+    const data = await facultyAccessData(input, row);
+    return serializeFacultyAdmin(await facultyRepository.update(id, data));
+  },
 
   /** The principal's block on the homepage and about page. */
   async getPrincipal() {
@@ -92,6 +115,29 @@ export const facultyService = {
     };
   },
 };
+
+/**
+ * Turns the validated form payload into a Faculty row: hashes a new password,
+ * stores the class list as JSON, and refuses to switch on portal access for a
+ * member who could not actually sign in (no email or no password yet).
+ */
+async function facultyAccessData({ password, ...data }, existing) {
+  const next = { ...data };
+  if (Array.isArray(next.assignedClasses)) {
+    next.assignedClasses = JSON.stringify(await resolveClassGroups(next.assignedClasses));
+  }
+  if (password) next.passwordHash = await hashPassword(password);
+
+  const teacherAccess = next.teacherAccess ?? existing?.teacherAccess ?? false;
+  if (teacherAccess) {
+    const email = 'accountEmail' in next ? next.accountEmail : existing?.accountEmail;
+    if (!email) throw ApiError.badRequest('Enter a login email to allow teacher portal access');
+    if (!next.passwordHash && !existing?.passwordHash) {
+      throw ApiError.badRequest('Set a login password to allow teacher portal access');
+    }
+  }
+  return next;
+}
 
 export const achievementService = {
   ...createContentService(achievementRepository, 'Achievement', serializeAchievement),

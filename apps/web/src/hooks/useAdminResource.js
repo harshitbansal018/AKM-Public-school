@@ -1,7 +1,7 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
-import { adminApi } from '@/lib/adminApi';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { portalApi } from '@/lib/adminApi';
 import { useToast } from '@/hooks/useToast';
 
 /**
@@ -14,6 +14,8 @@ import { useToast } from '@/hooks/useToast';
  * @param {string} endpoint  e.g. '/admin/facilities'
  */
 export function useAdminResource(endpoint, { autoLoad = true } = {}) {
+  // '/teacher/homework' → the teacher portal's client, '/admin/notices' → admin's.
+  const api = useMemo(() => portalApi(endpoint.split('/')[1]), [endpoint]);
   const toast = useToast();
   const [items, setItems] = useState([]);
   const [meta, setMeta] = useState(null);
@@ -26,7 +28,7 @@ export function useAdminResource(endpoint, { autoLoad = true } = {}) {
       setLoading(true);
       setError('');
       try {
-        const data = await adminApi.get(`${endpoint}${query}`);
+        const data = await api.get(`${endpoint}${query}`);
         // Endpoints return either a bare array or { items, meta }.
         if (Array.isArray(data)) {
           setItems(data);
@@ -42,7 +44,7 @@ export function useAdminResource(endpoint, { autoLoad = true } = {}) {
         setLoading(false);
       }
     },
-    [endpoint]
+    [endpoint, api]
   );
 
   useEffect(() => {
@@ -69,24 +71,24 @@ export function useAdminResource(endpoint, { autoLoad = true } = {}) {
   );
 
   const create = useCallback(
-    (payload, query) => run(() => adminApi.post(endpoint, payload), 'Created', query),
-    [endpoint, run]
+    (payload, query) => run(() => api.post(endpoint, payload), 'Created', query),
+    [endpoint, api, run]
   );
 
   const update = useCallback(
-    (id, payload, query) => run(() => adminApi.put(`${endpoint}/${id}`, payload), 'Saved', query),
-    [endpoint, run]
+    (id, payload, query) => run(() => api.put(`${endpoint}/${id}`, payload), 'Saved', query),
+    [endpoint, api, run]
   );
 
   const patch = useCallback(
     (path, payload, message, query) =>
-      run(() => adminApi.patch(`${endpoint}${path}`, payload), message, query),
-    [endpoint, run]
+      run(() => api.patch(`${endpoint}${path}`, payload), message, query),
+    [endpoint, api, run]
   );
 
   const remove = useCallback(
-    (id, query) => run(() => adminApi.delete(`${endpoint}/${id}`), 'Deleted', query),
-    [endpoint, run]
+    (id, query) => run(() => api.delete(`${endpoint}/${id}`), 'Deleted', query),
+    [endpoint, api, run]
   );
 
   return { items, meta, loading, saving, error, load, create, update, patch, remove, setItems };

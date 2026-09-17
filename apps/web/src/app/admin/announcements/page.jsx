@@ -15,7 +15,6 @@ export default function AnnouncementsAdminPage() {
       title="Announcements"
       singular="announcement"
       description="The scrolling red strip at the top of every page."
-      emptyIcon="📢"
       columns={[
         { key: 'text', label: 'Announcement' },
         {
@@ -44,8 +43,8 @@ export default function AnnouncementsAdminPage() {
           type: 'textarea',
           required: true,
           rows: 2,
-          placeholder: '📢 Admissions open for Session 2026–27',
-          help: 'Emoji are welcome — they show in the ticker.',
+          placeholder: 'Admissions open for Session 2026–27',
+          help: 'Scrolls in the red ticker under the top bar. You may start it with an emoji if you like.',
         },
         { name: 'startsAt', label: 'Start date', type: 'date', half: true, help: 'Optional.' },
         { name: 'endsAt', label: 'End date', type: 'date', half: true, help: 'Optional — it hides itself afterwards.' },

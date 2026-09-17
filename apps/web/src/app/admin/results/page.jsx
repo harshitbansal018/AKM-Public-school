@@ -1,5 +1,31 @@
 'use client';
+
+import { useEffect, useState } from 'react';
 import InternalRecordManager from '@/components/admin/InternalRecordManager/InternalRecordManager';
+import { useClassSections } from '@/hooks/useClassSections';
+import { adminApi } from '@/lib/adminApi';
+import { resultColumns, resultFields, studentOptionsFrom } from '@/constants/academicRecords';
+
+/** Every class's results, including what teachers enter from their portal. */
 export default function ResultsPage() {
-  return <InternalRecordManager endpoint="/admin/results" title="Results" singular="result" description="Record examination results for internal management." columns={[{ key: 'studentName', label: 'Student' }, { key: 'classGroup', label: 'Class' }, { key: 'exam', label: 'Examination' }, { key: 'score', label: 'Score' }, { key: 'resultDate', label: 'Date' }]} fields={[{ name: 'studentName', label: 'Student name', type: 'text', required: true }, { name: 'classGroup', label: 'Class / section', type: 'text', required: true, half: true }, { name: 'exam', label: 'Examination', type: 'text', required: true, half: true }, { name: 'score', label: 'Score / grade', type: 'text', required: true, half: true }, { name: 'resultDate', label: 'Result date', type: 'date', half: true }, { name: 'remarks', label: 'Remarks', type: 'textarea', rows: 3 }]} />;
+  const classOptions = useClassSections();
+  const [students, setStudents] = useState([]);
+
+  useEffect(() => {
+    adminApi
+      .get('/admin/students')
+      .then(setStudents)
+      .catch(() => setStudents([]));
+  }, []);
+
+  return (
+    <InternalRecordManager
+      endpoint="/admin/results"
+      title="Results"
+      singular="result"
+      description="Test and examination results, student by student. A published result is visible only to that student's linked parent on the parent portal."
+      columns={resultColumns}
+      fields={resultFields({ classOptions, studentOptions: studentOptionsFrom(students) })}
+    />
+  );
 }

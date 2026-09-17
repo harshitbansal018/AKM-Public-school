@@ -134,7 +134,6 @@ export default async function FacultyPage() {
 
           {others.length === 0 ? (
             <EmptyState
-              icon="👩‍🏫"
               title={text(settings, 'faculty_empty_title', 'Staff details coming soon')}
               description={text(settings, 'faculty_empty_description')}
               action={<Button href="/contact">Contact the school</Button>}

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { cn } from '@/lib/cn';
+import LineIcon from '@/components/ui/LineIcon/LineIcon';
 import styles from './Modal.module.css';
 
 /**
@@ -50,7 +51,7 @@ export default function Modal({ open, onClose, title, children, className }) {
         tabIndex={-1}
       >
         <button type="button" className={styles.close} onClick={onClose} aria-label="Close">
-          ✕
+          <LineIcon name="close" size={20} strokeWidth={2} />
         </button>
         {title ? <h3 className={styles.title}>{title}</h3> : null}
         {children}

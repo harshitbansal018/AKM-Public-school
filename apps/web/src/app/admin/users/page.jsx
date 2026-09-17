@@ -17,8 +17,7 @@ export default function UsersAdminPage() {
       endpoint="/admin/users"
       title="Users"
       singular="user"
-      description="Who can sign in to this panel. Editors can manage content; administrators can also manage accounts."
-      emptyIcon="👤"
+      description="Who can sign in to this panel. Editors can manage content; administrators can also manage accounts. Teacher sign-ins are set up under Teachers / Faculty."
       // You cannot delete yourself, and the API refuses to remove the last admin.
       canDelete={(row) => row.id !== user?.id}
       columns={[

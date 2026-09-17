@@ -2,6 +2,8 @@
 
 import ResourceManager from '@/components/admin/ResourceManager/ResourceManager';
 import StatusPill from '@/components/admin/StatusPill/StatusPill';
+import LineIcon from '@/components/ui/LineIcon/LineIcon';
+import { contentIcons } from '@/constants/contentIcons';
 
 export default function StagesAdminPage() {
   return (
@@ -10,9 +12,8 @@ export default function StagesAdminPage() {
       title="Academic Stages"
       singular="stage"
       description="Pre-Primary through Senior Secondary — the five cards on the Academics page."
-      emptyIcon="🎓"
       columns={[
-        { key: 'emoji', label: '', width: '54px', render: (r) => <span style={{ fontSize: '1.4rem' }}>{r.emoji}</span> },
+        { key: 'icon', label: '', width: '54px', render: (r) => <LineIcon name={r.icon} fallback="book" size={22} /> },
         { key: 'title', label: 'Stage' },
         { key: 'classRange', label: 'Classes', nowrap: true },
         {
@@ -44,7 +45,7 @@ export default function StagesAdminPage() {
         { name: 'title', label: 'Title', type: 'text', required: true, half: true, placeholder: 'Primary' },
         { name: 'classRange', label: 'Class range', type: 'text', required: true, half: true, placeholder: 'Classes 1 – 5' },
         { name: 'description', label: 'Description', type: 'textarea', required: true, rows: 3 },
-        { name: 'emoji', label: 'Icon', type: 'text', half: true, placeholder: '📖' },
+        { name: 'icon', label: 'Icon', type: 'select', half: true, options: contentIcons, placeholder: 'Choose an icon…' },
         { name: 'accentColor', label: 'Accent colour', type: 'color', half: true, help: 'The card top border.' },
         { name: 'sortOrder', label: 'Order', type: 'number', half: true },
         { name: 'isPublished', label: 'Show on the website', type: 'checkbox', default: true },

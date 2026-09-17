@@ -7,9 +7,10 @@ import { useAuth } from '@/context/AuthContext';
 import Input from '@/components/ui/Input/Input';
 import styles from './LoginForm.module.css';
 
+/** Sign-in form for whichever portal's AuthProvider it sits inside. */
 export default function LoginForm() {
   const router = useRouter();
-  const { login } = useAuth();
+  const { login, portal } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -27,7 +28,7 @@ export default function LoginForm() {
     setSubmitting(true);
     try {
       await login(email.trim(), password);
-      router.replace('/admin/dashboard');
+      router.replace(`/${portal}/dashboard`);
     } catch (err) {
       setError(err.message || 'Sign in failed. Check your email and password.');
     } finally {

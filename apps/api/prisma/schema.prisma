@@ -153,7 +153,7 @@ model Achievement {
   classLabel  String?
   score       String?
   description String?  @db.Text
-  medal       String   @default("🥇")
+  medal       String   @default("medal-gold") // a LineIcon name: medal-gold | medal-silver | medal-bronze | trophy
   year        Int?
   type        String   @default("academic") // academic | sports | cultural
   photo       String?
@@ -165,7 +165,9 @@ model Achievement {
   @@index([isFeatured, year])
 }
 
-/// Principal and teaching staff.
+/// Principal and teaching staff. A faculty row is also the teacher-portal
+/// account: `accountEmail` + `passwordHash` sign in, and `teacherAccess` gates
+/// the portal. Admin-panel staff are separate (`User`).
 model Faculty {
   id            Int      @id @default(autoincrement())
   name          String
@@ -177,10 +179,17 @@ model Faculty {
   isPrincipal   Boolean  @default(false)
   /// Managing Director — supplies the second message beside the principal's.
   isDirector    Boolean  @default(false)
+  accountEmail  String?  @unique
+  passwordHash  String?
+  teacherAccess Boolean  @default(false)
+  /// JSON array of class/section labels this teacher may manage, e.g. ["Class 5"].
+  assignedClasses String? @db.LongText
   isPublished   Boolean  @default(true)
   sortOrder     Int      @default(0)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
+  salaries FacultySalary[]
 
   @@index([isPublished, sortOrder])
 }
@@ -191,7 +200,7 @@ model AcademicStage {
   title       String
   classRange  String
   description String  @db.Text
-  emoji       String  @default("📘")
+  icon        String  @default("book") // a LineIcon name, chosen in the admin panel
   accentColor String  @default("#E3A81C")
   isPublished Boolean @default(true)
   sortOrder   Int     @default(0)
@@ -206,7 +215,7 @@ model Stream {
   slug        String  @unique
   description String  @db.Text
   subjects    Json
-  emoji       String  @default("📚")
+  icon        String  @default("book")
   isPublished Boolean @default(true)
   sortOrder   Int     @default(0)
 }
@@ -215,7 +224,7 @@ model Facility {
   id          Int     @id @default(autoincrement())
   title       String
   description String  @db.Text
-  icon        String  @default("🏫")
+  icon        String  @default("school")
   image       String?
   isPublished Boolean @default(true)
   sortOrder   Int     @default(0)
@@ -252,6 +261,22 @@ model MediaFile {
   createdAt    DateTime @default(now())
 }
 
+/// Parent-portal accounts. One login per family: a parent is linked to one or
+/// more students and can only ever read those students' records.
+model Parent {
+  id           Int       @id @default(autoincrement())
+  name         String
+  email        String    @unique
+  phone        String?
+  passwordHash String
+  isActive     Boolean   @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  children Student[]
+}
+
 model Student {
   id           Int      @id @default(autoincrement())
   name         String
@@ -260,10 +285,16 @@ model Student {
   guardianName String
   phone        String?
   address      String?  @db.Text
+  parentId     Int?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  parent  Parent?     @relation(fields: [parentId], references: [id], onDelete: SetNull)
+  results Result[]
+  fees    FeeRecord[]
+
   @@index([classGroup, name])
+  @@index([parentId])
 }
 
 model Homework {
@@ -280,8 +311,12 @@ model Homework {
   @@index([classGroup, dueDate])
 }
 
+/// `studentId` is the link the parent portal relies on; `studentName` and
+/// `classGroup` are copied from the student on save so the row still reads
+/// correctly if the student is later removed from the register.
 model Result {
   id          Int       @id @default(autoincrement())
+  studentId   Int?
   studentName String
   classGroup  String
   exam        String
@@ -292,59 +327,95 @@ model Result {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  student Student? @relation(fields: [studentId], references: [id], onDelete: SetNull)
+
   @@index([classGroup, exam])
+  @@index([studentId])
 }
 
 model FeeRecord {
   id          Int       @id @default(autoincrement())
+  studentId   Int?
   studentName String
   classGroup  String
   amount      Decimal   @db.Decimal(10, 2)
+  /// What has actually been received against `amount`; the difference is outstanding.
+  paidAmount  Decimal   @default(0) @db.Decimal(10, 2)
   dueDate     DateTime?
-  status      String    @default("DUE")
+  status      String    @default("DUE") // DUE | PARTIAL | PAID
   notes       String?   @db.Text
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  student Student? @relation(fields: [studentId], references: [id], onDelete: SetNull)
+
   @@index([classGroup, status])
+  @@index([studentId])
 }
 
+/// One row per teacher per salary month. `facultyId` is the real link (the
+/// teacher portal and per-teacher history follow it); `facultyName` is copied
+/// from the record on save so the row still reads if the person leaves.
 model FacultySalary {
   id          Int       @id @default(autoincrement())
+  facultyId   Int?
   facultyName String
   month       String
   amount      Decimal   @db.Decimal(10, 2)
   paymentDate DateTime?
-  status      String    @default("DUE")
+  status      String    @default("DUE") // DUE | PAID
   notes       String?   @db.Text
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  faculty Faculty? @relation(fields: [facultyId], references: [id], onDelete: SetNull)
+
   @@index([facultyName, month])
+  @@index([facultyId])
 }
 
+/// Teacher/staff job applications from the website's Careers page.
 model JobApplication {
-  id        Int      @id @default(autoincrement())
-  name      String
-  position  String
-  email     String?
-  phone     String?
-  status    String   @default("NEW")
-  notes     String?  @db.Text
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            Int      @id @default(autoincrement())
+  /// Shown to the applicant on submission, e.g. AKM-2026-0042.
+  reference     String?  @unique
+  name          String
+  position      String
+  subject       String?
+  qualification String?
+  experience    String?
+  currentSchool String?
+  email         String?
+  phone         String?
+  address       String?  @db.Text
+  /// Relative to the uploads dir; served only through the admin API.
+  resumePath    String?
+  resumeName    String?
+  status        String   @default("NEW") // NEW | UNDER_REVIEW | SHORTLISTED | INTERVIEW | SELECTED | REJECTED
+  /// What the applicant wrote on the form.
+  notes         String?  @db.Text
+  /// The office's own remarks (interview feedback etc.) — never shown to the applicant.
+  adminNote     String?  @db.Text
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   @@index([status, createdAt])
 }
 
+/// School policies, edited by the office and published without a code change.
+/// `category` is the tab on the website's Policies page (the office defines the
+/// tabs under Website content), so any number of tabs can exist.
 model Policy {
   id            Int       @id @default(autoincrement())
   title         String
+  category      String    @default("General")
   effectiveDate DateTime?
-  status        String    @default("DRAFT")
+  status        String    @default("DRAFT") // DRAFT | ACTIVE | ARCHIVED
+  /// Plain text with light markers: blank line = paragraph, "- " = bullet, "## " = sub-heading.
   content       String    @db.LongText
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
   @@index([status])
+  @@index([category, status])
 }

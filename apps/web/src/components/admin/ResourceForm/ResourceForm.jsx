@@ -1,12 +1,19 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 import Modal from '@/components/ui/Modal/Modal';
 import Input from '@/components/ui/Input/Input';
 import Select from '@/components/ui/Select/Select';
 import Textarea from '@/components/ui/Textarea/Textarea';
 import ImageUploader from '@/components/admin/ImageUploader/ImageUploader';
 import styles from './ResourceForm.module.css';
+
+// CKEditor needs the browser, so it is loaded only when a rich-text field is drawn.
+const RichTextEditor = dynamic(() => import('@/components/admin/RichTextEditor/RichTextEditor'), {
+  ssr: false,
+  loading: () => <p className={styles.help}>Loading editor…</p>,
+});
 
 /**
  * A form built from a field description, shown in a modal.
@@ -16,7 +23,12 @@ import styles from './ResourceForm.module.css';
  * hand-written form with its own state handling and its own bugs.
  *
  * Field: { name, label, type, options?, required?, placeholder?, help?, half? }
- * Types: text | textarea | number | select | checkbox | date | color | list
+ * Types: text | textarea | richtext | number | select | checkbox | checkboxes | date | color | list
+ *   checkboxes — pick several of `options`; the value is an array
+ *   richtext   — CKEditor; the value is HTML (sanitised again by the API on save)
+ *
+ * A select's `options` may be a function of the current values, for a list
+ * that depends on another field (students in the chosen class, say).
  */
 export default function ResourceForm({
   open,
@@ -56,8 +68,11 @@ export default function ResourceForm({
     for (const field of fields) {
       if (!field.required) continue;
       const value = values[field.name];
+      // Rich text that is only empty tags (<p></p>) counts as blank.
+      const asText =
+        field.type === 'richtext' ? String(value ?? '').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ') : value;
       const empty =
-        value === undefined || value === null || String(value).trim() === '' || (Array.isArray(value) && value.length === 0);
+        asText === undefined || asText === null || String(asText).trim() === '' || (Array.isArray(value) && value.length === 0);
       if (empty) found[field.name] = `${field.label} is required`;
     }
 
@@ -79,7 +94,7 @@ export default function ResourceForm({
         <div className={styles.grid}>
           {fields.map((field) => (
             <div key={field.name} className={field.half ? styles.half : styles.full}>
-              {renderField(field, values[field.name], setField, errors[field.name])}
+              {renderField(field, values, setField, errors[field.name])}
               {field.help ? <small className={styles.help}>{field.help}</small> : null}
             </div>
           ))}
@@ -98,7 +113,8 @@ export default function ResourceForm({
   );
 }
 
-function renderField(field, value, setField, error) {
+function renderField(field, values, setField, error) {
+  const value = values[field.name];
   const common = {
     id: field.name,
     label: field.label,
@@ -117,11 +133,21 @@ function renderField(field, value, setField, error) {
         />
       );
 
+    case 'richtext':
+      return (
+        <RichTextEditor
+          {...common}
+          value={value ?? ''}
+          required={field.required}
+          onChange={(html) => setField(field.name, html)}
+        />
+      );
+
     case 'select':
       return (
         <Select
           {...common}
-          options={field.options ?? []}
+          options={(typeof field.options === 'function' ? field.options(values) : field.options) ?? []}
           placeholder={field.placeholder ?? 'Choose…'}
           value={value ?? ''}
           onChange={(e) => setField(field.name, e.target.value)}
@@ -139,6 +165,38 @@ function renderField(field, value, setField, error) {
           <span>{field.label}</span>
         </label>
       );
+
+    case 'checkboxes': {
+      const selected = Array.isArray(value) ? value : [];
+      const toggle = (option, checked) =>
+        setField(
+          field.name,
+          checked ? [...selected, option] : selected.filter((item) => item !== option)
+        );
+      return (
+        <fieldset className={styles.checkboxGroup}>
+          <legend className={styles.checkboxLegend}>{field.label}</legend>
+          {(field.options ?? []).length === 0 ? (
+            <small className={styles.help}>Nothing to choose from yet.</small>
+          ) : null}
+          {(field.options ?? []).map((option) => (
+            <label key={option.value} className={styles.checkbox}>
+              <input
+                type="checkbox"
+                checked={selected.includes(option.value)}
+                onChange={(e) => toggle(option.value, e.target.checked)}
+              />
+              <span>{option.label}</span>
+            </label>
+          ))}
+          {error ? (
+            <span className={styles.fieldError} role="alert">
+              {error}
+            </span>
+          ) : null}
+        </fieldset>
+      );
+    }
 
     case 'list':
       return (
@@ -194,6 +252,7 @@ function renderField(field, value, setField, error) {
 /** API value -> form value */
 function normaliseIn(field, raw) {
   if (field.type === 'checkbox') return raw ?? field.default ?? false;
+  if (field.type === 'checkboxes') return Array.isArray(raw) ? raw : [];
   // The API hands back a full URL for images, but the database should store the
   // relative path — otherwise every stored row breaks when the domain changes.
   if (field.type === 'image') return stripUploadOrigin(raw);
@@ -213,6 +272,7 @@ function stripUploadOrigin(value) {
 /** Form value -> API value */
 function normaliseOut(field, value) {
   if (field.type === 'checkbox') return Boolean(value);
+  if (field.type === 'checkboxes') return Array.isArray(value) ? value : [];
   if (field.type === 'image') return stripUploadOrigin(value) || null;
   if (field.type === 'list') {
     return String(value ?? '')

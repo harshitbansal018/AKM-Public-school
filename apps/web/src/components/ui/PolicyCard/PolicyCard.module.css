@@ -1,0 +1,70 @@
+.card {
+  background: #fff;
+  border-radius: var(--radius-md);
+  padding: 26px 28px;
+  box-shadow: var(--shadow);
+  border-left: 6px solid var(--royal);
+}
+
+.head {
+  margin-bottom: 14px;
+}
+
+.head h3 {
+  font-size: 1.15rem;
+  margin-bottom: 4px;
+}
+
+.dates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+/* ---------- content ---------- */
+
+.body {
+  position: relative;
+  font-size: 0.93rem;
+}
+
+/* Collapsed cards fade out at the bottom so it is clear there is more. */
+.faded {
+  max-height: 180px;
+  overflow: hidden;
+}
+
+.faded::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 70px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #fff);
+}
+
+.toggle {
+  margin-top: 8px;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: var(--royal);
+  cursor: pointer;
+}
+
+.toggle:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 560px) {
+  .card {
+    padding: 20px 18px;
+  }
+}

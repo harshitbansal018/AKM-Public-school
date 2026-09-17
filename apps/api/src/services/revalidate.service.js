@@ -18,6 +18,10 @@ const TAG_MAP = [
   [/^\/streams/, ['streams', 'home']],
   [/^\/academic-stages/, ['stages', 'home']],
   [/^\/downloads/, ['downloads', 'home']],
+  // Written from both the admin panel and the teacher portal. Results are not
+  // here: they are only ever shown to the parent, fetched live.
+  [/^\/homework/, ['homework']],
+  [/^\/policies/, ['policies']],
 ];
 
 export function tagsForPath(path = '') {

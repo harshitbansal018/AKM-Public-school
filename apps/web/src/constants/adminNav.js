@@ -15,7 +15,7 @@ export const adminNav = [
       {
         href: '/admin/dashboard',
         label: 'Dashboard',
-        icon: '📊',
+        icon: 'dashboard',
       },
     ],
   },
@@ -29,40 +29,40 @@ export const adminNav = [
       {
         href: '/admin/settings',
         label: 'Site Settings',
-        icon: '⚙️',
+        icon: 'settings',
       },
       {
         href: '/admin/notices',
         label: 'Notices',
-        icon: '📌',
+        icon: 'bookmark',
       },
       {
         href: '/admin/announcements',
         label: 'Announcements',
-        icon: '📢',
+        icon: 'megaphone',
       },
       {
         href: '/admin/gallery',
         label: 'Gallery',
-        icon: '🖼️',
+        icon: 'image',
       },
       {
         href: '/admin/achievements',
         label: 'Achievements',
-        icon: '🏆',
+        icon: 'trophy',
       },
       {
         href: '/admin/facilities',
         label: 'Facilities',
-        icon: '🏫',
+        icon: 'campus',
       },
       {
         href: '/admin/downloads',
         label: 'Downloads',
-        icon: '📄',
+        icon: 'documents',
       },
-      { href: '/admin/about', label: 'About Us', icon: 'ℹ️' },
-      { href: '/admin/policies', label: 'Policies', icon: '📋' },
+      { href: '/admin/about', label: 'About Us', icon: 'info' },
+      { href: '/admin/policies', label: 'Policies', icon: 'clipboard' },
     ],
   },
 
@@ -72,24 +72,25 @@ export const adminNav = [
   {
     label: 'Academic Management',
     items: [
-      { href: '/admin/students', label: 'Students', icon: '👨‍🎓' },
+      { href: '/admin/students', label: 'Students', icon: 'graduation' },
+      { href: '/admin/parents', label: 'Parents', icon: 'users' },
       {
         href: '/admin/faculty',
         label: 'Teachers / Faculty',
-        icon: '👩‍🏫',
+        icon: 'teacher',
       },
       {
         href: '/admin/streams',
         label: 'Streams',
-        icon: '📚',
+        icon: 'library',
       },
       {
         href: '/admin/stages',
         label: 'Academic Stages',
-        icon: '🎓',
+        icon: 'layers',
       },
-      { href: '/admin/homework', label: 'Homework', icon: '📝' },
-      { href: '/admin/results', label: 'Results', icon: '📊' },
+      { href: '/admin/homework', label: 'Homework', icon: 'pencil' },
+      { href: '/admin/results', label: 'Results', icon: 'chart' },
     ],
   },
 
@@ -99,24 +100,24 @@ export const adminNav = [
   {
     label: 'Finance',
     items: [
-      { href: '/admin/fees', label: 'Fees', icon: '💰' },
-      { href: '/admin/faculty-salary', label: 'Faculty Salary', icon: '💵' },
+      { href: '/admin/fees', label: 'Fees', icon: 'wallet' },
+      { href: '/admin/faculty-salary', label: 'Faculty Salary', icon: 'banknote' },
     ],
   },
   {
     label: 'Recruitment',
     items: [
-      { href: '/admin/job-applications', label: 'Job Applications', icon: '📄' },
+      { href: '/admin/job-applications', label: 'Job Applications', icon: 'briefcase' },
       {
         href: '/admin/enquiries',
         label: 'Enquiries',
-        icon: '📥',
+        icon: 'inbox',
       },
     ],
   },
   {
     label: 'Reports',
-    items: [{ href: '/admin/reports', label: 'Reports / Print', icon: '🖨️' }],
+    items: [{ href: '/admin/reports', label: 'Reports / Print', icon: 'printer' }],
   },
 
   // ─────────────────────────────────────
@@ -128,10 +129,9 @@ export const adminNav = [
       {
         href: '/admin/users',
         label: 'Users & Permissions',
-        icon: '👤',
+        icon: 'user',
         adminOnly: true,
       },
-      { href: '/admin/system-settings', label: 'System Settings', icon: '⚙️', adminOnly: true },
     ],
   },
 ];

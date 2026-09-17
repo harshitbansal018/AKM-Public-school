@@ -1,5 +1,6 @@
 import Reveal from '@/components/ui/Reveal/Reveal';
 import Carousel from '@/components/ui/Carousel/Carousel';
+import { contentEmoji } from '@/constants/contentIcons';
 import styles from './StageGrid.module.css';
 
 /** Cards in one desktop row. Past this, `slider` turns the section into one. */
@@ -24,7 +25,7 @@ export default function StageGrid({ stages = [], slider = false }) {
       style={{ borderTopColor: stage.accentColor }}
     >
       <div className={styles.emoji} aria-hidden="true">
-        {stage.emoji}
+        {contentEmoji(stage.icon, 'book')}
       </div>
       <h3>{stage.title}</h3>
       <span className={styles.range}>{stage.classRange}</span>

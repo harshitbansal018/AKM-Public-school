@@ -41,6 +41,36 @@
   cursor: pointer;
 }
 
+/* Several checkboxes under one heading — the class picker on a faculty record. */
+.checkboxGroup {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 6px 14px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  column-gap: 12px;
+}
+
+.checkboxGroup .checkbox {
+  padding: 6px 0;
+}
+
+.checkboxLegend {
+  grid-column: 1 / -1;
+  padding: 6px 0 2px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.fieldError {
+  grid-column: 1 / -1;
+  padding-bottom: 6px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--red);
+}
+
 .colorRow {
   display: flex;
   align-items: flex-end;

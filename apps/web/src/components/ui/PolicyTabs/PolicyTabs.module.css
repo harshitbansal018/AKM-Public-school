@@ -1,0 +1,91 @@
+.wrap {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+/* Tabs down the left on desktop, a scrolling row on phones. */
+.tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: sticky;
+  top: 96px;
+  background: #fff;
+  border-radius: var(--radius-md);
+  padding: 10px;
+  box-shadow: var(--shadow);
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 14px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: none;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.tab:hover {
+  background: var(--sky-soft);
+  color: var(--royal);
+}
+
+.tabActive,
+.tabActive:hover {
+  background: var(--royal);
+  color: #fff;
+}
+
+.count {
+  flex-shrink: 0;
+  min-width: 24px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(18, 48, 127, 0.08);
+  color: inherit;
+  font-size: 0.72rem;
+  text-align: center;
+}
+
+.tabActive .count {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+@media (max-width: 900px) {
+  .wrap {
+    grid-template-columns: 1fr;
+  }
+  .tabs {
+    position: static;
+    flex-direction: row;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .tab {
+    width: auto;
+    white-space: nowrap;
+  }
+}

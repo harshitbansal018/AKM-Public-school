@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getNoticeBySlug, getNotices } from '@/lib/serverApi';
 import { formatLongDate, toISODate } from '@/lib/format';
+import { isHtml } from '@/lib/content';
 import { buildMetadata } from '@/lib/seo';
 import PageHeader from '@/components/ui/PageHeader/PageHeader';
 import Badge from '@/components/ui/Badge/Badge';
@@ -45,14 +46,19 @@ export default async function NoticeDetailPage({ params }) {
             <time dateTime={toISODate(notice.noticeDate)}>{formatLongDate(notice.noticeDate)}</time>
           </div>
 
-          <div className={styles.body}>
-            {(notice.body || notice.excerpt || '')
-              .split('\n')
-              .filter(Boolean)
-              .map((paragraph, index) => (
-                <p key={index}>{paragraph}</p>
-              ))}
-          </div>
+          {isHtml(notice.body) ? (
+            // Written in the admin editor; sanitised by the API before it was stored.
+            <div className={`${styles.body} rich-text`} dangerouslySetInnerHTML={{ __html: notice.body }} />
+          ) : (
+            <div className={styles.body}>
+              {(notice.body || notice.excerpt || '')
+                .split('\n')
+                .filter(Boolean)
+                .map((paragraph, index) => (
+                  <p key={index}>{paragraph}</p>
+                ))}
+            </div>
+          )}
 
           {notice.download ? (
             <a

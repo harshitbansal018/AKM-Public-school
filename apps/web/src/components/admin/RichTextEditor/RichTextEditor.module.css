@@ -1,0 +1,66 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--royal-dark);
+}
+
+.required {
+  color: var(--red);
+}
+
+.error {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--red);
+}
+
+/* Match CKEditor's frame to the other form fields. */
+.field :global(.ck.ck-editor__main > .ck-editor__editable) {
+  min-height: 260px;
+  padding: 8px 16px;
+  border: 2px solid var(--line);
+  border-top: none;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  background: #fbfdff;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  color: var(--ink);
+}
+
+.field :global(.ck.ck-editor__main > .ck-editor__editable.ck-focused) {
+  border-color: var(--royal);
+  box-shadow: 0 0 0 4px rgba(18, 48, 127, 0.1);
+}
+
+.field :global(.ck.ck-toolbar) {
+  border: 2px solid var(--line);
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  background: #f4f7fc;
+}
+
+.invalid :global(.ck.ck-editor__main > .ck-editor__editable),
+.invalid :global(.ck.ck-toolbar) {
+  border-color: var(--red);
+}
+
+/* Content inside the editor should look like it will on the page. */
+.field :global(.ck-content h2) {
+  font-size: 1.25rem;
+  margin: 18px 0 8px;
+}
+
+.field :global(.ck-content h3) {
+  font-size: 1.05rem;
+  margin: 14px 0 6px;
+}
+
+.field :global(.ck-content ul),
+.field :global(.ck-content ol) {
+  padding-left: 22px;
+}

@@ -2,6 +2,8 @@
 
 import ResourceManager from '@/components/admin/ResourceManager/ResourceManager';
 import StatusPill from '@/components/admin/StatusPill/StatusPill';
+import LineIcon from '@/components/ui/LineIcon/LineIcon';
+import { contentIcons } from '@/constants/contentIcons';
 
 export default function StreamsAdminPage() {
   return (
@@ -10,9 +12,8 @@ export default function StreamsAdminPage() {
       title="Streams"
       singular="stream"
       description="Subject streams offered in Classes 11 and 12."
-      emptyIcon="📚"
       columns={[
-        { key: 'emoji', label: '', width: '54px', render: (r) => <span style={{ fontSize: '1.4rem' }}>{r.emoji}</span> },
+        { key: 'icon', label: '', width: '54px', render: (r) => <LineIcon name={r.icon} fallback="book" size={22} /> },
         { key: 'title', label: 'Stream' },
         {
           key: 'subjects',
@@ -29,7 +30,7 @@ export default function StreamsAdminPage() {
       fields={[
         { name: 'title', label: 'Title', type: 'text', required: true, placeholder: 'Science — Medical' },
         { name: 'slug', label: 'URL slug', type: 'text', required: true, half: true, placeholder: 'science-medical', help: 'Lowercase letters, numbers and hyphens.' },
-        { name: 'emoji', label: 'Icon', type: 'text', half: true, placeholder: '🩺' },
+        { name: 'icon', label: 'Icon', type: 'select', half: true, options: contentIcons, placeholder: 'Choose an icon…' },
         { name: 'description', label: 'Description', type: 'textarea', required: true, rows: 3 },
         {
           name: 'subjects',

@@ -110,3 +110,18 @@
     transform: rotate(360deg);
   }
 }
+
+/* Printing an admin page (an application sheet) prints only its content. */
+@media print {
+  .shell {
+    background: #fff;
+  }
+  .topbar,
+  .scrim,
+  .banner {
+    display: none;
+  }
+  .content {
+    padding: 0;
+  }
+}

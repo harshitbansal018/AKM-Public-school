@@ -303,3 +303,103 @@ a:focus-visible {
     padding: 52px 0;
   }
 }
+
+/* ------------------------------------------------------------------
+   Rich text written in the admin panel's editor (policies, notices).
+   Sanitised by the API before it is stored; styled here once for
+   everywhere it is rendered.
+   ------------------------------------------------------------------ */
+.rich-text {
+  line-height: 1.7;
+  color: var(--ink);
+}
+
+.rich-text > :first-child {
+  margin-top: 0;
+}
+
+.rich-text > :last-child {
+  margin-bottom: 0;
+}
+
+.rich-text h2 {
+  font-size: 1.25rem;
+  margin: 22px 0 8px;
+  color: var(--royal-dark);
+}
+
+.rich-text h3 {
+  font-size: 1.05rem;
+  margin: 18px 0 6px;
+  color: var(--royal-dark);
+}
+
+.rich-text h4 {
+  font-size: 0.98rem;
+  margin: 16px 0 6px;
+  color: var(--royal-dark);
+}
+
+.rich-text p {
+  margin: 0 0 12px;
+}
+
+.rich-text ul,
+.rich-text ol {
+  margin: 0 0 14px;
+  padding-left: 24px;
+}
+
+.rich-text li {
+  margin-bottom: 4px;
+}
+
+.rich-text ul li::marker {
+  color: var(--gold-dark);
+}
+
+.rich-text a {
+  color: var(--royal);
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.rich-text blockquote {
+  margin: 0 0 14px;
+  padding: 10px 18px;
+  border-left: 4px solid var(--gold);
+  background: var(--cream);
+  color: var(--muted);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.rich-text hr {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 18px 0;
+}
+
+.rich-text figure.table {
+  margin: 0 0 16px;
+  overflow-x: auto;
+}
+
+.rich-text table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.rich-text th,
+.rich-text td {
+  border: 1px solid var(--line);
+  padding: 8px 12px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.rich-text th {
+  background: var(--sky-soft);
+  font-weight: 800;
+  color: var(--royal-dark);
+}

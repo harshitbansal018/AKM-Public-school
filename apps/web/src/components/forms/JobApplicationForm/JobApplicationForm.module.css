@@ -1,0 +1,152 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* Each part of the form is a titled group, so a long form reads as four short ones. */
+.group {
+  border: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.group legend {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.02rem;
+  color: var(--royal-dark);
+  padding-bottom: 8px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--line);
+  width: 100%;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* ---------- CV upload ---------- */
+
+.upload {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 20px;
+  border: 2px dashed var(--line);
+  border-radius: var(--radius-md);
+  background: var(--sky-soft);
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.upload:hover,
+.upload:focus-within {
+  border-color: var(--royal);
+  background: #fff;
+}
+
+.fileInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.uploadText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.uploadText b {
+  color: var(--royal-dark);
+  overflow-wrap: anywhere;
+}
+
+.uploadText small {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.error {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--red);
+}
+
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.privacy {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* ---------- reference number ---------- */
+
+.thanks {
+  text-align: center;
+  padding: 26px 10px;
+}
+
+.thanksTag {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #e6f8ec;
+  color: #1a7f3c;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.refLabel {
+  margin-top: 18px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.ref {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 5vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--royal);
+  margin: 4px 0 14px;
+}
+
+.thanks p:not(.ref):not(.refLabel) {
+  color: var(--muted);
+  font-size: 0.92rem;
+  max-width: 440px;
+  margin: 0 auto 20px;
+}
+
+@media (max-width: 600px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+}

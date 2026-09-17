@@ -1,0 +1,158 @@
+.layout {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 22px;
+  align-items: start;
+}
+
+/* ---------- identity card ---------- */
+
+.card {
+  background: #fff;
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 16px rgba(18, 48, 127, 0.07);
+  overflow: hidden;
+  text-align: center;
+}
+
+.banner {
+  height: 96px;
+  background: linear-gradient(135deg, var(--royal-dark) 0%, var(--royal) 60%, #1d47a8 100%);
+}
+
+.photoWrap {
+  margin: -60px auto 0;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 5px solid #fff;
+  background: var(--sky-soft);
+  box-shadow: 0 6px 18px rgba(18, 48, 127, 0.18);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.initials {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--royal);
+}
+
+.body {
+  padding: 14px 22px 24px;
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  color: var(--royal-dark);
+  line-height: 1.2;
+}
+
+.designation {
+  margin-top: 2px;
+  font-weight: 800;
+  color: var(--gold-dark);
+}
+
+.qualification {
+  margin-top: 6px;
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+
+.badge {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: var(--sky-soft);
+  color: var(--royal);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ---------- details ---------- */
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.panel {
+  background: #fff;
+  border-radius: var(--radius-md);
+  padding: 22px 24px;
+  box-shadow: 0 4px 16px rgba(18, 48, 127, 0.07);
+}
+
+.panel h2 {
+  font-size: 1.05rem;
+  margin-bottom: 14px;
+}
+
+.details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px 24px;
+}
+
+.details dt {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.details dd {
+  margin-top: 3px;
+  font-weight: 700;
+  color: var(--ink);
+  word-break: break-word;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: var(--sky-soft);
+  color: var(--royal);
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.none {
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.note {
+  margin-top: 14px;
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}

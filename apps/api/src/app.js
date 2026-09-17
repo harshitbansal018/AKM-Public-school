@@ -6,6 +6,7 @@ import compression from 'compression';
 import cookieParser from 'cookie-parser';
 
 import { env } from './config/env.js';
+import { PRIVATE_UPLOAD_FOLDERS } from './config/constants.js';
 import { corsOptions } from './config/cors.js';
 import routes from './routes/index.js';
 import { requestLogger } from './middlewares/requestLogger.middleware.js';
@@ -63,6 +64,11 @@ export function createApp({ nextHandler } = {}) {
   ];
 
   // ---- 1. uploaded images and documents ----
+  // Applicants' CVs are not public: they are only reachable through the
+  // authenticated admin route, so the static server never sees that folder.
+  for (const folder of PRIVATE_UPLOAD_FOLDERS) {
+    app.use(`/${env.uploadDir}/${folder}`, (_req, res) => res.status(404).end());
+  }
   app.use(
     `/${env.uploadDir}`,
     express.static(path.resolve(process.cwd(), env.uploadDir), {

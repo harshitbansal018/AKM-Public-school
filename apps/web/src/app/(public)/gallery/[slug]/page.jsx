@@ -43,7 +43,6 @@ export default async function AlbumPage({ params }) {
         <div className="container">
           {images.length === 0 ? (
             <EmptyState
-              icon="🖼️"
               title="Photos coming soon"
               description="This album has been created but no photos have been uploaded yet."
               action={<Button href="/gallery" variant="outline">Back to gallery</Button>}

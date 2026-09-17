@@ -136,5 +136,5 @@ export function getDownloads() {
 }
 
 export const getPublicHomework = () => withFallback(() => apiFetch('/homework', { tags: ['homework'] }), []);
-export const getPublicResults = () => withFallback(() => apiFetch('/results', { tags: ['results'] }), []);
-export const getPublicPolicies = () => withFallback(() => apiFetch('/policies', { tags: ['policies'] }), []);
+export const getPublicPolicies = () =>
+  withFallback(() => apiFetch('/policies', { tags: ['policies'] }), { tabs: [], policies: [] });

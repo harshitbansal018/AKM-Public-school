@@ -14,6 +14,12 @@ import { useAdminResource } from '@/hooks/useAdminResource';
  * Facilities, streams, stages, faculty, achievements, ticker lines and users
  * are all this same screen with different columns and fields, so they share
  * one implementation instead of seven copies that drift apart.
+ *
+ * @param {React.ReactNode | ((items) => React.ReactNode)} [toolbar]
+ *        rendered between the heading and the table — filters, totals
+ * @param {(items) => items} [filterRows]  narrows what the table shows
+ * @param {(row, { patch }) => React.ReactNode} [extraRowActions]
+ *        extra buttons per row; `patch(path, body, message)` calls the API and reloads
  */
 export default function ResourceManager({
   endpoint,
@@ -22,12 +28,13 @@ export default function ResourceManager({
   singular,
   columns,
   fields,
-  emptyIcon = '📄',
   emptyDescription,
+  toolbar,
+  filterRows = (rows) => rows,
   extraRowActions,
   canDelete = () => true,
 }) {
-  const { items, loading, saving, error, create, update, remove } = useAdminResource(endpoint);
+  const { items, loading, saving, error, create, update, patch, remove } = useAdminResource(endpoint);
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [deleting, setDeleting] = useState(null);
@@ -73,12 +80,13 @@ export default function ResourceManager({
         </button>
       }
     >
+      {typeof toolbar === 'function' ? toolbar(items) : toolbar}
+
       <DataTable
         columns={columns}
-        rows={items}
+        rows={filterRows(items)}
         loading={loading}
         error={error}
-        emptyIcon={emptyIcon}
         emptyTitle={`No ${title.toLowerCase()} yet`}
         emptyDescription={emptyDescription}
         emptyAction={
@@ -88,7 +96,7 @@ export default function ResourceManager({
         }
         actions={(row) => (
           <RowActions>
-            {extraRowActions?.(row)}
+            {extraRowActions?.(row, { patch })}
             <RowButton onClick={() => openEdit(row)}>Edit</RowButton>
             {canDelete(row) ? (
               <RowButton tone="danger" onClick={() => setDeleting(row)}>

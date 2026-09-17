@@ -44,6 +44,20 @@ export function toParagraphs(value) {
     .filter(Boolean);
 }
 
+/** True when a stored value is editor HTML rather than plain text. */
+export function isHtml(value) {
+  return /<[a-z][^>]*>/i.test(String(value ?? ''));
+}
+
+/** The plain text inside HTML — for previews, lengths and "is it empty" checks. */
+export function htmlPreview(value) {
+  return String(value ?? '')
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 /**
  * Reads a setting, falling back when the key is missing or blank — so a page
  * never renders an empty heading just because a row was cleared.

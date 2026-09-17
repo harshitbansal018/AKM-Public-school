@@ -18,7 +18,6 @@ export default function DataTable({
   actions,
   loading = false,
   error = '',
-  emptyIcon = '📭',
   emptyTitle = 'Nothing here yet',
   emptyDescription,
   emptyAction,
@@ -46,7 +45,6 @@ export default function DataTable({
   if (rows.length === 0) {
     return (
       <EmptyState
-        icon={emptyIcon}
         title={emptyTitle}
         description={emptyDescription}
         action={emptyAction}

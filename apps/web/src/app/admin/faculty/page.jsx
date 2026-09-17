@@ -3,15 +3,18 @@
 import ResourceManager from '@/components/admin/ResourceManager/ResourceManager';
 import StatusPill from '@/components/admin/StatusPill/StatusPill';
 import { IMAGE_RULE } from '@/constants/uploads';
+import { useClassSections } from '@/hooks/useClassSections';
+import LineIcon from '@/components/ui/LineIcon/LineIcon';
 
 export default function FacultyAdminPage() {
+  const classOptions = useClassSections();
+
   return (
     <ResourceManager
       endpoint="/admin/faculty"
       title="Faculty"
       singular="staff member"
-      description="Teaching staff. The people ticked as Principal and MD supply the two messages shown on the homepage and the About page."
-      emptyIcon="👩‍🏫"
+      description="Teaching staff. The people ticked as Principal and MD supply the two messages on the homepage and About page. Teacher portal sign-in is set up on each record here."
       columns={[
         {
           key: 'photo',
@@ -26,7 +29,7 @@ export default function FacultyAdminPage() {
                 style={{ width: 44, height: 44, objectFit: 'cover', borderRadius: '50%' }}
               />
             ) : (
-              <span style={{ color: 'var(--muted)', fontSize: '1.2rem' }}>👤</span>
+              <span style={{ color: 'var(--muted)' }}><LineIcon name="user" size={24} /></span>
             ),
         },
         { key: 'name', label: 'Name' },
@@ -43,8 +46,19 @@ export default function FacultyAdminPage() {
           },
         },
         {
+          key: 'teacherAccess',
+          label: 'Teacher portal',
+          width: '130px',
+          render: (r) =>
+            r.teacherAccess ? (
+              <StatusPill value="active" label={r.assignedClasses?.length ? `${r.assignedClasses.length} class(es)` : 'No classes'} />
+            ) : (
+              '—'
+            ),
+        },
+        {
           key: 'isPublished',
-          label: 'Status',
+          label: 'Website',
           width: '110px',
           render: (r) => <StatusPill value={r.isPublished ? 'published' : 'draft'} label={r.isPublished ? 'Live' : 'Hidden'} />,
         },
@@ -71,6 +85,29 @@ export default function FacultyAdminPage() {
           help: 'Tick one person only. Someone ticked as both is treated as the Principal.',
         },
         { name: 'isPublished', label: 'Show on the website', type: 'checkbox', default: true },
+
+        // ---- teacher portal sign-in (this faculty record is the account) ----
+        {
+          name: 'teacherAccess',
+          label: 'Allow teacher portal access',
+          type: 'checkbox',
+          help: 'Needs a login email and password below. Untick to suspend their sign-in without deleting anything.',
+        },
+        { name: 'accountEmail', label: 'Login email', type: 'text', half: true, placeholder: 'teacher@akmpublicschool.in' },
+        {
+          name: 'password',
+          label: 'Login password',
+          type: 'text',
+          half: true,
+          help: 'At least 8 characters with a letter and a number. Leave blank when editing to keep the current one.',
+        },
+        {
+          name: 'assignedClasses',
+          label: 'Assigned classes',
+          type: 'checkboxes',
+          options: classOptions,
+          help: 'The teacher can only see students and set homework/results for the classes ticked here. The list is managed under Website content → Classes & sections.',
+        },
       ]}
     />
   );

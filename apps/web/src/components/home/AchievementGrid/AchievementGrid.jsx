@@ -1,5 +1,6 @@
 import Reveal from '@/components/ui/Reveal/Reveal';
 import Carousel from '@/components/ui/Carousel/Carousel';
+import { contentEmoji } from '@/constants/contentIcons';
 import styles from './AchievementGrid.module.css';
 
 /** Cards in one desktop row. Past this, `slider` turns the section into one. */
@@ -22,7 +23,7 @@ export default function AchievementGrid({ achievements = [], slider = false }) {
       className={styles.achievement}
     >
       <div className={styles.medal} aria-hidden="true">
-        {item.medal}
+        {contentEmoji(item.medal, 'medal-gold')}
       </div>
       <h3>
         {item.studentName}

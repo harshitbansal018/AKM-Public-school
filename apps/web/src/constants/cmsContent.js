@@ -16,7 +16,7 @@ export const cmsPages = [
   {
     id: 'home',
     label: 'Homepage',
-    icon: '🏠',
+    icon: 'home',
     href: '/',
     description: 'The first page visitors see.',
     sections: [
@@ -112,7 +112,7 @@ export const cmsPages = [
             label: 'Bullet points',
             type: 'lines',
             rows: 5,
-            help: 'One point per line. Each becomes a ★ bullet.',
+            help: 'One point per line. Each becomes a gold-star bullet.',
           },
         ],
       },
@@ -122,7 +122,7 @@ export const cmsPages = [
   {
     id: 'about',
     label: 'About page',
-    icon: '🎓',
+    icon: 'info',
     href: '/about',
     description: 'The “About Our School” page.',
     sections: [
@@ -152,7 +152,7 @@ export const cmsPages = [
       {
         id: 'values',
         label: 'What we stand for',
-        help: 'The white card on the right, with the gold ★ bullets.',
+        help: 'The white card on the right, with the gold star bullets.',
         fields: [
           { key: 'about_values_heading', label: 'Heading', type: 'text' },
           {
@@ -179,7 +179,7 @@ export const cmsPages = [
   {
     id: 'academics',
     label: 'Academics page',
-    icon: '📚',
+    icon: 'library',
     href: '/academics',
     description: 'Learning stages, streams and medium of instruction.',
     sections: [
@@ -226,7 +226,7 @@ export const cmsPages = [
   {
     id: 'admissions',
     label: 'Admissions page',
-    icon: '📝',
+    icon: 'pencil',
     href: '/admissions',
     description:
       'The admission process. The page title uses the session set on the Homepage tab.',
@@ -295,7 +295,7 @@ export const cmsPages = [
   {
     id: 'faculty',
     label: 'Faculty page',
-    icon: '👩‍🏫',
+    icon: 'teacher',
     href: '/faculty',
     description:
       'Teaching and support staff. The people themselves are added under “Faculty” in the sidebar.',
@@ -353,9 +353,144 @@ export const cmsPages = [
   },
 
   {
+    id: 'policies',
+    label: 'Privacy Policy page',
+    icon: 'clipboard',
+    href: '/privacy-policy',
+    description: 'The Privacy Policy page — every school policy lives here, under tabs. The policies themselves are written under “Policies” in the sidebar; the tabs they sit under are set here.',
+    sections: [
+      {
+        id: 'header',
+        label: 'Page heading',
+        fields: [
+          { key: 'page_policies_title', label: 'Page title', type: 'text', half: true },
+          { key: 'page_policies_subtitle', label: 'Subtitle', type: 'text', half: true },
+        ],
+      },
+      {
+        id: 'tabs',
+        label: 'Tabs',
+        help: 'One tab per line, in the order they appear on the page. Each policy is filed under one of these; a tab with no active policy is not shown.',
+        fields: [
+          {
+            key: 'policy_tabs',
+            label: 'Tabs',
+            type: 'lines',
+            rows: 7,
+            help: 'Leave blank to use the standard set: Student Policies, Teacher / Faculty Policies, School Rules & Regulations, Attendance / Leave Rules, Academic / Examination Rules. Renaming a tab does not move the policies already filed under the old name.',
+          },
+        ],
+      },
+      {
+        id: 'empty',
+        label: 'When nothing is published',
+        fields: [
+          { key: 'policies_empty_title', label: 'Heading', type: 'text', half: true },
+          { key: 'policies_empty_description', label: 'Description', type: 'text', half: true },
+        ],
+      },
+    ],
+  },
+
+  {
+    id: 'careers',
+    label: 'Careers page',
+    icon: 'briefcase',
+    href: '/careers',
+    description: 'Where teachers apply. Applications arrive under Recruitment → Job Applications.',
+    sections: [
+      {
+        id: 'header',
+        label: 'Page heading',
+        fields: [
+          { key: 'page_careers_title', label: 'Page title', type: 'text', half: true },
+          { key: 'page_careers_subtitle', label: 'Subtitle', type: 'text', half: true },
+        ],
+      },
+      {
+        id: 'reasons',
+        label: 'Why work with us',
+        help: 'The four cards at the top of the page.',
+        fields: [
+          { key: 'careers_reasons_tag', label: 'Small label', type: 'text', half: true },
+          { key: 'careers_reasons_title', label: 'Heading', type: 'text', half: true },
+          { key: 'careers_reasons_description', label: 'Description', type: 'textarea', rows: 2 },
+          {
+            key: 'careers_reasons_items',
+            label: 'Reasons',
+            type: 'pairs',
+            titleLabel: 'Reason',
+            bodyLabel: 'One line about it',
+          },
+        ],
+      },
+      {
+        id: 'steps',
+        label: 'How to apply',
+        help: 'The four step cards on the blue band. The icons follow the order (form, CV, reference, interview).',
+        fields: [
+          { key: 'careers_steps_tag', label: 'Small label', type: 'text', half: true },
+          { key: 'careers_steps_title', label: 'Heading', type: 'text', half: true },
+          { key: 'careers_steps_description', label: 'Description', type: 'textarea', rows: 2 },
+          {
+            key: 'careers_steps_items',
+            label: 'Steps',
+            type: 'pairs',
+            titleLabel: 'Step',
+            bodyLabel: 'One line about it',
+          },
+        ],
+      },
+      {
+        id: 'positions',
+        label: 'Open positions',
+        help: 'Shown in the blue card, and offered in the form’s “Position” dropdown. Leave the list empty to hide the card.',
+        fields: [
+          { key: 'careers_positions_tag', label: 'Small label', type: 'text', half: true },
+          { key: 'careers_positions_title', label: 'Heading', type: 'text', half: true },
+          {
+            key: 'careers_positions',
+            label: 'Positions',
+            type: 'lines',
+            rows: 8,
+            help: 'One position per line, e.g. “PGT — Mathematics”. Remove a line once the post is filled.',
+          },
+          { key: 'careers_positions_note', label: 'Note under the list', type: 'text' },
+        ],
+      },
+      {
+        id: 'contact',
+        label: '“Prefer to talk first?” card',
+        help: 'The phone, email and hours shown under it come from Contact details. Leave the heading blank to hide the card.',
+        fields: [
+          { key: 'careers_contact_heading', label: 'Heading', type: 'text', half: true },
+          { key: 'careers_contact_text', label: 'Text', type: 'textarea', rows: 2 },
+        ],
+      },
+      {
+        id: 'form',
+        label: 'Application form',
+        fields: [
+          { key: 'careers_form_heading', label: 'Form heading', type: 'text', half: true },
+          { key: 'careers_form_intro', label: 'Text above the form', type: 'text', half: true },
+          { key: 'careers_form_privacy', label: 'Line beside the Submit button', type: 'text' },
+          { key: 'careers_success_title', label: 'After submitting — heading', type: 'text', half: true },
+          {
+            key: 'careers_success_text',
+            label: 'After submitting — what happens next',
+            type: 'textarea',
+            rows: 3,
+            help: 'Shown under the reference number.',
+          },
+        ],
+      },
+    ],
+  },
+
+  {
     id: 'facilities',
     label: 'Campus page',
-    icon: '🏫',
+    icon: 'campus',
     href: '/facilities',
     description: 'Campus and facilities. The facility cards are edited under “Facilities”.',
     sections: [
@@ -391,7 +526,7 @@ export const cmsPages = [
   {
     id: 'achievements',
     label: 'Results page',
-    icon: '🏆',
+    icon: 'trophy',
     href: '/achievements',
     description: 'Results and toppers. The entries themselves are edited under “Achievements”.',
     sections: [
@@ -419,7 +554,7 @@ export const cmsPages = [
   {
     id: 'notices',
     label: 'News & notices page',
-    icon: '📌',
+    icon: 'bookmark',
     href: '/notices',
     description: 'The notice list. Notices themselves are edited under “Notices”.',
     sections: [
@@ -445,7 +580,7 @@ export const cmsPages = [
   {
     id: 'gallery',
     label: 'Gallery page',
-    icon: '🖼️',
+    icon: 'image',
     href: '/gallery',
     description: 'The album grid. Albums and photos are managed under “Gallery”.',
     sections: [
@@ -471,7 +606,7 @@ export const cmsPages = [
   {
     id: 'downloads',
     label: 'Downloads page',
-    icon: '📄',
+    icon: 'documents',
     href: '/downloads',
     description: 'The file list. Files are uploaded under “Downloads”.',
     sections: [
@@ -497,7 +632,7 @@ export const cmsPages = [
   {
     id: 'contact',
     label: 'Contact details',
-    icon: '📞',
+    icon: 'phone',
     href: '/contact',
     description:
       'Used on the Contact page, in the top bar, in the footer and on the enquiry form — change it once here and it updates everywhere.',
@@ -587,9 +722,34 @@ export const cmsPages = [
   },
 
   {
+    id: 'classes',
+    label: 'Classes & sections',
+    icon: 'graduation',
+    href: '/admin/students',
+    description:
+      'The list of classes the school runs. Students, homework, results and fees are filed under one of these, and teachers are given access class by class — so every form shows this same list.',
+    sections: [
+      {
+        id: 'list',
+        label: 'Classes & sections',
+        help: 'One per line, in the order they should appear. Add a section to a class as its own line, e.g. “Class 10-A” and “Class 10-B”.',
+        fields: [
+          {
+            key: 'class_sections',
+            label: 'Classes',
+            type: 'lines',
+            rows: 16,
+            help: 'Leave blank to use the standard list: Nursery, LKG, UKG, Class 1 – Class 12. Renaming a class here does not rename records already filed under the old name.',
+          },
+        ],
+      },
+    ],
+  },
+
+  {
     id: 'identity',
     label: 'Header & footer',
-    icon: '🏫',
+    icon: 'campus',
     href: '/',
     description: 'The school name and tagline that appear on every page of the website.',
     sections: [

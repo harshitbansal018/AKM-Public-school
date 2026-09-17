@@ -13,11 +13,13 @@ import { prisma } from '../config/prisma.js';
  * @param {object} [options]
  * @param {object[]} [options.orderBy]
  * @param {string}  [options.publishedField]  null if the model has no flag
+ * @param {object}  [options.include]         relations to load with every row
  */
 export function createRepository(model, options = {}) {
   const {
     orderBy = [{ sortOrder: 'asc' }, { id: 'asc' }],
     publishedField = 'isPublished',
+    include,
   } = options;
 
   const delegate = () => prisma[model];
@@ -28,24 +30,34 @@ export function createRepository(model, options = {}) {
       return delegate().findMany({
         where: publishedField ? { [publishedField]: true } : undefined,
         orderBy,
+        include,
       });
     },
 
     /** Admin list — everything, drafts included. */
     findAll() {
-      return delegate().findMany({ orderBy });
+      return delegate().findMany({ orderBy, include });
     },
 
     findById(id) {
-      return delegate().findUnique({ where: { id: Number(id) } });
+      return delegate().findUnique({ where: { id: Number(id) }, include });
+    },
+
+    /** Filtered list in the default order, e.g. the rows for one class. */
+    findWhere(where, { take } = {}) {
+      return delegate().findMany({ where, orderBy, take, include });
+    },
+
+    findFirst(where) {
+      return delegate().findFirst({ where, include });
     },
 
     create(data) {
-      return delegate().create({ data });
+      return delegate().create({ data, include });
     },
 
     update(id, data) {
-      return delegate().update({ where: { id: Number(id) }, data });
+      return delegate().update({ where: { id: Number(id) }, data, include });
     },
 
     remove(id) {

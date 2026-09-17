@@ -21,6 +21,12 @@ export function formatLongDate(value) {
   return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
+/** 12500 → "₹12,500" (fees and salaries) */
+export function formatMoney(value) {
+  const amount = Number(value ?? 0);
+  return `₹${(Number.isNaN(amount) ? 0 : amount).toLocaleString('en-IN')}`;
+}
+
 /** Machine-readable date for <time datetime="..."> */
 export function toISODate(value) {
   const d = new Date(value);

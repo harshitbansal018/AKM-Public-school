@@ -62,7 +62,8 @@
 }
 
 .pageIcon {
-  font-size: 1.05rem;
+  display: inline-flex;
+  align-items: center;
 }
 
 .pageLabel {

@@ -45,7 +45,6 @@ export default function DownloadsAdminPage() {
         rows={items}
         loading={loading}
         error={error}
-        emptyIcon="📄"
         emptyTitle="No downloads yet"
         emptyDescription="Upload a date sheet or admission form and it appears on the Downloads page."
         emptyAction={

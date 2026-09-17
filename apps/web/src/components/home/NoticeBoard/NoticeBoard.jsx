@@ -17,7 +17,7 @@ export default function NoticeBoard({ notices = [], title = '📌 Latest News & 
 
       {notices.length === 0 ? (
         <div className={styles.empty}>
-          <EmptyState icon="📭" title="No notices yet" description="Check back soon." />
+          <EmptyState title="No notices yet" description="Check back soon." />
         </div>
       ) : (
         notices.map((notice) => {

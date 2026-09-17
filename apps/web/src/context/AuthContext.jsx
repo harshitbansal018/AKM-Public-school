@@ -2,15 +2,22 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { adminApi } from '@/lib/adminApi';
+import { portalApi } from '@/lib/adminApi';
 import { API_ENABLED } from '@/lib/api';
 import { clearSession, getStoredUser, setAccessToken, setStoredUser } from '@/lib/auth';
 
 const AuthContext = createContext(null);
 
-/** Wraps the admin panel and holds the signed-in user. */
-export function AuthProvider({ children }) {
+/**
+ * Wraps one portal (admin panel or teacher portal) and holds its signed-in user.
+ *
+ * `portal` picks the API prefix — /admin/auth/* or /teacher/auth/* — which are
+ * separate accounts on the server (User vs Faculty), so the two providers are
+ * never nested and a session belongs to exactly one of them.
+ */
+export function AuthProvider({ children, portal = 'admin' }) {
   const router = useRouter();
+  const api = useMemo(() => portalApi(portal), [portal]);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -24,8 +31,8 @@ export function AuthProvider({ children }) {
       return;
     }
 
-    adminApi
-      .get('/admin/auth/me')
+    api
+      .get(`/${portal}/auth/me`)
       .then((me) => {
         setUser(me);
         setStoredUser(me);
@@ -35,30 +42,33 @@ export function AuthProvider({ children }) {
         setUser(null);
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [api, portal]);
 
-  const login = useCallback(async (email, password) => {
-    const result = await adminApi.post('/admin/auth/login', { email, password });
-    setAccessToken(result.accessToken);
-    setStoredUser(result.user);
-    setUser(result.user);
-    return result.user;
-  }, []);
+  const login = useCallback(
+    async (email, password) => {
+      const result = await api.post(`/${portal}/auth/login`, { email, password });
+      setAccessToken(result.accessToken);
+      setStoredUser(result.user);
+      setUser(result.user);
+      return result.user;
+    },
+    [api, portal]
+  );
 
   const logout = useCallback(async () => {
     try {
-      await adminApi.post('/admin/auth/logout');
+      await api.post(`/${portal}/auth/logout`);
     } catch {
       // signing out locally matters more than the server acknowledging it
     }
     clearSession();
     setUser(null);
-    router.replace('/admin/login');
-  }, [router]);
+    router.replace(`/${portal}/login`);
+  }, [api, portal, router]);
 
   const value = useMemo(
-    () => ({ user, loading, login, logout, isAuthenticated: Boolean(user) }),
-    [user, loading, login, logout]
+    () => ({ portal, user, loading, login, logout, isAuthenticated: Boolean(user) }),
+    [portal, user, loading, login, logout]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -1,0 +1,42 @@
+/* One button per child, the current one filled in. */
+.switcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+/* Homework filters: subject, from, to — one row on desktop, stacked on phones. */
+.filters {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.clear {
+  align-self: end;
+  justify-self: start;
+}
+
+.instructions {
+  white-space: pre-wrap;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.count {
+  margin: -10px 0 14px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.tiles {
+  margin-bottom: 22px;
+}
+
+@media (max-width: 700px) {
+  .filters {
+    grid-template-columns: 1fr;
+  }
+}

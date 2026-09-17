@@ -2,8 +2,6 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { adminApi } from '@/lib/adminApi';
-import { API_URL } from '@/lib/api';
-import { getAccessToken } from '@/lib/auth';
 import { useToast } from '@/hooks/useToast';
 import { formatLongDate, toTelHref } from '@/lib/format';
 import { cn } from '@/lib/cn';
@@ -15,6 +13,7 @@ import Textarea from '@/components/ui/Textarea/Textarea';
 import Select from '@/components/ui/Select/Select';
 import ConfirmDialog from '@/components/admin/ConfirmDialog/ConfirmDialog';
 import { RowActions, RowButton } from '@/components/admin/RowActions/RowActions';
+import LineIcon from '@/components/ui/LineIcon/LineIcon';
 import styles from './enquiries.module.css';
 
 const STATUSES = [
@@ -79,26 +78,9 @@ export default function EnquiriesAdminPage() {
     }
   };
 
-  /**
-   * The CSV route needs the bearer token, so it cannot be a plain <a href>.
-   * Fetch it, then hand the browser a blob to save.
-   */
   const exportCsv = async () => {
     try {
-      const res = await fetch(`${API_URL}/admin/enquiries/export`, {
-        headers: { Authorization: `Bearer ${getAccessToken()}` },
-      });
-      if (!res.ok) throw new Error('Export failed');
-
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `enquiries-${new Date().toISOString().slice(0, 10)}.csv`;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      URL.revokeObjectURL(url);
+      await adminApi.download('/admin/enquiries/export', `enquiries-${new Date().toISOString().slice(0, 10)}.csv`);
       toast.success('Downloaded');
     } catch (err) {
       toast.error(err.message);
@@ -135,7 +117,6 @@ export default function EnquiriesAdminPage() {
         rows={items}
         loading={loading}
         error={error}
-        emptyIcon="📥"
         emptyTitle="No enquiries"
         emptyDescription="Enquiries submitted through the contact form will appear here."
         columns={[
@@ -299,7 +280,7 @@ function EnquiryDetail({ enquiry, busy, onSave, onClose }) {
 
       <div className={styles.detailActions}>
         <a href={toTelHref(enquiry.phone)} className="btn btn-outline btn-sm">
-          📞 Call
+          <LineIcon name="phone" size={16} /> Call
         </a>
         <button
           type="button"

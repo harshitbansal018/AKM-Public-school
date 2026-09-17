@@ -28,3 +28,10 @@
   gap: 10px;
   flex-wrap: wrap;
 }
+
+/* The page heading and its buttons are chrome; a printed sheet carries its own. */
+@media print {
+  .header {
+    display: none;
+  }
+}

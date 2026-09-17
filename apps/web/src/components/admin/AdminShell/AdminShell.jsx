@@ -5,24 +5,32 @@ import { usePathname, useRouter } from 'next/navigation';
 import { API_ENABLED } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 import Sidebar from '@/components/admin/Sidebar/Sidebar';
+import LineIcon from '@/components/ui/LineIcon/LineIcon';
 import styles from './AdminShell.module.css';
 
 /**
- * Admin chrome + route guard. Anything under /admin except the login screen
- * requires a signed-in user; unauthenticated visitors are redirected.
+ * Portal chrome + route guard, shared by the admin panel and the teacher
+ * portal. Anything under /<portal> except the login screen requires a
+ * signed-in user of that portal; everyone else is redirected to its login.
+ *
+ * @param {object} props
+ * @param {object[]} props.nav      sidebar sections (see constants/adminNav.js)
+ * @param {{name: string, tagline: string}} props.brand
+ * @param {string} props.title      topbar heading
  */
-export default function AdminShell({ children }) {
+export default function AdminShell({ nav, brand, title, children }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { isAuthenticated, loading } = useAuth();
+  const { portal, isAuthenticated, loading } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const isLoginPage = pathname === '/admin/login';
+  const loginPath = `/${portal}/login`;
+  const isLoginPage = pathname === loginPath;
 
   useEffect(() => {
     if (loading || isLoginPage) return;
-    if (!isAuthenticated) router.replace('/admin/login');
-  }, [loading, isAuthenticated, isLoginPage, router]);
+    if (!isAuthenticated) router.replace(loginPath);
+  }, [loading, isAuthenticated, isLoginPage, loginPath, router]);
 
   useEffect(() => setMenuOpen(false), [pathname]);
 
@@ -47,7 +55,7 @@ export default function AdminShell({ children }) {
 
   return (
     <div className={styles.shell}>
-      <Sidebar open={menuOpen} onNavigate={() => setMenuOpen(false)} />
+      <Sidebar nav={nav} brand={brand} open={menuOpen} onNavigate={() => setMenuOpen(false)} />
 
       {menuOpen ? (
         <button
@@ -66,9 +74,9 @@ export default function AdminShell({ children }) {
             onClick={() => setMenuOpen((open) => !open)}
             aria-label="Toggle menu"
           >
-            ☰
+            <LineIcon name="menu" size={24} strokeWidth={2} />
           </button>
-          <span className={styles.title}>Content Manager</span>
+          <span className={styles.title}>{title}</span>
         </header>
 
         {!API_ENABLED ? (

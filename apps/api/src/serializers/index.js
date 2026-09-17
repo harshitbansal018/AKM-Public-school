@@ -51,9 +51,58 @@ export function serializeAlbums(albums = []) {
   return albums.map(serializeAlbum);
 }
 
+/** Faculty.assignedClasses is stored as a JSON string; always read it as an array. */
+export function facultyClasses(person) {
+  if (Array.isArray(person?.assignedClasses)) return person.assignedClasses;
+  if (typeof person?.assignedClasses !== 'string') return [];
+  try {
+    const parsed = JSON.parse(person.assignedClasses);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+/** Public website view — no sign-in details at all. */
 export function serializeFaculty(person) {
   if (!person) return null;
-  return { ...person, photo: toFileUrl(person.photo) };
+  const { passwordHash, accountEmail, teacherAccess, assignedClasses, ...publicPerson } = person;
+  return { ...publicPerson, photo: toFileUrl(publicPerson.photo) };
+}
+
+/** Admin view keeps the teacher-portal access fields (never the hash). */
+export function serializeFacultyAdmin(person) {
+  if (!person) return null;
+  const { passwordHash, ...safe } = person;
+  return {
+    ...safe,
+    assignedClasses: facultyClasses(person),
+    hasPassword: Boolean(passwordHash),
+    photo: toFileUrl(safe.photo),
+  };
+}
+
+/** Admin view of a parent account: never the hash, plus how many children are linked. */
+export function serializeParent(parent) {
+  if (!parent) return null;
+  const { passwordHash, _count, ...safe } = parent;
+  return { ...safe, childrenCount: _count?.children ?? 0, role: 'PARENT' };
+}
+
+/** What the teacher portal knows about the signed-in teacher. */
+export function serializeTeacher(person) {
+  if (!person) return null;
+  return {
+    id: person.id,
+    name: person.name,
+    email: person.accountEmail,
+    designation: person.designation,
+    qualification: person.qualification,
+    subject: person.subject,
+    photo: toFileUrl(person.photo),
+    assignedClasses: facultyClasses(person),
+    role: 'TEACHER',
+  };
 }
 
 export function serializeAchievement(item) {

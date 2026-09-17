@@ -38,7 +38,6 @@ export default async function AchievementsPage() {
         <section className="section">
           <div className="container">
             <EmptyState
-              icon="🏆"
               title={text(settings, 'achievements_empty_title', 'No achievements published yet')}
               description={text(settings, 'achievements_empty_description')}
             />

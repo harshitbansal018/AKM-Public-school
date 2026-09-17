@@ -2,6 +2,8 @@
 
 import ResourceManager from '@/components/admin/ResourceManager/ResourceManager';
 import StatusPill from '@/components/admin/StatusPill/StatusPill';
+import LineIcon from '@/components/ui/LineIcon/LineIcon';
+import { contentIcons } from '@/constants/contentIcons';
 
 export default function FacilitiesAdminPage() {
   return (
@@ -10,9 +12,8 @@ export default function FacilitiesAdminPage() {
       title="Facilities"
       singular="facility"
       description="The campus cards shown on the homepage and the Campus page."
-      emptyIcon="🏫"
       columns={[
-        { key: 'icon', label: '', width: '54px', render: (r) => <span style={{ fontSize: '1.4rem' }}>{r.icon}</span> },
+        { key: 'icon', label: '', width: '54px', render: (r) => <LineIcon name={r.icon} fallback="school" size={22} /> },
         { key: 'title', label: 'Title' },
         { key: 'description', label: 'Description' },
         {
@@ -24,7 +25,7 @@ export default function FacilitiesAdminPage() {
       ]}
       fields={[
         { name: 'title', label: 'Title', type: 'text', required: true, placeholder: 'Computer & IT Lab' },
-        { name: 'icon', label: 'Icon', type: 'text', half: true, placeholder: '💻', help: 'A single emoji.' },
+        { name: 'icon', label: 'Icon', type: 'select', half: true, options: contentIcons, placeholder: 'Choose an icon…' },
         { name: 'sortOrder', label: 'Order', type: 'number', half: true, help: 'Lower numbers appear first.' },
         { name: 'description', label: 'Description', type: 'textarea', required: true, rows: 3 },
         {
@@ -32,7 +33,7 @@ export default function FacilitiesAdminPage() {
           label: 'Photo (optional)',
           type: 'image',
           folder: 'misc',
-          hint: 'Leave empty to show the emoji icon instead.',
+          hint: 'Leave empty to show the icon instead.',
         },
         { name: 'isPublished', label: 'Show on the website', type: 'checkbox', default: true },
       ]}

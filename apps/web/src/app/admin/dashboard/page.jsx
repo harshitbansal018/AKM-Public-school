@@ -7,6 +7,7 @@ import { API_ENABLED } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 import { formatLongDate } from '@/lib/format';
 import StatCard from '@/components/admin/StatCard/StatCard';
+import LineIcon from '@/components/ui/LineIcon/LineIcon';
 import StatusPill from '@/components/admin/StatusPill/StatusPill';
 import styles from './dashboard.module.css';
 
@@ -20,10 +21,10 @@ const EMPTY = {
 };
 
 const SHORTCUTS = [
-  { href: '/admin/notices', icon: '📌', label: 'Post a notice' },
-  { href: '/admin/gallery', icon: '🖼️', label: 'Add photos' },
-  { href: '/admin/announcements', icon: '📢', label: 'Edit announcements' },
-  { href: '/admin/settings', icon: '📝', label: 'Edit website content ' },
+  { href: '/admin/notices', icon: 'bookmark', label: 'Post a notice' },
+  { href: '/admin/gallery', icon: 'image', label: 'Add photos' },
+  { href: '/admin/announcements', icon: 'megaphone', label: 'Edit announcements' },
+  { href: '/admin/settings', icon: 'pencil', label: 'Edit website content ' },
 ];
 
 export default function DashboardPage() {
@@ -50,16 +51,16 @@ export default function DashboardPage() {
 
       <div className={styles.grid}>
         <Link href="/admin/enquiries" className={styles.statLink}>
-          <StatCard icon="📥" label="New enquiries" value={stats.newEnquiries} hint="Not yet contacted" tone="red" />
+          <StatCard icon="inbox" label="New enquiries" value={stats.newEnquiries} hint="Not yet contacted" tone="red" />
         </Link>
         <Link href="/admin/enquiries" className={styles.statLink}>
-          <StatCard icon="📊" label="Total enquiries" value={stats.totalEnquiries} hint="All time" tone="royal" />
+          <StatCard icon="chart" label="Total enquiries" value={stats.totalEnquiries} hint="All time" tone="royal" />
         </Link>
         <Link href="/admin/notices" className={styles.statLink}>
-          <StatCard icon="📌" label="Published notices" value={stats.publishedNotices} tone="gold" />
+          <StatCard icon="bookmark" label="Published notices" value={stats.publishedNotices} tone="gold" />
         </Link>
         <Link href="/admin/gallery" className={styles.statLink}>
-          <StatCard icon="🖼️" label="Gallery albums" value={stats.galleryAlbums} tone="green" />
+          <StatCard icon="image" label="Gallery albums" value={stats.galleryAlbums} tone="green" />
         </Link>
       </div>
 
@@ -97,7 +98,7 @@ export default function DashboardPage() {
             {SHORTCUTS.map((item) => (
               <li key={item.href}>
                 <Link href={item.href}>
-                  <span aria-hidden="true">{item.icon}</span>
+                  <LineIcon name={item.icon} size={18} />
                   {item.label}
                 </Link>
               </li>

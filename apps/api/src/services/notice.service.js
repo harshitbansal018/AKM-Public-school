@@ -3,6 +3,7 @@ import { serializeNotice, serializeNotices } from '../serializers/index.js';
 import { toSkipTake, buildMeta } from '../utils/pagination.js';
 import { uniqueSlug } from '../utils/slugify.js';
 import { ApiError } from '../utils/ApiError.js';
+import { cleanHtml } from '../utils/html.js';
 
 // ---------- public ----------
 
@@ -56,6 +57,7 @@ export async function create(input, authorId) {
 
   return noticeRepository.create({
     ...input,
+    body: cleanHtml(input.body),
     slug,
     authorId: authorId ?? null,
     noticeDate: new Date(input.noticeDate),
@@ -73,6 +75,7 @@ export async function update(id, input) {
 
   return noticeRepository.update(id, {
     ...input,
+    ...(input.body !== undefined ? { body: cleanHtml(input.body) } : {}),
     slug,
     ...(input.noticeDate ? { noticeDate: new Date(input.noticeDate) } : {}),
   });

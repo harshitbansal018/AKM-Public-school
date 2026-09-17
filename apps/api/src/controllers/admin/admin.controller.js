@@ -16,6 +16,8 @@ import * as downloadService from '../../services/download.service.js';
 import * as settingService from '../../services/setting.service.js';
 import * as announcementService from '../../services/announcement.service.js';
 import * as userService from '../../services/user.service.js';
+import { facultySalaryService, jobApplicationService } from '../../services/internalRecords.service.js';
+import { sendUploadedFile } from '../../utils/fileUrl.js';
 
 // ---------- dashboard ----------
 
@@ -174,6 +176,30 @@ export const getSettings = asyncHandler(async (_req, res) => {
 
 export const updateSettings = asyncHandler(async (req, res) => {
   sendOk(res, await settingService.updateMany(req.body.settings), 'Settings saved');
+});
+
+// ---------- job applications ----------
+
+/** The applicant's CV. Only reachable signed in — the resumes folder is not static. */
+export const downloadResume = asyncHandler(async (req, res) => {
+  const { relativePath, filename } = await jobApplicationService.resolveResume(req.params.id);
+  await sendUploadedFile(res, relativePath, filename);
+});
+
+// ---------- faculty salary ----------
+
+export const paySalary = asyncHandler(async (req, res) => {
+  sendOk(res, await facultySalaryService.markPaid(req.params.id, req.body.paymentDate), 'Salary marked as paid');
+});
+
+/** The Policies page tabs — the dropdown a policy is filed under. */
+export const listPolicyTabs = asyncHandler(async (_req, res) => {
+  sendOk(res, await settingService.listPolicyTabs(), 'Policy tabs');
+});
+
+/** The class/section dropdown used by every form that files something under a class. */
+export const listClassSections = asyncHandler(async (_req, res) => {
+  sendOk(res, await settingService.listClassSections(), 'Classes & sections');
 });
 
 // ---------- users ----------

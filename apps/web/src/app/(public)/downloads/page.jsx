@@ -40,7 +40,6 @@ export default async function DownloadsPage() {
         <div className="container">
           {downloads.length === 0 ? (
             <EmptyState
-              icon="📄"
               title={text(settings, 'downloads_empty_title', 'No downloads available yet')}
               description={text(settings, 'downloads_empty_description')}
               action={<Button href="/contact">Contact the office</Button>}

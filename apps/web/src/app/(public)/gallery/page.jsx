@@ -29,7 +29,6 @@ export default async function GalleryPage() {
         <div className="container">
           {albums.length === 0 ? (
             <EmptyState
-              icon="📷"
               title={text(settings, 'gallery_empty_title', 'No albums yet')}
               description={text(settings, 'gallery_empty_description')}
             />

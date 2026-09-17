@@ -1,64 +1,48 @@
-import { getSettings } from '@/lib/serverApi';
+import { getSettings, getPublicPolicies } from '@/lib/serverApi';
 import { buildMetadata } from '@/lib/seo';
+import { text } from '@/lib/content';
+import { groupPoliciesByTab } from '@/constants/policies';
 import PageHeader from '@/components/ui/PageHeader/PageHeader';
-import styles from '../legal.module.css';
+import EmptyState from '@/components/ui/EmptyState/EmptyState';
+import PolicyTabs from '@/components/ui/PolicyTabs/PolicyTabs';
 
-export const metadata = buildMetadata({
-  title: 'Privacy Policy',
-  description: 'How AKM Public Sr. Sec. School handles information submitted through this website.',
-  path: '/privacy-policy',
-});
-
-export default async function PrivacyPolicyPage() {
+export async function generateMetadata() {
   const settings = await getSettings();
+  return buildMetadata({
+    title: text(settings, 'page_policies_title', 'Privacy Policy'),
+    description: text(settings, 'page_policies_subtitle'),
+    path: '/privacy-policy',
+  });
+}
+
+/**
+ * The school's policies — privacy, student, staff, rules — on one page, one
+ * tab per heading the office set up under Website content → Privacy Policy
+ * page. Only active policies are shown; a tab with nothing in it is hidden.
+ */
+export default async function PrivacyPolicyPage() {
+  const [settings, { tabs, policies }] = await Promise.all([getSettings(), getPublicPolicies()]);
+  const groups = groupPoliciesByTab(policies, tabs);
+  const title = text(settings, 'page_policies_title', 'Privacy Policy');
 
   return (
     <>
-      <PageHeader title="Privacy Policy" breadcrumbs={[{ label: 'Privacy Policy' }]} />
+      <PageHeader
+        title={title}
+        subtitle={text(settings, 'page_policies_subtitle')}
+        breadcrumbs={[{ label: title }]}
+      />
 
       <section className="section">
         <div className="container">
-          <div className={styles.prose}>
-            <p className={styles.updated}>Last updated: 1 April 2026</p>
-
-            <h2>What we collect</h2>
-            <p>
-              When you submit an admission enquiry through this website, we collect the name and
-              phone number you provide, and optionally the student name, class and message. We do
-              not ask for payment details anywhere on this site.
-            </p>
-
-            <h2>Why we collect it</h2>
-            <p>
-              The only purpose is to respond to your enquiry. A member of the school office uses
-              your phone number to call you back about admission.
-            </p>
-
-            <h2>Who can see it</h2>
-            <p>
-              Enquiries are visible only to authorised school staff through a password-protected
-              admin panel. We do not sell, rent or share this information with third parties.
-            </p>
-
-            <h2>How long we keep it</h2>
-            <p>
-              Enquiries are retained for the duration of the admission session and archived
-              afterwards for our records.
-            </p>
-
-            <h2>Cookies</h2>
-            <p>
-              This website does not use advertising or tracking cookies. Fonts are loaded from
-              Google Fonts, which may log the request as part of serving those files.
-            </p>
-
-            <h2>Contact us</h2>
-            <p>
-              To ask about or request deletion of information you have submitted, write to{' '}
-              <a href={`mailto:${settings.email}`}>{settings.email}</a> or call{' '}
-              {settings.phonePrimary}.
-            </p>
-          </div>
+          {groups.length === 0 ? (
+            <EmptyState
+              title={text(settings, 'policies_empty_title', 'No policies published yet')}
+              description={text(settings, 'policies_empty_description')}
+            />
+          ) : (
+            <PolicyTabs groups={groups} />
+          )}
         </div>
       </section>
     </>

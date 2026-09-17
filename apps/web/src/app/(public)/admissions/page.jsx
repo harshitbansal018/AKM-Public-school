@@ -17,7 +17,7 @@ import styles from './admissions.module.css';
  * the icon follows the position rather than being stored with the text. A step
  * added beyond this list simply shows its number and no icon.
  */
-const STEP_ICONS = ['enquiry', 'campus', 'documents', 'seat'];
+const STEP_ICONS = ['enquiry', 'campus', 'documents', 'check'];
 
 export async function generateMetadata() {
   const settings = await getSettings();

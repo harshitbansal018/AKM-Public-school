@@ -3,6 +3,7 @@ import * as controller from '../controllers/public/public.controller.js';
 import { validate } from '../middlewares/validate.middleware.js';
 import { honeypot } from '../middlewares/honeypot.middleware.js';
 import { enquiryLimiter } from '../middlewares/rateLimit.middleware.js';
+import { uploadDocument } from '../middlewares/upload.middleware.js';
 import { idParamSchema, slugParamSchema } from '../validators/common.validator.js';
 import { listNoticesSchema, createPublicJobApplicationSchema } from '../validators/content.validator.js';
 import { createEnquirySchema } from '../validators/enquiry.validator.js';
@@ -22,9 +23,17 @@ router.get('/faculty', controller.getFaculty);
 router.get('/faculty/principal', controller.getPrincipal);
 router.get('/achievements', controller.getAchievements);
 router.get('/homework', controller.getHomework);
-router.get('/results', controller.getResults);
 router.get('/policies', controller.getPolicies);
-router.post('/job-applications', enquiryLimiter, honeypot, validate(createPublicJobApplicationSchema), controller.createJobApplication);
+// Careers form: multipart, with the CV in the `resume` field. multer parses the
+// body first, so the honeypot and validation see the text fields as usual.
+router.post(
+  '/job-applications',
+  enquiryLimiter,
+  uploadDocument('resumes', 'resume'),
+  honeypot,
+  validate(createPublicJobApplicationSchema),
+  controller.createJobApplication
+);
 
 // Notices — the /:slug route is declared last so it cannot shadow the list.
 router.get('/notices', validate(listNoticesSchema, 'query'), controller.getNotices);
