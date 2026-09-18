@@ -15,6 +15,7 @@ router.get('/home', controller.getHome);
 
 // Site-wide content
 router.get('/settings', controller.getSettings);
+router.get('/class-sections', controller.getClassSections);
 router.get('/announcements', controller.getAnnouncements);
 router.get('/academic-stages', controller.getStages);
 router.get('/streams', controller.getStreams);

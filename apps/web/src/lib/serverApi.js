@@ -38,6 +38,14 @@ export function getSettings() {
 }
 
 /** Active ticker lines. */
+/** Classes for the enquiry form's dropdown. Edited under Website content, so it shares the settings tag. */
+export function getClassSections() {
+  return withFallback(
+    () => apiFetch('/class-sections', { tags: ['settings'], revalidate: 3600 }),
+    fallback.classSections
+  );
+}
+
 export function getAnnouncements() {
   return withFallback(
     () => apiFetch('/announcements', { tags: ['announcements'], revalidate: 300 }),

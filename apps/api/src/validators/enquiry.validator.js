@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { CLASS_GROUPS, ENQUIRY_STATUS, MEDIUM } from '../config/constants.js';
+import { ENQUIRY_STATUS, MEDIUM } from '../config/constants.js';
 import { optionalText } from './common.validator.js';
 
 /**
@@ -25,7 +25,8 @@ export const createEnquirySchema = z.object({
     }, 'Enter a valid 10-digit phone number'),
 
   email: z.string().trim().toLowerCase().email('Enter a valid email').optional().nullable(),
-  classGroup: z.enum(CLASS_GROUPS, { errorMap: () => ({ message: 'Choose a class' }) }),
+  // Checked against the school's configured classes in the service.
+  classGroup: z.string().trim().min(1, 'Choose a class').max(80, 'Choose a class'),
   medium: z.enum(Object.values(MEDIUM)).optional().nullable(),
   address: optionalText(500),
   message: optionalText(2000),

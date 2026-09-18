@@ -1,4 +1,4 @@
-import { getSettings } from '@/lib/serverApi';
+import { getSettings, getClassSections } from '@/lib/serverApi';
 import { admission } from '@/data/fallback';
 import { buildMetadata } from '@/lib/seo';
 import { cn } from '@/lib/cn';
@@ -29,7 +29,7 @@ export async function generateMetadata() {
 }
 
 export default async function AdmissionsPage() {
-  const settings = await getSettings();
+  const [settings, classSections] = await Promise.all([getSettings(), getClassSections()]);
 
   const steps = toPairs(settings.admissions_steps_items);
   const documents = toList(settings.admissions_docs_items);
@@ -102,7 +102,7 @@ export default async function AdmissionsPage() {
           <Reveal delay={1} className={styles.formCard}>
             <h3>{text(settings, 'admissions_form_heading', 'Admission Enquiry')}</h3>
             <p className={styles.formIntro}>{text(settings, 'admissions_form_intro')}</p>
-            <EnquiryForm settings={settings} />
+            <EnquiryForm settings={settings} classOptions={classSections} />
           </Reveal>
         </div>
       </section>

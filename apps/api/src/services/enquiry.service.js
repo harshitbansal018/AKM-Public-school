@@ -4,7 +4,13 @@ import { ApiError } from '../utils/ApiError.js';
 import { logger } from '../utils/logger.js';
 import { env } from '../config/env.js';
 import * as mailService from './mail.service.js';
+import { resolveClassGroup } from './setting.service.js';
 
+/**
+ * The form stores the class label itself ("Class 10", from the school's
+ * configured list). These are the codes the old form sent, kept so enquiries
+ * received before the change still read properly.
+ */
 export const CLASS_LABELS = {
   NURSERY_UKG: 'Nursery – UKG',
   CLASS_1_5: 'Class 1 – 5',
@@ -28,8 +34,16 @@ export async function submit(input, request = {}) {
     );
   }
 
+  // "10" / "class 10" -> the configured "Class 10"; anything else is refused.
+  const classGroup = await resolveClassGroup(input.classGroup).catch(() => {
+    throw ApiError.badRequest('Choose a class from the list', [
+      { field: 'classGroup', message: 'Choose a class from the list' },
+    ]);
+  });
+
   const enquiry = await enquiryRepository.create({
     ...input,
+    classGroup,
     ipAddress: request.ip ?? null,
     userAgent: request.userAgent?.slice(0, 500) ?? null,
   });

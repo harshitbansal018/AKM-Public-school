@@ -16,15 +16,6 @@ export const MEDIUM = {
   BOTH: 'BOTH',
 };
 
-/** Values the enquiry form's class dropdown may send. */
-export const CLASS_GROUPS = [
-  'NURSERY_UKG',
-  'CLASS_1_5',
-  'CLASS_6_8',
-  'CLASS_9_10',
-  'CLASS_11_12',
-];
-
 export const NOTICE_CATEGORIES = ['general', 'exam', 'admission', 'result', 'event'];
 
 export const DOWNLOAD_CATEGORIES = ['general', 'datesheet', 'syllabus', 'form', 'result'];

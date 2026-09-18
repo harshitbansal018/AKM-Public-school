@@ -25,6 +25,7 @@ const STATUSES = [
   { value: 'CLOSED', label: 'Closed' },
 ];
 
+/** Codes the old enquiry form sent; newer enquiries store the class name itself. */
 const CLASS_LABELS = {
   NURSERY_UKG: 'Nursery – UKG',
   CLASS_1_5: 'Class 1 – 5',

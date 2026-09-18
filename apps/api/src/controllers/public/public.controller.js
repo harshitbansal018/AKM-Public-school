@@ -32,6 +32,11 @@ export const getSettings = asyncHandler(async (_req, res) => {
   sendOk(res, await settingService.getPublicSettings(), 'Site settings');
 });
 
+/** The school's classes — the enquiry form's "Class applying for" list. */
+export const getClassSections = asyncHandler(async (_req, res) => {
+  sendOk(res, await settingService.listClassSections(), 'Classes & sections');
+});
+
 export const getAnnouncements = asyncHandler(async (_req, res) => {
   sendOk(res, await announcementService.listActive(), 'Active announcements');
 });

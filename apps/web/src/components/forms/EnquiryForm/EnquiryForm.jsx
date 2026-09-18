@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { apiPost, API_ENABLED } from '@/lib/api';
-import { classGroups } from '@/constants/classGroups';
 import { useToast } from '@/hooks/useToast';
 import { toTelHref } from '@/lib/format';
 import Input from '@/components/ui/Input/Input';
@@ -50,7 +49,11 @@ function validate(values) {
  * points the visitor at the phone and WhatsApp numbers rather than silently
  * dropping the message.
  */
-export default function EnquiryForm({ settings }) {
+/**
+ * @param {string[]} classOptions  the school's classes (Website content →
+ *        Classes & subjects); the chosen label is what the office sees.
+ */
+export default function EnquiryForm({ settings, classOptions = [] }) {
   const toast = useToast();
   const [values, setValues] = useState(EMPTY);
   const [errors, setErrors] = useState({});
@@ -160,7 +163,7 @@ export default function EnquiryForm({ settings }) {
           name="classGroup"
           label="Class Applying For"
           placeholder="Select a class"
-          options={classGroups}
+          options={classOptions.map((name) => ({ value: name, label: name }))}
           value={values.classGroup}
           onChange={update('classGroup')}
           error={errors.classGroup}

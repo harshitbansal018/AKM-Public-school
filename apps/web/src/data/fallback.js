@@ -34,6 +34,14 @@ export const settings = {
   copyrightYear: 2026,
 };
 
+/** The enquiry form's class list when the API is unreachable. */
+export const classSections = [
+  'Nursery',
+  'LKG',
+  'UKG',
+  ...Array.from({ length: 12 }, (_, index) => `Class ${index + 1}`),
+];
+
 export const stats = [
   { id: 1, value: 310, suffix: '+', label: 'Students' },
   { id: 2, value: 22, suffix: '', label: 'Dedicated Teachers' },

@@ -65,16 +65,13 @@ export default function ResourceManager({
     setFormOpen(true);
   };
 
+  // On failure the error is rethrown: useAdminResource has shown the toast,
+  // and ResourceForm stays open and marks the fields the API complained about.
   const handleSubmit = async (payload) => {
-    try {
-      if (editing) await update(editing.id, payload);
-      else await create(payload);
-      setFormOpen(false);
-      setEditing(null);
-    } catch {
-      // useAdminResource already surfaced the message; keep the form open so
-      // the person does not lose what they typed.
-    }
+    if (editing) await update(editing.id, payload);
+    else await create(payload);
+    setFormOpen(false);
+    setEditing(null);
   };
 
   const handleDelete = async () => {

@@ -62,7 +62,7 @@ export default function ResourceForm({
     setErrors((current) => ({ ...current, [name]: undefined }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     const found = {};
@@ -86,7 +86,18 @@ export default function ResourceForm({
     for (const field of fields) {
       payload[field.name] = normaliseOut(field, values[field.name]);
     }
-    onSubmit(payload);
+
+    try {
+      await onSubmit(payload);
+    } catch (err) {
+      // The API names the field it rejected; put its message under that field.
+      const fromApi = {};
+      for (const detail of Array.isArray(err?.details) ? err.details : []) {
+        const name = String(detail.field ?? '').split('.')[0];
+        if (fields.some((field) => field.name === name)) fromApi[name] = detail.message;
+      }
+      setErrors(fromApi);
+    }
   };
 
   return (

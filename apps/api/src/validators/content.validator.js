@@ -376,10 +376,15 @@ export const paySalarySchema = z.object({
  */
 export const createPublicJobApplicationSchema = z.object({
   name: z.string().trim().min(2, 'Enter your full name').max(150),
+  // Same rule as the enquiry form: any spacing/dashes/+91, but 10–13 real digits.
   phone: z
     .string()
     .trim()
-    .regex(/^[+d][ds-]{7,19}$/, 'Enter a valid phone number'),
+    .max(20, 'Enter a valid phone number')
+    .refine((value) => {
+      const digits = value.replace(/\D/g, '');
+      return digits.length >= 10 && digits.length <= 13;
+    }, 'Enter a valid 10-digit phone number'),
   email: z.string().trim().toLowerCase().email('Enter a valid email address'),
   position: z.string().trim().min(2, 'Tell us the position you are applying for').max(150),
   subject: optionalText(150),

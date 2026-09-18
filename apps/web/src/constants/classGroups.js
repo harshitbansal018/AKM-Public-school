@@ -1,11 +1,5 @@
-/** Options for the "Class Applying For" select on the enquiry form. */
-export const classGroups = [
-  { value: 'NURSERY_UKG', label: 'Nursery – UKG' },
-  { value: 'CLASS_1_5', label: 'Class 1 – 5' },
-  { value: 'CLASS_6_8', label: 'Class 6 – 8' },
-  { value: 'CLASS_9_10', label: 'Class 9 – 10' },
-  { value: 'CLASS_11_12', label: 'Class 11 – 12' },
-];
+// The enquiry form's class list is no longer here: it comes from the school's
+// configured classes (Website content → Classes & subjects) via getClassSections().
 
 export const mediumOptions = [
   { value: 'ENGLISH', label: 'English Medium' },
