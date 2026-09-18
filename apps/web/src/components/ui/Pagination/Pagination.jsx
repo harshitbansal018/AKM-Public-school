@@ -3,17 +3,24 @@ import { cn } from '@/lib/cn';
 import styles from './Pagination.module.css';
 
 /**
- * Server-rendered pagination — pages are plain links so the list stays
- * crawlable and works without JavaScript.
+ * Page controls, in one of two modes:
+ *
+ *  - Links (`basePath` + `query`): server-rendered pages such as Notices.
+ *    Pages are plain URLs, so the list stays crawlable and works without JS.
+ *  - Buttons (`onChange`): client-side paging of an already-loaded list, as in
+ *    the admin tables.
  *
  * @param {object} props
  * @param {number} props.page        current page (1-based)
  * @param {number} props.totalPages
- * @param {string} props.basePath    e.g. '/notices'
- * @param {object} [props.query]     extra query params to preserve
+ * @param {string} [props.basePath]  e.g. '/notices'
+ * @param {object} [props.query]     extra query params to preserve in links
+ * @param {(page: number) => void} [props.onChange]  button mode
+ * @param {string} [props.summary]   e.g. "Showing 26–50 of 120"
+ * @param {boolean} [props.compact]  tighter spacing, for inside panels
  */
-export default function Pagination({ page, totalPages, basePath, query = {} }) {
-  if (totalPages <= 1) return null;
+export default function Pagination({ page, totalPages, basePath, query = {}, onChange, summary, compact }) {
+  if (totalPages <= 1 && !summary) return null;
 
   const hrefFor = (target) => {
     const params = new URLSearchParams(query);
@@ -29,39 +36,51 @@ export default function Pagination({ page, totalPages, basePath, query = {} }) {
   const pages = [];
   for (let i = start; i <= end; i += 1) pages.push(i);
 
+  /** A page control as a link or a button, depending on the mode. */
+  const control = (target, label, className, extra = {}) =>
+    onChange ? (
+      <button type="button" className={className} onClick={() => onChange(target)} {...extra}>
+        {label}
+      </button>
+    ) : (
+      <Link href={hrefFor(target)} className={className} {...extra}>
+        {label}
+      </Link>
+    );
+
   return (
-    <nav className={styles.pagination} aria-label="Pagination">
-      {page > 1 ? (
-        <Link href={hrefFor(page - 1)} className={styles.arrow} rel="prev">
-          ← Prev
-        </Link>
-      ) : (
-        <span className={cn(styles.arrow, styles.disabled)}>← Prev</span>
-      )}
+    <nav className={cn(styles.pagination, compact && styles.compact)} aria-label="Pagination">
+      {summary ? <span className={styles.summary}>{summary}</span> : null}
 
-      <ul className={styles.pages}>
-        {pages.map((item) => (
-          <li key={item}>
-            {item === page ? (
-              <span className={cn(styles.page, styles.current)} aria-current="page">
-                {item}
-              </span>
-            ) : (
-              <Link href={hrefFor(item)} className={styles.page}>
-                {item}
-              </Link>
-            )}
-          </li>
-        ))}
-      </ul>
+      {totalPages > 1 ? (
+        <>
+          {page > 1 ? (
+            control(page - 1, '← Prev', styles.arrow, { rel: 'prev' })
+          ) : (
+            <span className={cn(styles.arrow, styles.disabled)}>← Prev</span>
+          )}
 
-      {page < totalPages ? (
-        <Link href={hrefFor(page + 1)} className={styles.arrow} rel="next">
-          Next →
-        </Link>
-      ) : (
-        <span className={cn(styles.arrow, styles.disabled)}>Next →</span>
-      )}
+          <ul className={styles.pages}>
+            {pages.map((item) => (
+              <li key={item}>
+                {item === page ? (
+                  <span className={cn(styles.page, styles.current)} aria-current="page">
+                    {item}
+                  </span>
+                ) : (
+                  control(item, item, styles.page)
+                )}
+              </li>
+            ))}
+          </ul>
+
+          {page < totalPages ? (
+            control(page + 1, 'Next →', styles.arrow, { rel: 'next' })
+          ) : (
+            <span className={cn(styles.arrow, styles.disabled)}>Next →</span>
+          )}
+        </>
+      ) : null}
     </nav>
   );
 }

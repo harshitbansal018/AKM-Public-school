@@ -723,11 +723,11 @@ export const cmsPages = [
 
   {
     id: 'classes',
-    label: 'Classes & sections',
+    label: 'Classes & subjects',
     icon: 'graduation',
     href: '/admin/students',
     description:
-      'The list of classes the school runs. Students, homework, results and fees are filed under one of these, and teachers are given access class by class — so every form shows this same list.',
+      'The classes the school runs and the subjects it teaches. Students, homework, results and fees are filed under a class, and homework and marks under a subject — so every form shows these same lists.',
     sections: [
       {
         id: 'list',
@@ -740,6 +740,20 @@ export const cmsPages = [
             type: 'lines',
             rows: 16,
             help: 'Leave blank to use the standard list: Nursery, LKG, UKG, Class 1 – Class 12. Renaming a class here does not rename records already filed under the old name.',
+          },
+        ],
+      },
+      {
+        id: 'subjects',
+        label: 'Subjects',
+        help: 'One per line. Teachers pick from this list when setting homework and entering marks, so results line up subject by subject on the report card.',
+        fields: [
+          {
+            key: 'subjects',
+            label: 'Subjects',
+            type: 'lines',
+            rows: 12,
+            help: 'Leave blank to use the standard list (English, Hindi, Mathematics, Science, Social Science, Computer Science and the senior-secondary subjects). Results already saved keep the subject name they were saved with.',
           },
         ],
       },

@@ -18,6 +18,8 @@ import * as announcementService from '../../services/announcement.service.js';
 import * as userService from '../../services/user.service.js';
 import { facultySalaryService, jobApplicationService } from '../../services/internalRecords.service.js';
 import { sendUploadedFile } from '../../utils/fileUrl.js';
+import * as reportService from '../../services/report.service.js';
+import * as resultService from '../../services/result.service.js';
 
 // ---------- dashboard ----------
 
@@ -101,8 +103,7 @@ export const exportEnquiries = asyncHandler(async (_req, res) => {
 
   res.setHeader('Content-Type', 'text/csv; charset=utf-8');
   res.setHeader('Content-Disposition', `attachment; filename="enquiries-${stamp}.csv"`);
-  // BOM so Excel opens the file as UTF-8 and does not mangle names.
-  res.send(`﻿${csv}`);
+  res.send(csv); // the CSV helper already prefixes the UTF-8 BOM for Excel
 });
 
 // ---------- gallery ----------
@@ -178,6 +179,31 @@ export const updateSettings = asyncHandler(async (req, res) => {
   sendOk(res, await settingService.updateMany(req.body.settings), 'Settings saved');
 });
 
+// ---------- reports / print ----------
+
+export const listReports = asyncHandler(async (_req, res) => {
+  sendOk(res, await reportService.listReports(), 'Reports');
+});
+
+/**
+ * One report. `?format=csv` downloads an Excel-friendly file; otherwise the
+ * rows come back as JSON for the print-friendly page.
+ */
+export const runReport = asyncHandler(async (req, res) => {
+  const { format, ...filters } = req.validatedQuery ?? req.query;
+  const report = await reportService.runReport(req.params.key, filters);
+
+  if (format === 'csv') {
+    const stamp = report.generatedAt.toISOString().slice(0, 10);
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="${report.key}-${stamp}.csv"`);
+    return res.send(report.csv());
+  }
+
+  const { csv, ...json } = report;
+  return sendOk(res, json, report.label);
+});
+
 // ---------- job applications ----------
 
 /** The applicant's CV. Only reachable signed in — the resumes folder is not static. */
@@ -190,6 +216,21 @@ export const downloadResume = asyncHandler(async (req, res) => {
 
 export const paySalary = asyncHandler(async (req, res) => {
   sendOk(res, await facultySalaryService.markPaid(req.params.id, req.body.paymentDate), 'Salary marked as paid');
+});
+
+/** The subject dropdown for homework and results. */
+export const listSubjects = asyncHandler(async (_req, res) => {
+  sendOk(res, await settingService.listSubjects(), 'Subjects');
+});
+
+// ---------- results: marks grid ----------
+
+export const getMarksGrid = asyncHandler(async (req, res) => {
+  sendOk(res, await resultService.loadMarksGrid(req.validatedQuery), 'Marks grid');
+});
+
+export const saveMarksGrid = asyncHandler(async (req, res) => {
+  sendOk(res, await resultService.saveMarksGrid(req.body), 'Marks saved');
 });
 
 /** The Policies page tabs — the dropdown a policy is filed under. */

@@ -13,6 +13,8 @@ export default function ParentsAdminPage() {
     <ResourceManager
       endpoint="/admin/parents"
       title="Parents"
+      searchKeys={['name', 'email', 'phone']}
+      searchPlaceholder="Search by name, email or phone…"
       singular="parent account"
       description="Logins for the parent portal. Create the account here, then open each child under Students and choose this parent — they will only ever see their own children."
       emptyDescription="Add a parent account, then link their children from the Students page."

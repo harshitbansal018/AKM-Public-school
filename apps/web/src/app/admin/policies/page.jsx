@@ -1,9 +1,7 @@
 'use client';
 
-import { useState } from 'react';
 import InternalRecordManager from '@/components/admin/InternalRecordManager/InternalRecordManager';
 import StatusPill from '@/components/admin/StatusPill/StatusPill';
-import Select from '@/components/ui/Select/Select';
 import { formatLongDate } from '@/lib/format';
 import { usePolicyTabs } from '@/hooks/useClassSections';
 
@@ -20,7 +18,6 @@ const STATUS = {
  */
 export default function PoliciesPage() {
   const tabs = usePolicyTabs();
-  const [tabFilter, setTabFilter] = useState('');
 
   return (
     <InternalRecordManager
@@ -29,19 +26,21 @@ export default function PoliciesPage() {
       singular="policy"
       description="Each policy sits under a tab on the website’s Policies page. Add or rename tabs under Website content → Policies page; set a policy to Active to publish it."
       emptyDescription="Write the school’s rules here, one policy per entry, choose its tab, and set it to Active to publish."
-      toolbar={
-        <div style={{ maxWidth: 380, marginBottom: 18 }}>
-          <Select
-            id="tabFilter"
-            label="Show one tab"
-            placeholder="All tabs"
-            options={tabs}
-            value={tabFilter}
-            onChange={(e) => setTabFilter(e.target.value)}
-          />
-        </div>
-      }
-      filterRows={(rows) => (tabFilter ? rows.filter((row) => row.category === tabFilter) : rows)}
+      searchKeys={['title']}
+      searchPlaceholder="Search policies…"
+      filters={[
+        { name: 'category', label: 'Tab', options: tabs, placeholder: 'All tabs' },
+        {
+          name: 'status',
+          label: 'Status',
+          placeholder: 'Any status',
+          options: [
+            { value: 'ACTIVE', label: 'Active' },
+            { value: 'DRAFT', label: 'Draft' },
+            { value: 'ARCHIVED', label: 'Archived' },
+          ],
+        },
+      ]}
       columns={[
         { key: 'title', label: 'Policy' },
         { key: 'category', label: 'Tab' },

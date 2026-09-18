@@ -12,6 +12,7 @@ import {
 } from '../repositories/index.js';
 import { serializeParent } from '../serializers/index.js';
 import { resolveClassGroup, resolvePolicyTab } from './setting.service.js';
+import { prepareResult } from './result.service.js';
 import { hashPassword } from '../utils/password.js';
 import { cleanHtml } from '../utils/html.js';
 import { ApiError } from '../utils/ApiError.js';
@@ -104,7 +105,7 @@ export const parentService = createInternalService(parentRepository, 'Parent acc
 });
 export const studentService = createInternalService(studentRepository, 'Student', { prepare: prepareStudent });
 export const homeworkService = createInternalService(homeworkRepository, 'Homework', { prepare: withResolvedClass });
-export const resultService = createInternalService(resultRepository, 'Result', { prepare: withStudent });
+export const resultService = createInternalService(resultRepository, 'Result', { prepare: prepareResult });
 export const feeRecordService = createInternalService(feeRecordRepository, 'Fee record', { prepare: prepareFee });
 export const facultySalaryService = {
   ...createInternalService(facultySalaryRepository, 'Salary record', { prepare: prepareSalary }),

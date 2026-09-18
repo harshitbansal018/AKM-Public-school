@@ -264,17 +264,75 @@ const requireStudent = (data, ctx) => {
   }
 };
 
+/** A blank number box arrives as '' or null — treat both as "not given". */
+const optionalNumber = (max) =>
+  z.preprocess(
+    (value) => (value === '' || value === null || value === undefined ? null : value),
+    z.coerce.number().min(0).max(max).nullable()
+  );
+
+/**
+ * One result: a student, an examination and (usually) a subject with marks
+ * out of a maximum. `score` is the text shown; when marks are given the
+ * service derives it, otherwise it must be typed (a grade, say).
+ */
 export const createResultSchema = z
   .object({
     ...studentLink,
     exam: z.string().trim().min(2).max(150),
-    score: z.string().trim().min(1).max(100),
+    subject: optionalText(120),
+    marks: optionalNumber(100000).optional(),
+    maxMarks: optionalNumber(100000).optional(),
+    score: optionalText(100),
     resultDate: z.coerce.date().optional().nullable(),
     remarks: optionalText(2000),
     isPublished: z.boolean().default(false),
   })
-  .superRefine(requireStudent);
+  .superRefine((data, ctx) => {
+    requireStudent(data, ctx);
+    if ((data.marks === null || data.marks === undefined) && !data.score) {
+      ctx.addIssue({ code: 'custom', path: ['marks'], message: 'Enter the marks (or a grade in Score)' });
+    }
+    if (data.marks != null && data.maxMarks != null && data.marks > data.maxMarks) {
+      ctx.addIssue({ code: 'custom', path: ['marks'], message: 'Marks cannot exceed the maximum' });
+    }
+  });
 export const updateResultSchema = createResultSchema.innerType().partial();
+
+/**
+ * The marks grid: one examination for one class, several subjects, all the
+ * students at once. Each cell is a student's marks in a subject (null = absent
+ * / not entered, which leaves that cell out).
+ */
+export const marksGridQuerySchema = z.object({
+  classGroup: z.string().trim().min(1).max(80),
+  exam: z.string().trim().max(150).optional(),
+});
+
+export const marksGridSchema = z.object({
+  classGroup: z.string().trim().min(1).max(80),
+  exam: z.string().trim().min(2).max(150),
+  resultDate: z.coerce.date().optional().nullable(),
+  isPublished: z.boolean().default(false),
+  subjects: z
+    .array(
+      z.object({
+        name: z.string().trim().min(1).max(120),
+        maxMarks: z.coerce.number().positive().max(100000),
+      })
+    )
+    .min(1, 'Choose at least one subject')
+    .max(30),
+  entries: z
+    .array(
+      z.object({
+        studentId: z.coerce.number().int().positive(),
+        marks: z.record(z.string(), optionalNumber(100000)),
+      })
+    )
+    .min(1, 'There are no students in this class')
+    .max(500),
+});
 
 export const createFeeRecordSchema = z
   .object({
@@ -351,6 +409,16 @@ export const createPolicySchema = z.object({
   content: z.string().trim().min(2).max(50000),
 });
 export const updatePolicySchema = createPolicySchema.partial();
+
+// ---------- reports ----------
+
+export const reportQuerySchema = z.object({
+  format: z.enum(['csv', 'json']).optional(),
+  classGroup: z.string().trim().max(80).optional(),
+  status: z.string().trim().max(30).optional(),
+  from: z.string().regex(/^d{4}-d{2}-d{2}$/).optional(),
+  to: z.string().regex(/^d{4}-d{2}-d{2}$/).optional(),
+});
 
 // ---------- users ----------
 

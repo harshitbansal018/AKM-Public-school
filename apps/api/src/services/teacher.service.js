@@ -9,7 +9,9 @@ import {
   resultRepository,
 } from '../repositories/index.js';
 import { facultyClasses, serializeTeacher } from '../serializers/index.js';
-import { withResolvedClass, withStudent } from './internalRecords.service.js';
+import { withResolvedClass } from './internalRecords.service.js';
+import { prepareResult, loadMarksGrid, saveMarksGrid } from './result.service.js';
+import { resolveClassGroup } from './setting.service.js';
 import { ApiError } from '../utils/ApiError.js';
 
 const inClasses = (teacher) => ({ classGroup: { in: facultyClasses(teacher) } });
@@ -48,7 +50,7 @@ function createScopedService(repository, label, prepare) {
 
     async update(teacher, id, input) {
       const row = await this.getById(teacher, id);
-      const data = await prepare(input);
+      const data = await prepare(input, row);
       assertOwnClass(teacher, data.classGroup ?? row.classGroup);
       return repository.update(id, data);
     },
@@ -65,7 +67,17 @@ function createScopedService(repository, label, prepare) {
 const publishedHomework = async (data) => ({ ...(await withResolvedClass(data)), isPublished: true });
 
 export const teacherHomeworkService = createScopedService(homeworkRepository, 'Homework', publishedHomework);
-export const teacherResultService = createScopedService(resultRepository, 'Result', withStudent);
+export const teacherResultService = createScopedService(resultRepository, 'Result', prepareResult);
+
+/** The marks grid, limited to the teacher's own classes. */
+export async function loadTeacherMarksGrid(teacher, query) {
+  assertOwnClass(teacher, await resolveClassGroup(query.classGroup));
+  return loadMarksGrid(query);
+}
+
+export function saveTeacherMarksGrid(teacher, grid) {
+  return saveMarksGrid(grid, (classGroup) => assertOwnClass(teacher, classGroup));
+}
 
 export function listStudents(teacher) {
   return studentRepository.findWhere(inClasses(teacher));

@@ -5,7 +5,7 @@ import { logger } from '../utils/logger.js';
 import { env } from '../config/env.js';
 import * as mailService from './mail.service.js';
 
-const CLASS_LABELS = {
+export const CLASS_LABELS = {
   NURSERY_UKG: 'Nursery – UKG',
   CLASS_1_5: 'Class 1 – 5',
   CLASS_6_8: 'Class 6 – 8',
@@ -92,53 +92,8 @@ export async function remove(id) {
 }
 
 /** Builds a CSV the office can open in Excel. */
+/** The CSV download on the Enquiries page — the same report as Reports → Enquiries. */
 export async function toCsv() {
-  const rows = await enquiryRepository.findAllForExport();
-
-  // Same order as the public form, so the office reads the two side by side.
-  const header = [
-    'Reference',
-    'Received',
-    'Student Name',
-    'Phone',
-    'Parent Name',
-    'Class',
-    'Address',
-    'Message',
-    'Email',
-    'Status',
-    'Admin Note',
-  ];
-
-  // A leading =, +, - or @ makes Excel treat a cell as a formula, so those are
-  // prefixed with a quote. Quotes are doubled per RFC 4180.
-  const escape = (value) => {
-    if (value === null || value === undefined) return '';
-    let text = String(value);
-    if (/^[=+\-@]/.test(text)) text = `'${text}`;
-    return `"${text.replace(/"/g, '""')}"`;
-  };
-
-  const lines = [
-    header.join(','),
-    ...rows.map((row) =>
-      [
-        `ENQ-${String(row.id).padStart(5, '0')}`,
-        row.createdAt.toISOString(),
-        row.studentName,
-        row.phone,
-        row.parentName,
-        CLASS_LABELS[row.classGroup] ?? row.classGroup,
-        row.address,
-        row.message,
-        row.email,
-        row.status,
-        row.adminNote,
-      ]
-        .map(escape)
-        .join(',')
-    ),
-  ];
-
-  return lines.join('\r\n');
+  const { runReport } = await import('./report.service.js');
+  return (await runReport('enquiries')).csv();
 }

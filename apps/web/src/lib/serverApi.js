@@ -80,9 +80,10 @@ export function getAchievements() {
  * Paginated notice list.
  * @returns {Promise<{ items: object[], meta: { page, limit, total, totalPages } }>}
  */
-export function getNotices({ page = 1, limit = 10, category } = {}) {
+export function getNotices({ page = 1, limit = 10, category, q } = {}) {
   const query = new URLSearchParams({ page: String(page), limit: String(limit) });
   if (category) query.set('category', category);
+  if (q) query.set('q', q);
 
   const all = category ? fallback.notices.filter((n) => n.category === category) : fallback.notices;
   const start = (page - 1) * limit;

@@ -23,7 +23,7 @@ const EMPTY = {
 
 const SHORTCUTS = [
   { href: '/teacher/homework', icon: 'pencil', label: 'Set homework' },
-  { href: '/teacher/results', icon: 'chart', label: 'Enter results' },
+  { href: '/teacher/results/enter', icon: 'chart', label: 'Enter marks' },
   { href: '/teacher/students', icon: 'graduation', label: 'View my students' },
 ];
 

@@ -17,12 +17,19 @@
   align-items: start;
 }
 
+/* Pinned beside the fields, but never taller than the screen: with fifteen
+   pages the list scrolls inside itself instead of pushing the bottom tabs out
+   of reach (and jumping about when the page height changes). */
 .pageNav {
   display: flex;
   flex-direction: column;
   gap: 6px;
   position: sticky;
   top: 84px;
+  max-height: calc(100vh - 108px);
+  overflow-y: auto;
+  padding-right: 2px;
+  scrollbar-width: thin;
 }
 
 .pageTab {
@@ -342,13 +349,19 @@
   .layout {
     grid-template-columns: 1fr;
   }
+  /* One horizontal, swipeable row of tabs above the fields. */
   .pageNav {
     position: static;
+    max-height: none;
     flex-direction: row;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: visible;
+    padding-bottom: 4px;
   }
   .pageTab {
     width: auto;
+    flex-shrink: 0;
   }
 }
 

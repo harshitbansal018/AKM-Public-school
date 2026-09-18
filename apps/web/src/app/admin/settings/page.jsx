@@ -129,6 +129,12 @@ export default function SettingsAdminPage() {
 
   const page = cmsPages.find((p) => p.id === activePage) ?? cmsPages[0];
 
+  /** Opens a page from its heading, wherever the previous one was scrolled to. */
+  const showPage = (id) => {
+    setActivePage(id);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <AdminPage
       title="Website content"
@@ -173,7 +179,7 @@ export default function SettingsAdminPage() {
                 key={item.id}
                 type="button"
                 className={cn(styles.pageTab, activePage === item.id && styles.pageTabActive)}
-                onClick={() => setActivePage(item.id)}
+                onClick={() => showPage(item.id)}
               >
                 <span className={styles.pageIcon} aria-hidden="true">
                   <LineIcon name={item.icon} size={18} />
@@ -188,7 +194,7 @@ export default function SettingsAdminPage() {
             <button
               type="button"
               className={cn(styles.pageTab, activePage === '__other' && styles.pageTabActive)}
-              onClick={() => setActivePage('__other')}
+              onClick={() => showPage('__other')}
             >
               <span className={styles.pageIcon} aria-hidden="true">
                 <LineIcon name="settings" size={18} />

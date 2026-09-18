@@ -41,6 +41,11 @@ router.use(revalidateOnWrite);
 router.get('/dashboard', teacher.getDashboard);
 router.get('/students', teacher.listStudents);
 router.get('/salary', teacher.listSalary);
+router.get('/subjects', teacher.listSubjects);
+
+// Marks entry: the whole class for one examination, in one grid.
+router.get('/results/grid', validate(schema.marksGridQuerySchema, 'query'), teacher.getMarksGrid);
+router.post('/results/grid', validate(schema.marksGridSchema), teacher.saveMarksGrid);
 
 const resources = [
   ['homework', teacherHomeworkService, 'Homework', schema.createHomeworkSchema, schema.updateHomeworkSchema],

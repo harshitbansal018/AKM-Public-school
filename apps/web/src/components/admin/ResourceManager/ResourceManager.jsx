@@ -6,6 +6,7 @@ import DataTable from '@/components/admin/DataTable/DataTable';
 import ResourceForm from '@/components/admin/ResourceForm/ResourceForm';
 import ConfirmDialog from '@/components/admin/ConfirmDialog/ConfirmDialog';
 import { RowActions, RowButton } from '@/components/admin/RowActions/RowActions';
+import ListToolbar, { applyListFilters } from '@/components/admin/ListToolbar/ListToolbar';
 import { useAdminResource } from '@/hooks/useAdminResource';
 
 /**
@@ -15,9 +16,12 @@ import { useAdminResource } from '@/hooks/useAdminResource';
  * are all this same screen with different columns and fields, so they share
  * one implementation instead of seven copies that drift apart.
  *
- * @param {React.ReactNode | ((items) => React.ReactNode)} [toolbar]
- *        rendered between the heading and the table — filters, totals
- * @param {(items) => items} [filterRows]  narrows what the table shows
+ * @param {string[]} [searchKeys]  row fields a search box matches against; omit for no search box
+ * @param {{name, label, options, match?}[]} [filters]  dropdown filters above the table
+ * @param {React.ReactNode | ((visibleRows, allItems) => React.ReactNode)} [toolbar]
+ *        rendered above the table — totals and the like; gets the rows after search/filters
+ * @param {(items) => items} [filterRows]  extra narrowing on top of the built-in filters
+ * @param {React.ReactNode} [extraActions]  rendered beside the "+ Add" button in the page header
  * @param {(row, { patch, saving }) => React.ReactNode} [extraRowActions]
  *        extra buttons per row; `patch(path, body, message)` calls the API and reloads,
  *        `saving` is true while any request is in flight
@@ -30,8 +34,12 @@ export default function ResourceManager({
   columns,
   fields,
   emptyDescription,
+  searchKeys,
+  searchPlaceholder,
+  filters = [],
   toolbar,
   filterRows = (rows) => rows,
+  extraActions,
   extraRowActions,
   canDelete = () => true,
 }) {
@@ -39,6 +47,13 @@ export default function ResourceManager({
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [deleting, setDeleting] = useState(null);
+  const [search, setSearch] = useState('');
+  const [filterValues, setFilterValues] = useState({});
+
+  const visible = filterRows(
+    applyListFilters(items, { search, searchKeys: searchKeys ?? [], filters, values: filterValues })
+  );
+  const narrowed = visible.length !== items.length;
 
   const openCreate = () => {
     setEditing(null);
@@ -76,24 +91,39 @@ export default function ResourceManager({
       title={title}
       description={description}
       action={
-        <button type="button" className="btn btn-primary btn-sm" onClick={openCreate}>
-          + Add {singular}
-        </button>
-      }
-    >
-      {typeof toolbar === 'function' ? toolbar(items) : toolbar}
-
-      <DataTable
-        columns={columns}
-        rows={filterRows(items)}
-        loading={loading}
-        error={error}
-        emptyTitle={`No ${title.toLowerCase()} yet`}
-        emptyDescription={emptyDescription}
-        emptyAction={
+        <>
+          {extraActions}
           <button type="button" className="btn btn-primary btn-sm" onClick={openCreate}>
             + Add {singular}
           </button>
+        </>
+      }
+    >
+      <ListToolbar
+        searchPlaceholder={searchPlaceholder}
+        search={search}
+        onSearch={searchKeys ? setSearch : undefined}
+        filters={filters}
+        values={filterValues}
+        onFilter={(name, value) => setFilterValues((current) => ({ ...current, [name]: value }))}
+        summary={items.length ? `${visible.length} of ${items.length}` : undefined}
+      />
+
+      {typeof toolbar === 'function' ? toolbar(visible, items) : toolbar}
+
+      <DataTable
+        columns={columns}
+        rows={visible}
+        loading={loading}
+        error={error}
+        emptyTitle={narrowed ? `No ${title.toLowerCase()} match` : `No ${title.toLowerCase()} yet`}
+        emptyDescription={narrowed ? 'Try clearing the search or filters.' : emptyDescription}
+        emptyAction={
+          narrowed ? null : (
+            <button type="button" className="btn btn-primary btn-sm" onClick={openCreate}>
+              + Add {singular}
+            </button>
+          )
         }
         actions={(row) => (
           <RowActions>

@@ -70,7 +70,7 @@ export default function ParentDashboardPage() {
               </li>
               <li>
                 <div>
-                  <b>{child.resultCount} results</b>
+                  <b>{child.resultCount} {child.resultCount === 1 ? 'examination' : 'examinations'}</b>
                   <span>released by the school</span>
                 </div>
                 <Link href={`/parent/results?child=${child.id}`}>View →</Link>

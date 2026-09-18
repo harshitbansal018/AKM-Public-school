@@ -12,6 +12,7 @@ import {
   resultRepository,
   feeRecordRepository,
 } from '../repositories/index.js';
+import { groupResultsByExam } from './result.service.js';
 import { ApiError } from '../utils/ApiError.js';
 
 const money = (value) => Math.round(Number(value ?? 0) * 100) / 100;
@@ -53,7 +54,7 @@ export async function listChildren(parent) {
     children.map(async (child) => {
       const [homeworkCount, resultCount, fees] = await Promise.all([
         homeworkRepository.count({ classGroup: child.classGroup, isPublished: true }),
-        resultRepository.count({ studentId: child.id, isPublished: true }),
+        resultRepository.countExams({ studentId: child.id, isPublished: true }),
         feeRecordRepository.findWhere({ studentId: child.id }),
       ]);
       return {
@@ -88,6 +89,8 @@ export async function getChildDetail(parent, studentId) {
     },
     homework,
     results,
+    // Report-card view: subjects grouped under each examination with totals.
+    reportCards: groupResultsByExam(results),
     fees: { summary: summariseFees(fees), records: fees },
   };
 }

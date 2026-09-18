@@ -131,3 +131,34 @@
     gap: 14px;
   }
 }
+
+/* Search box under the category filters. */
+.search {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: -8px 0 26px;
+}
+
+.search input {
+  flex: 1 1 260px;
+  padding: 11px 16px;
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  font: inherit;
+  font-size: 0.92rem;
+  background: #fff;
+}
+
+.search input:focus {
+  outline: none;
+  border-color: var(--royal);
+  box-shadow: 0 0 0 4px rgba(18, 48, 127, 0.1);
+}
+
+.clear {
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: var(--royal);
+}

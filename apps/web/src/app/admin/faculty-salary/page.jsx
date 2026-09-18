@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from 'react';
 import InternalRecordManager from '@/components/admin/InternalRecordManager/InternalRecordManager';
 import StatusPill from '@/components/admin/StatusPill/StatusPill';
 import StatCard from '@/components/admin/StatCard/StatCard';
-import Select from '@/components/ui/Select/Select';
 import { RowButton } from '@/components/admin/RowActions/RowActions';
 import Spinner from '@/components/ui/Spinner/Spinner';
 import { adminApi } from '@/lib/adminApi';
@@ -20,7 +19,6 @@ const sum = (rows) => rows.reduce((total, row) => total + Number(row.amount), 0)
  */
 export default function FacultySalaryPage() {
   const [faculty, setFaculty] = useState([]);
-  const [facultyFilter, setFacultyFilter] = useState('');
 
   useEffect(() => {
     adminApi
@@ -34,34 +32,40 @@ export default function FacultySalaryPage() {
     [faculty]
   );
 
-  const filterRows = (rows) =>
-    facultyFilter ? rows.filter((row) => String(row.facultyId) === facultyFilter) : rows;
-
   return (
     <InternalRecordManager
       endpoint="/admin/faculty-salary"
       title="Faculty Salary"
       singular="salary month"
       description="One record per teacher per month. Raise it as Due, then mark it paid when the payment is made. Each teacher sees only their own months on the teacher portal."
-      filterRows={filterRows}
-      toolbar={(items) => {
-        const rows = filterRows(items);
+      searchKeys={['facultyName', 'month']}
+      searchPlaceholder="Search by teacher or month…"
+      filters={[
+        {
+          name: 'facultyId',
+          label: 'Teacher',
+          placeholder: 'All teachers',
+          options: facultyOptions,
+          match: (row, value) => String(row.facultyId) === value,
+        },
+        {
+          name: 'status',
+          label: 'Status',
+          placeholder: 'Any status',
+          options: [
+            { value: 'DUE', label: 'Due' },
+            { value: 'PAID', label: 'Paid' },
+          ],
+        },
+      ]}
+      toolbar={(rows, items) => {
         const due = rows.filter((row) => row.status !== 'PAID');
+        const narrowed = rows.length !== items.length;
         return (
           <>
             <div className={dashboard.grid}>
-              <StatCard icon="banknote" label="Paid" value={formatMoney(sum(rows.filter((r) => r.status === 'PAID')))} hint={facultyFilter ? 'This teacher' : 'All teachers'} tone="green" />
+              <StatCard icon="banknote" label="Paid" value={formatMoney(sum(rows.filter((r) => r.status === 'PAID')))} hint={narrowed ? 'Selected records' : 'All teachers'} tone="green" />
               <StatCard icon="clock" label="Due" value={formatMoney(sum(due))} hint={`${due.length} month${due.length === 1 ? '' : 's'} unpaid`} tone="red" />
-            </div>
-            <div style={{ maxWidth: 380, marginBottom: 18 }}>
-              <Select
-                id="facultyFilter"
-                label="Show one teacher"
-                placeholder="All teachers"
-                options={facultyOptions}
-                value={facultyFilter}
-                onChange={(e) => setFacultyFilter(e.target.value)}
-              />
             </div>
           </>
         );

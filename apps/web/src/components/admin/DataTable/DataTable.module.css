@@ -78,3 +78,8 @@
   font-weight: 600;
 }
 
+
+/* The pager under the rows, inside the same card. */
+.wrap > nav {
+  padding: 4px 16px 14px;
+}

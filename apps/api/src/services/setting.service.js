@@ -137,6 +137,38 @@ export async function resolvePolicyTab(input) {
   return match;
 }
 
+/* ---------------------------------------------------------------
+   Subjects — offered wherever a subject is chosen (homework, results). Free
+   text is still accepted, but a spelling that matches the list is snapped
+   to it so "maths", "Maths" and "Mathematics" do not become three subjects.
+   --------------------------------------------------------------- */
+
+export const SUBJECTS_KEY = 'subjects';
+
+const DEFAULT_SUBJECTS = [
+  'English', 'Hindi', 'Mathematics', 'Science', 'Social Science', 'Computer Science',
+  'Environmental Studies', 'Sanskrit', 'Physics', 'Chemistry', 'Biology',
+  'Economics', 'Accountancy', 'Business Studies', 'Political Science',
+  'History', 'Geography', 'Physical Education', 'Art',
+];
+
+export async function listSubjects() {
+  const row = await settingRepository.findByKey(SUBJECTS_KEY);
+  const configured = String(row?.value ?? '')
+    .split('|')
+    .map((item) => item.trim())
+    .filter(Boolean);
+  return configured.length ? configured : DEFAULT_SUBJECTS;
+}
+
+/** The configured spelling if there is one, else the value as typed. */
+export async function normaliseSubject(input) {
+  const wanted = String(input ?? '').trim();
+  if (!wanted) return wanted;
+  const subjects = await listSubjects();
+  return subjects.find((subject) => subject.toLowerCase() === wanted.toLowerCase()) ?? wanted;
+}
+
 /**
  * The four homepage counters, pulled out of settings and coerced to numbers so
  * the frontend never has to parse strings.

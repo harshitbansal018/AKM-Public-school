@@ -34,6 +34,16 @@ export default function JobApplicationsPage() {
     <InternalRecordManager
       endpoint="/admin/job-applications"
       title="Job Applications"
+      searchKeys={['name', 'reference', 'position', 'subject', 'phone', 'email']}
+      searchPlaceholder="Search by name, reference, position…"
+      filters={[
+        {
+          name: 'status',
+          label: 'Status',
+          placeholder: 'Any status',
+          options: applicationStatuses.map(({ value, label }) => ({ value, label })),
+        },
+      ]}
       singular="application"
       description="Applications from the Careers page, newest first. Open one to view and print it; edit to change its status or add interview notes."
       emptyDescription="Applications sent from the website's Careers page will appear here."

@@ -1,0 +1,42 @@
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.search {
+  flex: 1 1 260px;
+  min-width: 200px;
+}
+
+.filter {
+  flex: 0 1 200px;
+  min-width: 160px;
+}
+
+.side {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+  padding-bottom: 10px;
+}
+
+.summary {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .search,
+  .filter {
+    flex-basis: 100%;
+  }
+  .side {
+    margin-left: 0;
+  }
+}

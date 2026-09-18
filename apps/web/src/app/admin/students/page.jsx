@@ -24,6 +24,9 @@ export default function StudentsPage() {
     <InternalRecordManager
       endpoint="/admin/students"
       title="Students"
+      searchKeys={['name', 'rollNumber', 'guardianName', 'phone']}
+      searchPlaceholder="Search by student, roll no., guardian or phone…"
+      filters={[{ name: 'classGroup', label: 'Class', options: classOptions, placeholder: 'All classes' }]}
       singular="student"
       description="Maintain the school’s internal student register. Link each student to their parent's portal account so the parent can see homework, results and fees."
       columns={[

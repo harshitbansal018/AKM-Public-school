@@ -4,6 +4,7 @@ import ResourceManager from '@/components/admin/ResourceManager/ResourceManager'
 import StatusPill from '@/components/admin/StatusPill/StatusPill';
 import { IMAGE_RULE } from '@/constants/uploads';
 import { useClassSections } from '@/hooks/useClassSections';
+import { booleanFilter } from '@/components/admin/ListToolbar/ListToolbar';
 import LineIcon from '@/components/ui/LineIcon/LineIcon';
 
 export default function FacultyAdminPage() {
@@ -13,6 +14,12 @@ export default function FacultyAdminPage() {
     <ResourceManager
       endpoint="/admin/faculty"
       title="Faculty"
+      searchKeys={['name', 'designation', 'subject', 'accountEmail']}
+      searchPlaceholder="Search by name, designation or subject…"
+      filters={[
+        booleanFilter('teacherAccess', 'Teacher portal', 'Has access', 'No access'),
+        booleanFilter('isPublished', 'Website', 'Shown', 'Hidden'),
+      ]}
       singular="staff member"
       description="Teaching staff. The people ticked as Principal and MD supply the two messages on the homepage and About page. Teacher portal sign-in is set up on each record here."
       columns={[

@@ -249,6 +249,9 @@ function renderField(field, values, setField, error) {
         <Input
           {...common}
           type={field.type === 'number' ? 'number' : field.type === 'date' ? 'date' : 'text'}
+          min={field.min}
+          max={field.max}
+          step={field.step}
           value={value ?? ''}
           onChange={(e) => setField(field.name, e.target.value)}
         />

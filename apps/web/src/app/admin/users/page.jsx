@@ -16,6 +16,19 @@ export default function UsersAdminPage() {
     <ResourceManager
       endpoint="/admin/users"
       title="Users"
+      searchKeys={['name', 'email']}
+      searchPlaceholder="Search by name or email…"
+      filters={[
+        {
+          name: 'role',
+          label: 'Role',
+          placeholder: 'All roles',
+          options: [
+            { value: 'ADMIN', label: 'Administrator' },
+            { value: 'EDITOR', label: 'Editor' },
+          ],
+        },
+      ]}
       singular="user"
       description="Who can sign in to this panel. Editors can manage content; administrators can also manage accounts. Teacher sign-ins are set up under Teachers / Faculty."
       // You cannot delete yourself, and the API refuses to remove the last admin.

@@ -29,9 +29,10 @@ export default async function NoticesPage({ searchParams }) {
   const params = await searchParams;
   const page = Math.max(1, Number(params?.page) || 1);
   const category = params?.category || '';
+  const q = String(params?.q || '').trim().slice(0, 120);
 
   const [{ items, meta }, settings] = await Promise.all([
-    getNotices({ page, limit: PER_PAGE, category }),
+    getNotices({ page, limit: PER_PAGE, category, q }),
     getSettings(),
   ]);
 
@@ -47,7 +48,7 @@ export default async function NoticesPage({ searchParams }) {
         <div className="container">
           <nav className={styles.filters} aria-label="Filter notices by category">
             {noticeCategories.map((option) => {
-              const href = option.value ? `/notices?category=${option.value}` : '/notices';
+              const href = option.value ? `/notices?category=${option.value}${q ? `&q=${encodeURIComponent(q)}` : ''}` : q ? `/notices?q=${encodeURIComponent(q)}` : '/notices';
               const active = category === option.value;
               return (
                 <Link
@@ -62,9 +63,30 @@ export default async function NoticesPage({ searchParams }) {
             })}
           </nav>
 
+          {/* Plain GET form: the search is a crawlable URL, like the category links. */}
+          <form className={styles.search} action="/notices" method="get" role="search">
+            {category ? <input type="hidden" name="category" value={category} /> : null}
+            <input
+              type="search"
+              name="q"
+              defaultValue={q}
+              placeholder="Search notices…"
+              aria-label="Search notices"
+              maxLength={120}
+            />
+            <button type="submit" className="btn btn-primary btn-sm">
+              Search
+            </button>
+            {q ? (
+              <Link href={category ? `/notices?category=${category}` : '/notices'} className={styles.clear}>
+                Clear
+              </Link>
+            ) : null}
+          </form>
+
           {items.length === 0 ? (
             <EmptyState
-              title={text(settings, 'notices_empty_title', 'No notices in this category')}
+              title={q ? `No notices match “${q}”` : text(settings, 'notices_empty_title', 'No notices in this category')}
               description={text(settings, 'notices_empty_description')}
             />
           ) : (
@@ -105,7 +127,7 @@ export default async function NoticesPage({ searchParams }) {
             page={meta.page}
             totalPages={meta.totalPages}
             basePath="/notices"
-            query={category ? { category } : {}}
+            query={{ ...(category ? { category } : {}), ...(q ? { q } : {}) }}
           />
         </div>
       </section>

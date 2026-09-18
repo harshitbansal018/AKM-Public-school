@@ -132,6 +132,11 @@ for (const [path, service, label, createSchema, updateSchema] of resources) {
   router.delete(`/${path}/:id`, id, c.remove);
 }
 
+// ---------- results: marks entry grid ----------
+// Declared before the generic /results/:id routes so "grid" is not read as an id.
+router.get('/results/grid', validate(schema.marksGridQuerySchema, 'query'), admin.getMarksGrid);
+router.post('/results/grid', validate(schema.marksGridSchema), admin.saveMarksGrid);
+
 // ---------- internal school-management records ----------
 const internalResources = [
   ['parents', parentService, 'Parent account', schema.createParentSchema, schema.updateParentSchema],
@@ -153,6 +158,10 @@ for (const [path, service, label, createSchema, updateSchema] of internalResourc
   router.delete(`/${path}/:id`, id, c.remove);
 }
 
+// ---------- reports / print ----------
+router.get('/reports', admin.listReports);
+router.get('/reports/:key', validate(schema.reportQuerySchema, 'query'), admin.runReport);
+
 // The applicant's CV — streamed here rather than served statically.
 router.get('/job-applications/:id/resume', id, admin.downloadResume);
 
@@ -163,6 +172,7 @@ router.patch('/faculty-salary/:id/pay', id, validate(schema.paySalarySchema), ad
 router.get('/settings', admin.getSettings);
 router.put('/settings', validate(schema.updateSettingsSchema), admin.updateSettings);
 router.get('/class-sections', admin.listClassSections);
+router.get('/subjects', admin.listSubjects);
 router.get('/policy-tabs', admin.listPolicyTabs);
 
 // ---------- uploads ----------

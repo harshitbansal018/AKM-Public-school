@@ -58,11 +58,11 @@ export const homeworkColumns = [
  * @param {boolean} [options.publishControl]  false in the teacher portal, where
  *        homework goes live the moment it is saved — no draft step to forget.
  */
-export function homeworkFields({ classOptions, publishControl = true } = {}) {
+export function homeworkFields({ classOptions, subjectOptions, publishControl = true } = {}) {
   return [
     { name: 'title', label: 'Assignment title', type: 'text', required: true },
     classField(classOptions),
-    { name: 'subject', label: 'Subject', type: 'text', required: true, half: true },
+    subjectField(subjectOptions, { required: true }),
     { name: 'dueDate', label: 'Due date', type: 'date', half: true },
     { name: 'description', label: 'Instructions', type: 'textarea', rows: 5 },
     ...(publishControl
@@ -81,7 +81,33 @@ export function homeworkFields({ classOptions, publishControl = true } = {}) {
 /** The homework table without the Published/Draft column (teacher portal). */
 export const teacherHomeworkColumns = homeworkColumns.filter((column) => column.key !== 'isPublished');
 
+/**
+ * Subject dropdown from the configured list (Website content → Classes &
+ * subjects); a value saved under a name no longer on the list is still shown.
+ */
+function subjectField(subjectOptions, { required = false } = {}) {
+  if (!subjectOptions) return { name: 'subject', label: 'Subject', type: 'text', required, half: true };
+  return {
+    name: 'subject',
+    label: 'Subject',
+    type: 'select',
+    required,
+    half: true,
+    placeholder: 'Choose a subject…',
+    options: (values) =>
+      values.subject && !subjectOptions.some((option) => option.value === values.subject)
+        ? [{ value: values.subject, label: values.subject }, ...subjectOptions]
+        : subjectOptions,
+  };
+}
+
 // ---------- results ----------
+
+/** "87 / 100" from the numbers, or whatever text was saved for an older row. */
+export const scoreText = (row) =>
+  row.marks !== null && row.marks !== undefined
+    ? `${Number(row.marks)}${row.maxMarks !== null && row.maxMarks !== undefined ? ` / ${Number(row.maxMarks)}` : ''}`
+    : row.score;
 
 /**
  * Turns the student register into a per-class picker. The value is the
@@ -117,16 +143,27 @@ export const resultColumns = [
   { key: 'studentName', label: 'Student' },
   { key: 'classGroup', label: 'Class' },
   { key: 'exam', label: 'Examination' },
-  { key: 'score', label: 'Score' },
+  { key: 'subject', label: 'Subject', render: (row) => row.subject ?? '—' },
+  { key: 'score', label: 'Marks', nowrap: true, render: (row) => <b>{scoreText(row)}</b> },
   dateColumn('resultDate', 'Date'),
   publishedColumn,
 ];
 
-export function resultFields({ classOptions, studentOptions }) {
+export function resultFields({ classOptions, studentOptions, subjectOptions }) {
   return [
     ...studentFields({ classOptions, studentOptions }),
     { name: 'exam', label: 'Examination', type: 'text', required: true, half: true, placeholder: 'Half-yearly 2026' },
-    { name: 'score', label: 'Score / grade', type: 'text', required: true, half: true, placeholder: '87 / 100' },
+    subjectField(subjectOptions),
+    { name: 'marks', label: 'Marks obtained', type: 'number', half: true, min: 0, step: '0.5', placeholder: '87' },
+    { name: 'maxMarks', label: 'Maximum marks', type: 'number', half: true, min: 0, step: '0.5', placeholder: '100' },
+    {
+      name: 'score',
+      label: 'Grade (if there are no marks)',
+      type: 'text',
+      half: true,
+      placeholder: 'A+',
+      help: 'Filled in automatically as “marks / maximum” when marks are entered.',
+    },
     { name: 'resultDate', label: 'Result date', type: 'date', half: true },
     { name: 'remarks', label: 'Remarks', type: 'textarea', rows: 3 },
     {

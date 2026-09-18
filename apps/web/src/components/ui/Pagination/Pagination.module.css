@@ -59,3 +59,44 @@
   background: #fff;
   transform: none;
 }
+
+/* Button mode inherits the same look as the links. */
+.page,
+.arrow {
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.summary {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--muted);
+  margin-right: auto;
+}
+
+/* Inside an admin panel: smaller controls, less air. */
+.compact {
+  margin-top: 16px;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.compact .page,
+.compact .arrow {
+  min-width: 34px;
+  height: 34px;
+  padding: 0 10px;
+  font-size: 0.8rem;
+  box-shadow: none;
+  border: 1px solid var(--line);
+}
+
+.compact .page:hover,
+.compact .arrow:hover {
+  transform: none;
+}
+
+.compact .current {
+  border-color: var(--royal);
+}

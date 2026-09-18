@@ -314,12 +314,18 @@ model Homework {
 /// `studentId` is the link the parent portal relies on; `studentName` and
 /// `classGroup` are copied from the student on save so the row still reads
 /// correctly if the student is later removed from the register.
+/// One row per student, examination and subject. `marks`/`maxMarks` are the
+/// numbers (so totals and percentages can be computed); `score` is the text
+/// shown ("87 / 100", or a grade for older single-score rows).
 model Result {
   id          Int       @id @default(autoincrement())
   studentId   Int?
   studentName String
   classGroup  String
   exam        String
+  subject     String?
+  marks       Decimal?  @db.Decimal(7, 2)
+  maxMarks    Decimal?  @db.Decimal(7, 2)
   score       String
   resultDate  DateTime?
   remarks     String?   @db.Text
@@ -330,7 +336,7 @@ model Result {
   student Student? @relation(fields: [studentId], references: [id], onDelete: SetNull)
 
   @@index([classGroup, exam])
-  @@index([studentId])
+  @@index([studentId, exam])
 }
 
 model FeeRecord {

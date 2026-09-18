@@ -30,6 +30,21 @@ export default function FeesPage() {
     <InternalRecordManager
       endpoint="/admin/fees"
       title="Fees"
+      searchKeys={['studentName']}
+      searchPlaceholder="Search by student…"
+      filters={[
+        { name: 'classGroup', label: 'Class', options: classOptions, placeholder: 'All classes' },
+        {
+          name: 'status',
+          label: 'Status',
+          placeholder: 'Any status',
+          options: [
+            { value: 'DUE', label: 'Due' },
+            { value: 'PARTIAL', label: 'Partially paid' },
+            { value: 'PAID', label: 'Paid' },
+          ],
+        },
+      ]}
       singular="fee record"
       description="Fees raised and payments received, student by student. Parents see their own child's records on the parent portal."
       columns={[

@@ -54,6 +54,13 @@ const SETTINGS = [
     'general',
     'Classes & sections',
   ],
+  // Subjects offered when setting homework and entering marks.
+  [
+    'subjects',
+    'English|Hindi|Mathematics|Science|Social Science|Computer Science|Environmental Studies|Sanskrit|Physics|Chemistry|Biology|Economics|Accountancy|Business Studies|Political Science|History|Geography|Physical Education|Art',
+    'general',
+    'Subjects',
+  ],
   ['phonePrimary', '+91 98765 43210', 'contact', 'Primary phone'],
   ['phoneSecondary', '+91 91234 56789', 'contact', 'Secondary phone'],
   ['whatsapp', '919876543210', 'contact', 'WhatsApp number'],
