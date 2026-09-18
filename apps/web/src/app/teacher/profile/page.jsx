@@ -6,6 +6,7 @@ import { teacherApi } from '@/lib/adminApi';
 import { API_ENABLED } from '@/lib/api';
 import AdminPage from '@/components/admin/AdminPage/AdminPage';
 import StatCard from '@/components/admin/StatCard/StatCard';
+import Spinner from '@/components/ui/Spinner/Spinner';
 import dashboard from '@/app/admin/dashboard/dashboard.module.css';
 import styles from './profile.module.css';
 
@@ -26,13 +27,15 @@ function initialsOf(name = '') {
 export default function TeacherProfilePage() {
   const { user } = useAuth();
   const [stats, setStats] = useState(EMPTY);
+  const [loading, setLoading] = useState(API_ENABLED);
 
   useEffect(() => {
     if (!API_ENABLED) return;
     teacherApi
       .get('/teacher/dashboard')
       .then((data) => setStats({ ...EMPTY, ...data }))
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, []);
 
   if (!user) return null;
@@ -67,9 +70,9 @@ export default function TeacherProfilePage() {
         <div className={styles.stack}>
           <div className={dashboard.grid}>
             <StatCard icon="campus" label="Classes" value={classes.length} tone="royal" />
-            <StatCard icon="graduation" label="Students" value={stats.studentsCount} tone="green" />
-            <StatCard icon="pencil" label="Homework set" value={stats.homeworkCount} tone="gold" />
-            <StatCard icon="chart" label="Results entered" value={stats.resultCount} tone="red" />
+            <StatCard icon="graduation" label="Students" value={loading ? <Spinner size="sm" /> : stats.studentsCount} tone="green" />
+            <StatCard icon="pencil" label="Homework set" value={loading ? <Spinner size="sm" /> : stats.homeworkCount} tone="gold" />
+            <StatCard icon="chart" label="Results entered" value={loading ? <Spinner size="sm" /> : stats.resultCount} tone="red" />
           </div>
 
           <section className={styles.panel}>

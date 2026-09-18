@@ -8,6 +8,7 @@ import { toTelHref } from '@/lib/format';
 import Input from '@/components/ui/Input/Input';
 import Select from '@/components/ui/Select/Select';
 import Textarea from '@/components/ui/Textarea/Textarea';
+import Spinner from '@/components/ui/Spinner/Spinner';
 import styles from './EnquiryForm.module.css';
 
 /** Field order here is the order the school asked for on the form. */
@@ -200,7 +201,13 @@ export default function EnquiryForm({ settings }) {
       />
 
       <button type="submit" className="btn btn-primary" disabled={submitting}>
-        {submitting ? 'Sending…' : 'Send Enquiry'}
+        {submitting ? (
+          <>
+            <Spinner size="xs" /> Sending…
+          </>
+        ) : (
+          'Send Enquiry'
+        )}
       </button>
 
       <p className={styles.alt}>

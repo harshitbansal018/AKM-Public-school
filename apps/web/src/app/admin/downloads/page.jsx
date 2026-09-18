@@ -13,6 +13,7 @@ import DataTable from '@/components/admin/DataTable/DataTable';
 import ConfirmDialog from '@/components/admin/ConfirmDialog/ConfirmDialog';
 import StatusPill from '@/components/admin/StatusPill/StatusPill';
 import Modal from '@/components/ui/Modal/Modal';
+import Spinner from '@/components/ui/Spinner/Spinner';
 import Input from '@/components/ui/Input/Input';
 import Select from '@/components/ui/Select/Select';
 import { RowActions, RowButton } from '@/components/admin/RowActions/RowActions';
@@ -218,7 +219,13 @@ function UploadDialog({ open, onClose, onDone }) {
             Cancel
           </button>
           <button type="submit" className="btn btn-primary btn-sm" disabled={busy}>
-            {busy ? 'Uploading…' : 'Upload'}
+            {busy ? (
+              <>
+                <Spinner size="xs" /> Uploading…
+              </>
+            ) : (
+              'Upload'
+            )}
           </button>
         </div>
       </form>

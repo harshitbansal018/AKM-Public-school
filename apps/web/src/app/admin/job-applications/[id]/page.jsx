@@ -8,6 +8,8 @@ import { useToast } from '@/hooks/useToast';
 import { formatLongDate } from '@/lib/format';
 import AdminPage from '@/components/admin/AdminPage/AdminPage';
 import StatusPill from '@/components/admin/StatusPill/StatusPill';
+import Spinner from '@/components/ui/Spinner/Spinner';
+import { Loader } from '@/components/ui/Spinner/Spinner';
 import { statusLabel, statusTone } from '@/constants/jobApplications';
 import styles from './application.module.css';
 
@@ -20,6 +22,7 @@ export default function ApplicationSheetPage() {
   const toast = useToast();
   const [row, setRow] = useState(null);
   const [error, setError] = useState('');
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     adminApi
@@ -29,10 +32,13 @@ export default function ApplicationSheetPage() {
   }, [id]);
 
   const downloadCv = async () => {
+    setDownloading(true);
     try {
       await adminApi.download(`/admin/job-applications/${id}/resume`, row.resumeName || `${row.reference}-cv`);
     } catch (err) {
       toast.error(err.message);
+    } finally {
+      setDownloading(false);
     }
   };
 
@@ -43,7 +49,13 @@ export default function ApplicationSheetPage() {
       </AdminPage>
     );
   }
-  if (!row) return <AdminPage title="Application" description="Loading…" />;
+  if (!row) {
+    return (
+      <AdminPage title="Application">
+        <Loader label="Loading application…" />
+      </AdminPage>
+    );
+  }
 
   const fields = [
     ['Position applied for', row.position],
@@ -69,8 +81,8 @@ export default function ApplicationSheetPage() {
       action={
         <>
           {row.resumePath ? (
-            <button type="button" className="btn btn-outline btn-sm" onClick={downloadCv}>
-              Download CV
+            <button type="button" className="btn btn-outline btn-sm" onClick={downloadCv} disabled={downloading}>
+              {downloading ? <Spinner size="xs" /> : null} Download CV
             </button>
           ) : null}
           <button type="button" className="btn btn-primary btn-sm" onClick={() => window.print()}>

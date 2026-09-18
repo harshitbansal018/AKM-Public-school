@@ -15,6 +15,7 @@ import ResourceForm from '@/components/admin/ResourceForm/ResourceForm';
 import ConfirmDialog from '@/components/admin/ConfirmDialog/ConfirmDialog';
 import StatusPill from '@/components/admin/StatusPill/StatusPill';
 import Modal from '@/components/ui/Modal/Modal';
+import Spinner from '@/components/ui/Spinner/Spinner';
 import { RowActions, RowButton } from '@/components/admin/RowActions/RowActions';
 import LineIcon from '@/components/ui/LineIcon/LineIcon';
 import styles from './gallery.module.css';
@@ -301,13 +302,19 @@ function PhotoManager({ albumId, albumTitle, onClose }) {
           id="album-photos"
         />
         <label htmlFor="album-photos" className="btn btn-primary btn-sm">
-          {uploading ? 'Uploading…' : '+ Add photos'}
+          {uploading ? (
+            <>
+              <Spinner size="xs" /> Uploading…
+            </>
+          ) : (
+            '+ Add photos'
+          )}
         </label>
         <span className={styles.uploadHint}>{IMAGE_RULE} each · pick several at once</span>
       </div>
 
       {loading ? (
-        <p className={styles.loading}>Loading photos…</p>
+        <Spinner size="sm" label="Loading photos…" className={styles.loading} />
       ) : images.length === 0 ? (
         <p className={styles.loading}>No photos in this album yet. The first one becomes the cover.</p>
       ) : (

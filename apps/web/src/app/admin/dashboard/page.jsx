@@ -9,6 +9,7 @@ import { formatLongDate } from '@/lib/format';
 import StatCard from '@/components/admin/StatCard/StatCard';
 import LineIcon from '@/components/ui/LineIcon/LineIcon';
 import StatusPill from '@/components/admin/StatusPill/StatusPill';
+import { Loader } from '@/components/ui/Spinner/Spinner';
 import styles from './dashboard.module.css';
 
 const EMPTY = {
@@ -30,6 +31,7 @@ const SHORTCUTS = [
 export default function DashboardPage() {
   const { user } = useAuth();
   const [stats, setStats] = useState(EMPTY);
+  const [loading, setLoading] = useState(API_ENABLED);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -37,7 +39,8 @@ export default function DashboardPage() {
     adminApi
       .get('/admin/dashboard')
       .then((data) => setStats({ ...EMPTY, ...data }))
-      .catch((err) => setError(err.message));
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
   }, []);
 
   return (
@@ -48,8 +51,9 @@ export default function DashboardPage() {
       <p className={styles.sub}>Here is what is happening on the website right now.</p>
 
       {error ? <p className={styles.error}>{error}</p> : null}
+      {loading ? <Loader label="Loading dashboard…" /> : null}
 
-      <div className={styles.grid}>
+      <div className={styles.grid} hidden={loading}>
         <Link href="/admin/enquiries" className={styles.statLink}>
           <StatCard icon="inbox" label="New enquiries" value={stats.newEnquiries} hint="Not yet contacted" tone="red" />
         </Link>
@@ -64,7 +68,7 @@ export default function DashboardPage() {
         </Link>
       </div>
 
-      <div className={styles.columns}>
+      <div className={styles.columns} hidden={loading}>
         <section className={styles.panel}>
           <div className={styles.panelHead}>
             <h2>Latest enquiries</h2>

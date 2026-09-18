@@ -61,15 +61,6 @@
   font-size: 0.9rem;
 }
 
-.spinner {
-  width: 22px;
-  height: 22px;
-  border: 3px solid var(--line);
-  border-top-color: var(--royal);
-  border-radius: 50%;
-  animation: tableSpin 0.8s linear infinite;
-}
-
 .error {
   background: rgba(208, 52, 44, 0.08);
   border-left: 5px solid var(--red);
@@ -87,8 +78,3 @@
   font-weight: 600;
 }
 
-@keyframes tableSpin {
-  to {
-    transform: rotate(360deg);
-  }
-}

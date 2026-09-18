@@ -2,6 +2,7 @@
 
 import { cn } from '@/lib/cn';
 import EmptyState from '@/components/ui/EmptyState/EmptyState';
+import Spinner from '@/components/ui/Spinner/Spinner';
 import styles from './DataTable.module.css';
 
 /**
@@ -26,8 +27,7 @@ export default function DataTable({
     return (
       <div className={styles.wrap}>
         <div className={styles.loading}>
-          <span className={styles.spinner} aria-hidden="true" />
-          Loading…
+          <Spinner size="sm" label="Loading…" />
         </div>
       </div>
     );

@@ -326,7 +326,6 @@
   font-family: ui-monospace, monospace;
 }
 
-.loading,
 .error {
   color: var(--muted);
   font-size: 0.92rem;

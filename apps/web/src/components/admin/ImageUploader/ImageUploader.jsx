@@ -6,6 +6,7 @@ import { getAccessToken } from '@/lib/auth';
 import { cn } from '@/lib/cn';
 import { IMAGE_TYPES, IMAGE_ACCEPT, MAX_IMAGE_MB, MAX_IMAGE_BYTES } from '@/constants/uploads';
 import styles from './ImageUploader.module.css';
+import Spinner from '@/components/ui/Spinner/Spinner';
 
 /**
  * Picks an image, uploads it, and reports back the stored relative path.
@@ -115,7 +116,15 @@ export default function ImageUploader({
             className={styles.input}
           />
           <label htmlFor={inputId} className={cn('btn btn-outline btn-sm', busy && styles.disabled)}>
-            {busy ? 'Uploading…' : previewSrc ? 'Replace' : 'Choose image'}
+            {busy ? (
+              <>
+                <Spinner size="xs" /> Uploading…
+              </>
+            ) : previewSrc ? (
+              'Replace'
+            ) : (
+              'Choose image'
+            )}
           </label>
 
           {previewSrc ? (

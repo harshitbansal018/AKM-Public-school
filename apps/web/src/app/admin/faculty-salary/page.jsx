@@ -6,6 +6,7 @@ import StatusPill from '@/components/admin/StatusPill/StatusPill';
 import StatCard from '@/components/admin/StatCard/StatCard';
 import Select from '@/components/ui/Select/Select';
 import { RowButton } from '@/components/admin/RowActions/RowActions';
+import Spinner from '@/components/ui/Spinner/Spinner';
 import { adminApi } from '@/lib/adminApi';
 import { formatLongDate, formatMoney } from '@/lib/format';
 import dashboard from '@/app/admin/dashboard/dashboard.module.css';
@@ -77,10 +78,10 @@ export default function FacultySalaryPage() {
           render: (r) => <StatusPill value={r.status === 'PAID' ? 'active' : 'NEW'} label={r.status === 'PAID' ? 'Paid' : 'Due'} />,
         },
       ]}
-      extraRowActions={(row, { patch }) =>
+      extraRowActions={(row, { patch, saving }) =>
         row.status !== 'PAID' ? (
-          <RowButton tone="success" onClick={() => patch(`/${row.id}/pay`, {}, 'Marked as paid')}>
-            Mark paid
+          <RowButton tone="success" disabled={saving} onClick={() => patch(`/${row.id}/pay`, {}, 'Marked as paid')}>
+            {saving ? <Spinner size="xs" /> : null} Mark paid
           </RowButton>
         ) : null
       }

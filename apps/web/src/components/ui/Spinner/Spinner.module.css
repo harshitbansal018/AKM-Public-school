@@ -1,0 +1,68 @@
+.wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.ring {
+  display: inline-block;
+  flex-shrink: 0;
+  border-style: solid;
+  border-color: var(--line);
+  border-top-color: var(--royal);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Inside a button the ring takes the button's text colour. */
+.xs {
+  width: 14px;
+  height: 14px;
+  border-width: 2px;
+  border-color: currentColor;
+  border-top-color: transparent;
+  opacity: 0.8;
+}
+
+.sm {
+  width: 20px;
+  height: 20px;
+  border-width: 3px;
+}
+
+.md {
+  width: 28px;
+  height: 28px;
+  border-width: 3px;
+}
+
+.lg {
+  width: 40px;
+  height: 40px;
+  border-width: 4px;
+}
+
+.block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  padding: 24px;
+}
+
+/* Keyframes live here on purpose: CSS Modules rewrites animation names, so a
+   global @keyframes of the same name would never match. */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ring {
+    animation-duration: 1.6s;
+  }
+}

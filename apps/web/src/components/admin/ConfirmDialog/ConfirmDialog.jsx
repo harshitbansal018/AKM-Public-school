@@ -1,6 +1,7 @@
 'use client';
 
 import Modal from '@/components/ui/Modal/Modal';
+import Spinner from '@/components/ui/Spinner/Spinner';
 import styles from './ConfirmDialog.module.css';
 
 /**
@@ -29,7 +30,13 @@ export default function ConfirmDialog({
           onClick={onConfirm}
           disabled={busy}
         >
-          {busy ? 'Working…' : confirmLabel}
+          {busy ? (
+            <>
+              <Spinner size="xs" /> Working…
+            </>
+          ) : (
+            confirmLabel
+          )}
         </button>
       </div>
     </Modal>

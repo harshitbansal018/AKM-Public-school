@@ -9,6 +9,7 @@ import { formatLongDate } from '@/lib/format';
 import StatCard from '@/components/admin/StatCard/StatCard';
 import LineIcon from '@/components/ui/LineIcon/LineIcon';
 import StatusPill from '@/components/admin/StatusPill/StatusPill';
+import { Loader } from '@/components/ui/Spinner/Spinner';
 // Same layout as the admin dashboard, so it shares that stylesheet.
 import styles from '@/app/admin/dashboard/dashboard.module.css';
 
@@ -29,6 +30,7 @@ const SHORTCUTS = [
 export default function TeacherDashboardPage() {
   const { user } = useAuth();
   const [stats, setStats] = useState(EMPTY);
+  const [loading, setLoading] = useState(API_ENABLED);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -36,7 +38,8 @@ export default function TeacherDashboardPage() {
     teacherApi
       .get('/teacher/dashboard')
       .then((data) => setStats({ ...EMPTY, ...data }))
-      .catch((err) => setError(err.message));
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
   }, []);
 
   return (
@@ -51,8 +54,9 @@ export default function TeacherDashboardPage() {
       </p>
 
       {error ? <p className={styles.error}>{error}</p> : null}
+      {loading ? <Loader label="Loading dashboard…" /> : null}
 
-      <div className={styles.grid}>
+      <div className={styles.grid} hidden={loading}>
         <Link href="/teacher/classes" className={styles.statLink}>
           <StatCard icon="campus" label="My classes" value={stats.classes.length} tone="royal" />
         </Link>
@@ -67,7 +71,7 @@ export default function TeacherDashboardPage() {
         </Link>
       </div>
 
-      <div className={styles.columns}>
+      <div className={styles.columns} hidden={loading}>
         <section className={styles.panel}>
           <div className={styles.panelHead}>
             <h2>Latest homework</h2>

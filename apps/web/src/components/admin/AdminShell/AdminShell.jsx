@@ -6,6 +6,7 @@ import { API_ENABLED } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 import Sidebar from '@/components/admin/Sidebar/Sidebar';
 import LineIcon from '@/components/ui/LineIcon/LineIcon';
+import { Loader } from '@/components/ui/Spinner/Spinner';
 import styles from './AdminShell.module.css';
 
 /**
@@ -37,21 +38,9 @@ export default function AdminShell({ nav, brand, title, children }) {
   // The login screen renders bare — no sidebar, no guard.
   if (isLoginPage) return children;
 
-  if (loading) {
-    return (
-      <div className={styles.center}>
-        <span className={styles.spinner} aria-label="Loading" />
-      </div>
-    );
-  }
+  if (loading) return <Loader label="Signing you in…" minHeight="100vh" />;
 
-  if (!isAuthenticated) {
-    return (
-      <div className={styles.center}>
-        <p>Redirecting to sign in…</p>
-      </div>
-    );
-  }
+  if (!isAuthenticated) return <Loader label="Redirecting to sign in…" minHeight="100vh" />;
 
   return (
     <div className={styles.shell}>

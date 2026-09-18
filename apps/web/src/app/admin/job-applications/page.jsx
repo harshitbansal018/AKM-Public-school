@@ -1,9 +1,11 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import InternalRecordManager from '@/components/admin/InternalRecordManager/InternalRecordManager';
 import StatusPill from '@/components/admin/StatusPill/StatusPill';
 import { RowButton } from '@/components/admin/RowActions/RowActions';
+import Spinner from '@/components/ui/Spinner/Spinner';
 import { adminApi } from '@/lib/adminApi';
 import { useToast } from '@/hooks/useToast';
 import { formatLongDate } from '@/lib/format';
@@ -15,12 +17,16 @@ import { applicationStatuses, statusLabel, statusTone } from '@/constants/jobApp
  */
 export default function JobApplicationsPage() {
   const toast = useToast();
+  const [downloading, setDownloading] = useState(null);
 
   const downloadCv = async (row) => {
+    setDownloading(row.id);
     try {
       await adminApi.download(`/admin/job-applications/${row.id}/resume`, row.resumeName || `${row.reference}-cv`);
     } catch (err) {
       toast.error(err.message);
+    } finally {
+      setDownloading(null);
     }
   };
 
@@ -58,7 +64,11 @@ export default function JobApplicationsPage() {
           <Link href={`/admin/job-applications/${row.id}`} className="btn btn-outline btn-sm">
             View / Print
           </Link>
-          {row.resumePath ? <RowButton onClick={() => downloadCv(row)}>CV</RowButton> : null}
+          {row.resumePath ? (
+            <RowButton disabled={downloading === row.id} onClick={() => downloadCv(row)}>
+              {downloading === row.id ? <Spinner size="xs" /> : null} CV
+            </RowButton>
+          ) : null}
         </>
       )}
       fields={[

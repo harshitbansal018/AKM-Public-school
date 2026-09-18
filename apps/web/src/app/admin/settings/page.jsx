@@ -11,6 +11,8 @@ import AdminPage from '@/components/admin/AdminPage/AdminPage';
 import Input from '@/components/ui/Input/Input';
 import Textarea from '@/components/ui/Textarea/Textarea';
 import ImageUploader from '@/components/admin/ImageUploader/ImageUploader';
+import Spinner from '@/components/ui/Spinner/Spinner';
+import { Loader } from '@/components/ui/Spinner/Spinner';
 import LineIcon from '@/components/ui/LineIcon/LineIcon';
 import styles from './settings.module.css';
 
@@ -112,7 +114,7 @@ export default function SettingsAdminPage() {
   if (loading) {
     return (
       <AdminPage title="Website content">
-        <p className={styles.loading}>Loading…</p>
+        <Loader label="Loading website content…" />
       </AdminPage>
     );
   }
@@ -140,7 +142,11 @@ export default function SettingsAdminPage() {
           ) : null}
           <button type="button" className="btn btn-primary btn-sm" onClick={save} disabled={saving}>
             {saving
-              ? 'Saving…'
+              ? (
+                  <>
+                    <Spinner size="xs" /> Saving…
+                  </>
+                )
               : changedKeys.length > 0
                 ? `Save ${changedKeys.length} change${changedKeys.length === 1 ? '' : 's'}`
                 : 'Save changes'}

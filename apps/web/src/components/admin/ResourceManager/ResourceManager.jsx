@@ -18,8 +18,9 @@ import { useAdminResource } from '@/hooks/useAdminResource';
  * @param {React.ReactNode | ((items) => React.ReactNode)} [toolbar]
  *        rendered between the heading and the table — filters, totals
  * @param {(items) => items} [filterRows]  narrows what the table shows
- * @param {(row, { patch }) => React.ReactNode} [extraRowActions]
- *        extra buttons per row; `patch(path, body, message)` calls the API and reloads
+ * @param {(row, { patch, saving }) => React.ReactNode} [extraRowActions]
+ *        extra buttons per row; `patch(path, body, message)` calls the API and reloads,
+ *        `saving` is true while any request is in flight
  */
 export default function ResourceManager({
   endpoint,
@@ -96,7 +97,7 @@ export default function ResourceManager({
         }
         actions={(row) => (
           <RowActions>
-            {extraRowActions?.(row, { patch })}
+            {extraRowActions?.(row, { patch, saving })}
             <RowButton onClick={() => openEdit(row)}>Edit</RowButton>
             {canDelete(row) ? (
               <RowButton tone="danger" onClick={() => setDeleting(row)}>

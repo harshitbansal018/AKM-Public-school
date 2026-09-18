@@ -8,6 +8,7 @@ import { cn } from '@/lib/cn';
 import AdminPage from '@/components/admin/AdminPage/AdminPage';
 import DataTable from '@/components/admin/DataTable/DataTable';
 import StatusPill from '@/components/admin/StatusPill/StatusPill';
+import Spinner from '@/components/ui/Spinner/Spinner';
 import Modal from '@/components/ui/Modal/Modal';
 import Textarea from '@/components/ui/Textarea/Textarea';
 import Select from '@/components/ui/Select/Select';
@@ -78,12 +79,16 @@ export default function EnquiriesAdminPage() {
     }
   };
 
+  const [exporting, setExporting] = useState(false);
   const exportCsv = async () => {
+    setExporting(true);
     try {
       await adminApi.download('/admin/enquiries/export', `enquiries-${new Date().toISOString().slice(0, 10)}.csv`);
       toast.success('Downloaded');
     } catch (err) {
       toast.error(err.message);
+    } finally {
+      setExporting(false);
     }
   };
 
@@ -92,7 +97,8 @@ export default function EnquiriesAdminPage() {
       title="Enquiries"
       description="Admission enquiries submitted through the website. Newest first."
       action={
-        <button type="button" className="btn btn-outline btn-sm" onClick={exportCsv}>
+        <button type="button" className="btn btn-outline btn-sm" onClick={exportCsv} disabled={exporting}>
+          {exporting ? <Spinner size="xs" /> : null}
           ⬇ Export CSV
         </button>
       }

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { API_ENABLED } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 import Input from '@/components/ui/Input/Input';
+import Spinner from '@/components/ui/Spinner/Spinner';
 import styles from './LoginForm.module.css';
 
 /** Sign-in form for whichever portal's AuthProvider it sits inside. */
@@ -69,7 +70,13 @@ export default function LoginForm() {
       ) : null}
 
       <button type="submit" className="btn btn-primary" disabled={submitting}>
-        {submitting ? 'Signing in…' : 'Sign In'}
+        {submitting ? (
+          <>
+            <Spinner size="xs" /> Signing in…
+          </>
+        ) : (
+          'Sign In'
+        )}
       </button>
     </form>
   );

@@ -6,6 +6,7 @@ import { useToast } from '@/hooks/useToast';
 import Input from '@/components/ui/Input/Input';
 import Select from '@/components/ui/Select/Select';
 import Textarea from '@/components/ui/Textarea/Textarea';
+import Spinner from '@/components/ui/Spinner/Spinner';
 import styles from './JobApplicationForm.module.css';
 
 const OTHER = '__other';
@@ -310,7 +311,13 @@ export default function JobApplicationForm({ positions = [], privacyNote, succes
 
       <div className={styles.actions}>
         <button type="submit" className="btn btn-primary" disabled={submitting}>
-          {submitting ? 'Sending…' : 'Submit application'}
+          {submitting ? (
+            <>
+              <Spinner size="xs" /> Sending…
+            </>
+          ) : (
+            'Submit application'
+          )}
         </button>
         {privacyNote ? <p className={styles.privacy}>{privacyNote}</p> : null}
       </div>

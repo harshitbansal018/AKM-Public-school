@@ -7,6 +7,7 @@ import { API_ENABLED } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 import { formatMoney } from '@/lib/format';
 import EmptyState from '@/components/ui/EmptyState/EmptyState';
+import { Loader } from '@/components/ui/Spinner/Spinner';
 // Same layout language as the admin dashboard, so it shares that stylesheet.
 import styles from '@/app/admin/dashboard/dashboard.module.css';
 
@@ -40,6 +41,7 @@ export default function ParentDashboardPage() {
       </p>
 
       {error ? <p className={styles.error}>{error}</p> : null}
+      {children === null && !error ? <Loader label="Loading your children…" /> : null}
 
       {children && children.length === 0 ? (
         <EmptyState

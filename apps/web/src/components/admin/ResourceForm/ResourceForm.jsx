@@ -7,12 +7,13 @@ import Input from '@/components/ui/Input/Input';
 import Select from '@/components/ui/Select/Select';
 import Textarea from '@/components/ui/Textarea/Textarea';
 import ImageUploader from '@/components/admin/ImageUploader/ImageUploader';
+import Spinner from '@/components/ui/Spinner/Spinner';
 import styles from './ResourceForm.module.css';
 
 // CKEditor needs the browser, so it is loaded only when a rich-text field is drawn.
 const RichTextEditor = dynamic(() => import('@/components/admin/RichTextEditor/RichTextEditor'), {
   ssr: false,
-  loading: () => <p className={styles.help}>Loading editor…</p>,
+  loading: () => <Spinner size="sm" label="Loading editor…" />,
 });
 
 /**
@@ -105,7 +106,13 @@ export default function ResourceForm({
             Cancel
           </button>
           <button type="submit" className="btn btn-primary btn-sm" disabled={busy}>
-            {busy ? 'Saving…' : submitLabel}
+            {busy ? (
+              <>
+                <Spinner size="xs" /> Saving…
+              </>
+            ) : (
+              submitLabel
+            )}
           </button>
         </div>
       </form>

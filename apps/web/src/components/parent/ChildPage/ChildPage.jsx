@@ -5,8 +5,8 @@ import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { portalApi } from '@/lib/adminApi';
 import AdminPage from '@/components/admin/AdminPage/AdminPage';
-import DataTable from '@/components/admin/DataTable/DataTable';
 import EmptyState from '@/components/ui/EmptyState/EmptyState';
+import { Loader } from '@/components/ui/Spinner/Spinner';
 import dashboard from '@/app/admin/dashboard/dashboard.module.css';
 import styles from './ChildPage.module.css';
 
@@ -104,7 +104,7 @@ function ChildPageInner({ title, description, children: render }) {
         </nav>
       ) : null}
 
-      {selected && !detail && !error ? <DataTable rows={[]} columns={[]} loading /> : null}
+      {(kids === null || (selected && !detail)) && !error ? <Loader /> : null}
       {detail ? render(detail) : null}
     </AdminPage>
   );
