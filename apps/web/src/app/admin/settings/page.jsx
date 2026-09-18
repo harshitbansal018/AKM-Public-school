@@ -397,15 +397,12 @@ function extractMapSrc(value) {
  * proper rows so nobody has to type separator characters correctly.
  */
 function PairsEditor({ field, value, onChange }) {
-  const items = toPairs(value);
+  // Empty rows are kept here so "+ Add" has something to type into; they are
+  // stored as "::" and the website's decoder skips them.
+  const items = toPairs(value, { keepEmpty: true });
 
   const write = (next) =>
-    onChange(
-      next
-        .filter((item) => item.title.trim() || item.description.trim())
-        .map((item) => `${item.title.trim()}::${item.description.trim()}`)
-        .join('|')
-    );
+    onChange(next.map((item) => `${item.title.trim()}::${item.description.trim()}`).join('|'));
 
   const update = (index, patch) =>
     write(items.map((item, i) => (i === index ? { ...item, ...patch } : item)));

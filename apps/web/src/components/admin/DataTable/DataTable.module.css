@@ -41,8 +41,11 @@
   background: #f9fcff;
 }
 
-.right {
-  text-align: right;
+/* The actions column: heading and buttons centred. Qualified with the table
+   so it outranks the left-aligned header rule above. */
+.table th.right,
+.table td.right {
+  text-align: center;
   white-space: nowrap;
 }
 

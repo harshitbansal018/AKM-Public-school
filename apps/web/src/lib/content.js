@@ -22,9 +22,13 @@ export function toList(value) {
 /**
  * "Heading::Body|Heading::Body" -> [{ id, title, description }]
  * An entry with no "::" becomes a title with no description.
+ *
+ * @param {object} [options]
+ * @param {boolean} [options.keepEmpty]  keep rows with neither title nor body —
+ *        the editor needs them (a freshly added row is empty); the website does not
  */
-export function toPairs(value) {
-  return toList(value).map((entry, index) => {
+export function toPairs(value, { keepEmpty = false } = {}) {
+  const pairs = toList(value).map((entry, index) => {
     const separator = entry.indexOf('::');
     if (separator === -1) return { id: index + 1, title: entry.trim(), description: '' };
     return {
@@ -33,6 +37,7 @@ export function toPairs(value) {
       description: entry.slice(separator + 2).trim(),
     };
   });
+  return keepEmpty ? pairs : pairs.filter((pair) => pair.title || pair.description);
 }
 
 /** Splits a textarea value into paragraphs on blank lines. */
