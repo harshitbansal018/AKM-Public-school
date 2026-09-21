@@ -15,6 +15,7 @@ export * as enquiryRepository from './enquiry.repository.js';
 export * as galleryRepository from './gallery.repository.js';
 export * as downloadRepository from './download.repository.js';
 export * as resultRepository from './result.repository.js';
+export * as passwordResetRepository from './passwordReset.repository.js';
 
 /**
  * The simple sorted-list tables. Same shape, so they share one implementation

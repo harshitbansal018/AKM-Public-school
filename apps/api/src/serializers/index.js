@@ -105,6 +105,12 @@ export function serializeTeacher(person) {
   };
 }
 
+/** Adds the download URL for the attached worksheet, if there is one. */
+export function serializeHomework(item) {
+  if (!item) return item;
+  return { ...item, attachmentUrl: item.attachmentPath ? toFileUrl(item.attachmentPath) : null };
+}
+
 export function serializeAchievement(item) {
   if (!item) return null;
   return { ...item, photo: toFileUrl(item.photo) };

@@ -33,7 +33,7 @@ export const SETTING_GROUP_PATTERN = /^(general|contact|stats|social|seo|page_[a
 export const ACHIEVEMENT_TYPES = ['academic', 'sports', 'cultural'];
 
 /** Subfolders under uploads/ that the API will write to. */
-export const UPLOAD_FOLDERS = ['gallery', 'faculty', 'achievements', 'downloads', 'resumes', 'misc'];
+export const UPLOAD_FOLDERS = ['gallery', 'faculty', 'achievements', 'downloads', 'homework', 'resumes', 'misc'];
 
 /** Upload folders that are never served statically — only through an authenticated route. */
 export const PRIVATE_UPLOAD_FOLDERS = ['resumes'];

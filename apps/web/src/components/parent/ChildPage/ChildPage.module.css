@@ -25,6 +25,21 @@
   color: var(--muted);
 }
 
+.attachment {
+  display: inline-block;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--royal);
+}
+
+.attachment:hover {
+  text-decoration: underline;
+}
+
 .count {
   margin: -10px 0 14px;
   font-size: 0.8rem;

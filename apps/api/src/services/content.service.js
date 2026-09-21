@@ -22,6 +22,8 @@ import {
 import { ApiError } from '../utils/ApiError.js';
 import { hashPassword } from '../utils/password.js';
 import { resolveClassGroups } from './setting.service.js';
+import { sendWelcome } from './auth.service.js';
+import { TOKEN_KIND } from '../utils/jwt.js';
 
 function createContentService(repository, label, serialize = (row) => row) {
   return {
@@ -77,6 +79,11 @@ export const academicStageService = createContentService(academicStageRepository
  * Faculty doubles as the teacher-portal account, so the admin view carries the
  * sign-in fields while the public list never does.
  */
+/** Emails the teacher their portal details the first time access is switched on. */
+async function welcomeTeacher(row, hadAccess, password) {
+  if (row.teacherAccess && !hadAccess) sendWelcome(TOKEN_KIND.FACULTY, row, password);
+}
+
 export const facultyService = {
   ...createContentService(facultyRepository, 'Faculty member', serializeFacultyAdmin),
 
@@ -86,14 +93,18 @@ export const facultyService = {
 
   async create(input) {
     const data = await facultyAccessData(input, null);
-    return serializeFacultyAdmin(await facultyRepository.create(data));
+    const created = await facultyRepository.create(data);
+    await welcomeTeacher(created, false, input.password);
+    return serializeFacultyAdmin(created);
   },
 
   async update(id, input) {
     const row = await facultyRepository.findById(id);
     if (!row) throw ApiError.notFound('Faculty member not found');
     const data = await facultyAccessData(input, row);
-    return serializeFacultyAdmin(await facultyRepository.update(id, data));
+    const updated = await facultyRepository.update(id, data);
+    await welcomeTeacher(updated, row.teacherAccess, input.password);
+    return serializeFacultyAdmin(updated);
   },
 
   /** The principal's block on the homepage and about page. */

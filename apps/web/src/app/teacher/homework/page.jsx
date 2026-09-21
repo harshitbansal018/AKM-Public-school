@@ -25,6 +25,7 @@ export default function TeacherHomeworkPage() {
         classOptions: (user?.assignedClasses ?? []).map((name) => ({ value: name, label: name })),
         subjectOptions,
         publishControl: false,
+        attachmentEndpoint: '/teacher/homework/attachment',
       })}
     />
   );

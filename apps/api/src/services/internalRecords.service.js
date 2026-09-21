@@ -10,9 +10,13 @@ import {
   jobApplicationRepository,
   policyRepository,
 } from '../repositories/index.js';
-import { serializeParent } from '../serializers/index.js';
+import { serializeParent, serializeHomework } from '../serializers/index.js';
 import { resolveClassGroup, resolvePolicyTab } from './setting.service.js';
 import { prepareResult } from './result.service.js';
+import { sendWelcome } from './auth.service.js';
+import * as mailService from './mail.service.js';
+import { env } from '../config/env.js';
+import { TOKEN_KIND } from '../utils/jwt.js';
 import { hashPassword } from '../utils/password.js';
 import { cleanHtml } from '../utils/html.js';
 import { ApiError } from '../utils/ApiError.js';
@@ -99,14 +103,84 @@ function createInternalService(repository, label, options = {}) {
   };
 }
 
-export const parentService = createInternalService(parentRepository, 'Parent account', {
+const baseParentService = createInternalService(parentRepository, 'Parent account', {
   prepare: prepareParent,
   serialize: serializeParent,
 });
+
+/** A new parent is emailed the portal address and a link to choose their password. */
+export const parentService = {
+  ...baseParentService,
+  async create(data) {
+    const parent = await baseParentService.create(data);
+    sendWelcome(TOKEN_KIND.PARENT, parent, data.password);
+    return parent;
+  },
+};
 export const studentService = createInternalService(studentRepository, 'Student', { prepare: prepareStudent });
-export const homeworkService = createInternalService(homeworkRepository, 'Homework', { prepare: withResolvedClass });
+export const homeworkService = createInternalService(homeworkRepository, 'Homework', {
+  prepare: withResolvedClass,
+  serialize: serializeHomework,
+});
 export const resultService = createInternalService(resultRepository, 'Result', { prepare: prepareResult });
-export const feeRecordService = createInternalService(feeRecordRepository, 'Fee record', { prepare: prepareFee });
+const rupees = (value) => Number(value ?? 0).toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+const longDate = (value) =>
+  value ? new Date(value).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Not set';
+
+export const feeRecordService = {
+  ...createInternalService(feeRecordRepository, 'Fee record', { prepare: prepareFee }),
+
+  /**
+   * Emails the linked parent about one pending fee, with the student's total
+   * outstanding across every unpaid record. Fails loudly (400) when there is
+   * nobody to email — the office needs to know, not assume it went.
+   */
+  async sendReminder(id) {
+    const fee = await feeRecordRepository.findById(id);
+    if (!fee) throw ApiError.notFound('Fee record not found');
+    if (fee.status === 'PAID') throw ApiError.badRequest('This fee is already paid — nothing to remind about');
+    if (!fee.studentId) throw ApiError.badRequest('This fee is not linked to a registered student');
+
+    const student = await studentRepository.findById(fee.studentId);
+    if (!student?.parent) {
+      throw ApiError.badRequest(`${fee.studentName} has no parent account linked — link one under Students first`);
+    }
+    const parent = await parentRepository.findById(student.parent.id);
+    if (!parent?.email) throw ApiError.badRequest('The linked parent account has no email address');
+
+    const pending = (await feeRecordRepository.findWhere({ studentId: student.id, status: { not: 'PAID' } }));
+    const outstandingOf = (row) => Math.max(Number(row.amount) - Number(row.paidAmount), 0);
+    const totalOutstanding = pending.reduce((sum, row) => sum + outstandingOf(row), 0);
+
+    const result = await mailService.send({
+      to: parent.email,
+      subject: `Fee reminder for ${student.name} — ₹${rupees(outstandingOf(fee))} outstanding`,
+      template: 'fee-reminder',
+      values: {
+        parentName: parent.name,
+        studentName: student.name,
+        classGroup: student.classGroup,
+        feeLabel: fee.notes || `Fee due ${longDate(fee.dueDate)}`,
+        amount: rupees(fee.amount),
+        paid: rupees(fee.paidAmount),
+        outstanding: rupees(outstandingOf(fee)),
+        dueDate: longDate(fee.dueDate),
+        totalOutstanding: rupees(totalOutstanding),
+        pendingCount: `${pending.length} pending ${pending.length === 1 ? 'fee' : 'fees'}`,
+        portalUrl: `${env.publicBaseUrl}/parent/fees?child=${student.id}`,
+      },
+    });
+
+    if (!result.sent) {
+      throw ApiError.badRequest(
+        result.reason === 'smtp not configured'
+          ? 'Email is not set up on the server yet (SMTP_HOST is blank)'
+          : `The email could not be sent: ${result.reason}`
+      );
+    }
+    return { sent: true, to: parent.email, parentName: parent.name };
+  },
+};
 export const facultySalaryService = {
   ...createInternalService(facultySalaryRepository, 'Salary record', { prepare: prepareSalary }),
 
@@ -159,7 +233,7 @@ async function preparePolicy(data) {
 export const policyService = createInternalService(policyRepository, 'Policy', { prepare: preparePolicy });
 
 export async function listPublishedHomework() {
-  return homeworkRepository.findPublished();
+  return (await homeworkRepository.findPublished()).map(serializeHomework);
 }
 
 /** Active policies for the website, newest effective date first. */

@@ -23,6 +23,15 @@ export const enquiryLimiter = rateLimit({
   message: message('You have already sent several enquiries — please call the school instead.'),
 });
 
+/** Password-reset emails: a few per address per quarter hour is plenty. */
+export const resetLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: message('Too many reset requests — please wait 15 minutes and try again.'),
+});
+
 /** Slows down password guessing without locking out a forgetful admin. */
 export const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,

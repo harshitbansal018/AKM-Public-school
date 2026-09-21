@@ -1,4 +1,13 @@
-import { userRepository, facultyRepository, parentRepository } from '../repositories/index.js';
+import crypto from 'node:crypto';
+import {
+  userRepository,
+  facultyRepository,
+  parentRepository,
+  passwordResetRepository,
+} from '../repositories/index.js';
+import * as mailService from './mail.service.js';
+import { env } from '../config/env.js';
+import { logger } from '../utils/logger.js';
 import { hashPassword, verifyPassword } from '../utils/password.js';
 import { signAccessToken, signRefreshToken, verifyRefreshToken, TOKEN_KIND } from '../utils/jwt.js';
 import { serializeUser, serializeTeacher, serializeParent } from '../serializers/index.js';
@@ -22,6 +31,11 @@ const ACCOUNTS = {
     serialize: serializeUser,
     /** What later requests see as req.user. */
     shape: (user) => user,
+    setPassword: (user, passwordHash) => userRepository.update(user.id, { passwordHash }),
+    email: (user) => user.email,
+    portal: 'admin',
+    portalName: 'AKM Admin Panel',
+    purpose: 'Use it to manage the website and the school records.',
   },
   [TOKEN_KIND.FACULTY]: {
     findByEmail: (email) => facultyRepository.findFirst({ accountEmail: email }),
@@ -31,6 +45,11 @@ const ACCOUNTS = {
     subject: (faculty) => ({ id: faculty.id, email: faculty.accountEmail, role: 'TEACHER' }),
     serialize: serializeTeacher,
     shape: (faculty) => ({ ...faculty, email: faculty.accountEmail, role: 'TEACHER' }),
+    setPassword: (faculty, passwordHash) => facultyRepository.update(faculty.id, { passwordHash }),
+    email: (faculty) => faculty.accountEmail,
+    portal: 'teacher',
+    portalName: 'AKM Teacher Portal',
+    purpose: 'Use it to set homework and enter results for your classes.',
   },
   [TOKEN_KIND.PARENT]: {
     findByEmail: (email) => parentRepository.findFirst({ email }),
@@ -41,6 +60,11 @@ const ACCOUNTS = {
     subject: (parent) => ({ id: parent.id, email: parent.email, role: 'PARENT' }),
     serialize: serializeParent,
     shape: (parent) => ({ ...parent, role: 'PARENT' }),
+    setPassword: (parent, passwordHash) => parentRepository.update(parent.id, { passwordHash }),
+    email: (parent) => parent.email,
+    portal: 'parent',
+    portalName: 'AKM Parent Portal',
+    purpose: "Use it to follow your child's homework, results and fees.",
   },
 };
 
@@ -109,6 +133,112 @@ export async function loadAccount(kind, id) {
 
 export function serializeAccount(kind, account) {
   return accounts(kind).serialize(account);
+}
+
+/* ---------------------------------------------------------------
+   Forgot password. The token goes out by email and only its hash is kept;
+   it works once, for RESET_TTL_MINUTES, and asking again retires the old one.
+   --------------------------------------------------------------- */
+
+const RESET_TTL_MINUTES = 60;
+const WELCOME_TTL_MINUTES = 7 * 24 * 60;
+const hashToken = (token) => crypto.createHash('sha256').update(token).digest('hex');
+
+/** A fresh one-time link to the portal's reset page; older links are retired. */
+async function issueResetLink(kind, account, ttlMinutes) {
+  const config = accounts(kind);
+  const token = crypto.randomBytes(32).toString('base64url');
+  await passwordResetRepository.retireFor(kind, account.id);
+  await passwordResetRepository.create({
+    kind,
+    accountId: account.id,
+    tokenHash: hashToken(token),
+    expiresAt: new Date(Date.now() + ttlMinutes * 60 * 1000),
+  });
+  return `${env.publicBaseUrl}/${config.portal}/reset-password?token=${token}`;
+}
+
+/**
+ * The email a teacher or parent gets when the office creates their account:
+ * the portal address, their login email and a week-long link to choose their
+ * own password. Never throws — a save must not fail because mail is down.
+ *
+ * @param {string} [password]  the starting password the office typed, included
+ *        in the email so the person can sign in at once
+ */
+export async function sendWelcome(kind, account, password) {
+  const config = accounts(kind);
+  const to = config.email(account);
+  if (!to) return { sent: false, reason: 'no email' };
+  try {
+    const resetUrl = await issueResetLink(kind, account, WELCOME_TTL_MINUTES);
+    return await mailService.send({
+      to,
+      subject: `Your ${config.portalName} account`,
+      template: 'account-welcome',
+      values: {
+        name: account.name,
+        email: to,
+        portalName: config.portalName,
+        portalUrl: `${env.publicBaseUrl}/${config.portal}/login`,
+        purpose: config.purpose,
+        password: password ?? 'the password the school office gave you',
+        resetUrl,
+        expiresIn: '7 days',
+      },
+    });
+  } catch (error) {
+    logger.error(`Welcome email to ${to} failed:`, error.message);
+    return { sent: false, reason: error.message };
+  }
+}
+
+/**
+ * Always resolves the same way whether or not the email is known, so the
+ * form cannot be used to discover which addresses have accounts.
+ *
+ */
+export async function requestPasswordReset(kind, email) {
+  const config = accounts(kind);
+  const account = await config.findByEmail(String(email).toLowerCase());
+  if (!account || !config.allowed(account)) {
+    logger.info(`[password-reset] no eligible ${kind} account for ${email}`);
+    return { requested: true };
+  }
+
+  const resetUrl = await issueResetLink(kind, account, RESET_TTL_MINUTES);
+  await mailService.send({
+    to: config.email(account),
+    subject: `Reset your ${config.portalName} password`,
+    template: 'password-reset',
+    values: {
+      name: account.name,
+      email: config.email(account),
+      portalName: config.portalName,
+      resetUrl,
+      expiresIn: `${RESET_TTL_MINUTES} minutes`,
+    },
+  });
+
+  return { requested: true };
+}
+
+/** Sets a new password from a live token, then retires the token. */
+export async function resetPassword(kind, token, newPassword) {
+  const config = accounts(kind);
+  const reset = await passwordResetRepository.findLive(hashToken(token));
+  if (!reset || reset.kind !== kind) {
+    throw ApiError.badRequest('This reset link is not valid or has expired — please ask for a new one');
+  }
+
+  const account = await config.findById(reset.accountId);
+  if (!account || !config.allowed(account)) {
+    throw ApiError.badRequest('This account can no longer be used');
+  }
+
+  await config.setPassword(account, await hashPassword(newPassword));
+  await passwordResetRepository.markUsed(reset.id);
+  return { reset: true };
 }
 
 export async function changePassword(userId, currentPassword, newPassword) {

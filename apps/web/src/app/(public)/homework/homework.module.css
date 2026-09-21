@@ -66,6 +66,18 @@
   color: var(--muted);
 }
 
+.attachment {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: var(--royal);
+}
+
+.attachment:hover {
+  text-decoration: underline;
+}
+
 .item h2 {
   font-size: 1.15rem;
   margin-bottom: 6px;

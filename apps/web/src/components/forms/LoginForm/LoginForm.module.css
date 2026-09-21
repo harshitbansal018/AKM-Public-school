@@ -4,6 +4,27 @@
   gap: 16px;
 }
 
+.notice {
+  background: var(--sky-soft);
+  border-left: 4px solid var(--royal);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  font-size: 0.86rem;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+.link {
+  align-self: flex-end;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--royal);
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
 .error {
   background: rgba(208, 52, 44, 0.1);
   border-left: 4px solid var(--red);

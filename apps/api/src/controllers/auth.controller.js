@@ -49,6 +49,23 @@ export function createAuthController({ kind, portal, cookie }) {
     me: asyncHandler(async (req, res) => {
       sendOk(res, authService.serializeAccount(kind, req.user), 'Current account');
     }),
+
+    forgotPassword: asyncHandler(async (req, res) => {
+      await authService.requestPasswordReset(kind, req.body.email);
+      sendOk(
+        res,
+        { requested: true },
+        'If an account exists for that email, a reset link has been sent to it'
+      );
+    }),
+
+    resetPassword: asyncHandler(async (req, res) => {
+      sendOk(
+        res,
+        await authService.resetPassword(kind, req.body.token, req.body.password),
+        'Your password has been changed — you can sign in now'
+      );
+    }),
   };
 }
 

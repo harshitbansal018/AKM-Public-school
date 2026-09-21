@@ -2,16 +2,18 @@ import { Router } from 'express';
 
 import { createAuthController } from '../controllers/auth.controller.js';
 import * as teacher from '../controllers/teacher/teacher.controller.js';
+import { uploadHomeworkAttachment } from '../controllers/admin/admin.controller.js';
+import { uploadDocument } from '../middlewares/upload.middleware.js';
 import { teacherHomeworkService, teacherResultService } from '../services/teacher.service.js';
 
 import { authenticateTeacher } from '../middlewares/auth.middleware.js';
 import { TOKEN_KIND } from '../utils/jwt.js';
 import { validate } from '../middlewares/validate.middleware.js';
-import { loginLimiter } from '../middlewares/rateLimit.middleware.js';
+import { loginLimiter, resetLimiter } from '../middlewares/rateLimit.middleware.js';
 import { revalidateOnWrite } from '../middlewares/revalidate.middleware.js';
 
 import { idParamSchema } from '../validators/common.validator.js';
-import { loginSchema } from '../validators/auth.validator.js';
+import { loginSchema, forgotPasswordSchema, resetPasswordSchema } from '../validators/auth.validator.js';
 import * as schema from '../validators/content.validator.js';
 
 const router = Router();
@@ -28,6 +30,8 @@ const auth = createAuthController({
 router.post('/auth/login', loginLimiter, validate(loginSchema), auth.login);
 router.post('/auth/refresh', auth.refresh);
 router.post('/auth/logout', auth.logout);
+router.post('/auth/forgot-password', resetLimiter, validate(forgotPasswordSchema), auth.forgotPassword);
+router.post('/auth/reset-password', resetLimiter, validate(resetPasswordSchema), auth.resetPassword);
 router.get('/auth/me', authenticateTeacher, auth.me);
 
 /* ---------------------------------------------------------------
@@ -42,6 +46,9 @@ router.get('/dashboard', teacher.getDashboard);
 router.get('/students', teacher.listStudents);
 router.get('/salary', teacher.listSalary);
 router.get('/subjects', teacher.listSubjects);
+
+// A worksheet for a homework item; the form attaches the returned path.
+router.post('/homework/attachment', uploadDocument('homework', 'file'), uploadHomeworkAttachment);
 
 // Marks entry: the whole class for one examination, in one grid.
 router.get('/results/grid', validate(schema.marksGridQuerySchema, 'query'), teacher.getMarksGrid);

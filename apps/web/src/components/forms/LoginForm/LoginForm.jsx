@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { API_ENABLED } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
@@ -62,6 +63,10 @@ export default function LoginForm() {
         autoComplete="current-password"
         required
       />
+
+      <Link href={`/${portal}/forgot-password`} className={styles.link}>
+        Forgot password?
+      </Link>
 
       {error ? (
         <p className={styles.error} role="alert">

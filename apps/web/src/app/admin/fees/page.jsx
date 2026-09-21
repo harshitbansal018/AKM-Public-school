@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import InternalRecordManager from '@/components/admin/InternalRecordManager/InternalRecordManager';
 import StatusPill from '@/components/admin/StatusPill/StatusPill';
+import { RowButton } from '@/components/admin/RowActions/RowActions';
+import Spinner from '@/components/ui/Spinner/Spinner';
 import { useClassSections } from '@/hooks/useClassSections';
 import { adminApi } from '@/lib/adminApi';
 import { formatLongDate, formatMoney } from '@/lib/format';
@@ -46,7 +48,14 @@ export default function FeesPage() {
         },
       ]}
       singular="fee record"
-      description="Fees raised and payments received, student by student. Parents see their own child's records on the parent portal."
+      description="Fees raised and payments received, student by student. Parents see their own child's records on the parent portal; Email reminder sends the linked parent the pending amount."
+      extraRowActions={(row, { post, saving }) =>
+        row.status !== 'PAID' ? (
+          <RowButton disabled={saving} onClick={() => post(`/${row.id}/remind`, {}, 'Reminder emailed to the parent')}>
+            {saving ? <Spinner size="xs" /> : null} Email reminder
+          </RowButton>
+        ) : null
+      }
       columns={[
         { key: 'studentName', label: 'Student' },
         { key: 'classGroup', label: 'Class' },

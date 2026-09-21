@@ -90,6 +90,19 @@ function HomeworkList({ homework, classGroup }) {
           },
           { key: 'subject', label: 'Subject', nowrap: true },
           { key: 'dueDate', label: 'Due', nowrap: true, render: (r) => (r.dueDate ? formatLongDate(r.dueDate) : '—') },
+          {
+            key: 'attachmentPath',
+            label: 'File',
+            nowrap: true,
+            render: (r) =>
+              r.attachmentUrl ? (
+                <a href={r.attachmentUrl} target="_blank" rel="noopener noreferrer" className={styles.attachment}>
+                  {r.attachmentName ?? 'Download'}
+                </a>
+              ) : (
+                '—'
+              ),
+          },
         ]}
       />
     </>

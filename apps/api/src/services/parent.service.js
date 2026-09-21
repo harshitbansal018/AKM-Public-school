@@ -13,6 +13,7 @@ import {
   feeRecordRepository,
 } from '../repositories/index.js';
 import { groupResultsByExam } from './result.service.js';
+import { serializeHomework } from '../serializers/index.js';
 import { ApiError } from '../utils/ApiError.js';
 
 const money = (value) => Math.round(Number(value ?? 0) * 100) / 100;
@@ -87,7 +88,7 @@ export async function getChildDetail(parent, studentId) {
       classGroup: child.classGroup,
       rollNumber: child.rollNumber,
     },
-    homework,
+    homework: homework.map(serializeHomework),
     results,
     // Report-card view: subjects grouped under each examination with totals.
     reportCards: groupResultsByExam(results),

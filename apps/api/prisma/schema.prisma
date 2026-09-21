@@ -261,6 +261,21 @@ model MediaFile {
   createdAt    DateTime @default(now())
 }
 
+/// A "forgot password" request for any of the three account kinds. Only the
+/// token's hash is stored; the token itself goes out by email once.
+model PasswordReset {
+  id        Int       @id @default(autoincrement())
+  /// 'user' (admin panel) | 'faculty' (teacher portal) | 'parent' — the token kinds
+  kind      String
+  accountId Int
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([kind, accountId])
+}
+
 /// Parent-portal accounts. One login per family: a parent is linked to one or
 /// more students and can only ever read those students' records.
 model Parent {
@@ -297,14 +312,19 @@ model Student {
   @@index([parentId])
 }
 
+/// `attachmentPath` is a worksheet or notes file (PDF / Word) relative to the
+/// uploads dir, served publicly so parents and students can download it.
 model Homework {
-  id          Int       @id @default(autoincrement())
-  title       String
-  classGroup  String
-  subject     String
-  dueDate     DateTime?
-  description String?   @db.Text
-  isPublished Boolean   @default(false)
+  id             Int       @id @default(autoincrement())
+  title          String
+  classGroup     String
+  subject        String
+  dueDate        DateTime?
+  description    String?   @db.Text
+  attachmentPath String?
+  attachmentName String?
+  attachmentSize Int?
+  isPublished    Boolean   @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

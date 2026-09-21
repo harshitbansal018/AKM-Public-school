@@ -16,7 +16,7 @@ import * as downloadService from '../../services/download.service.js';
 import * as settingService from '../../services/setting.service.js';
 import * as announcementService from '../../services/announcement.service.js';
 import * as userService from '../../services/user.service.js';
-import { facultySalaryService, jobApplicationService } from '../../services/internalRecords.service.js';
+import { facultySalaryService, jobApplicationService, feeRecordService } from '../../services/internalRecords.service.js';
 import { sendUploadedFile } from '../../utils/fileUrl.js';
 import * as reportService from '../../services/report.service.js';
 import * as resultService from '../../services/result.service.js';
@@ -212,6 +212,14 @@ export const downloadResume = asyncHandler(async (req, res) => {
   await sendUploadedFile(res, relativePath, filename);
 });
 
+// ---------- fees ----------
+
+/** Emails the linked parent a reminder for one pending fee. */
+export const remindFee = asyncHandler(async (req, res) => {
+  const result = await feeRecordService.sendReminder(req.params.id);
+  sendOk(res, result, `Reminder emailed to ${result.parentName} (${result.to})`);
+});
+
 // ---------- faculty salary ----------
 
 export const paySalary = asyncHandler(async (req, res) => {
@@ -262,6 +270,23 @@ export const deleteUser = asyncHandler(async (req, res) => {
 });
 
 // ---------- uploads ----------
+
+/** A homework worksheet (PDF / Word): stored publicly under uploads/homework. */
+export const uploadHomeworkAttachment = asyncHandler(async (req, res) => {
+  if (!req.file) throw ApiError.badRequest('No file was uploaded');
+  sendOk(
+    res,
+    {
+      path: `homework/${req.file.filename}`,
+      url: toFileUrl(`homework/${req.file.filename}`),
+      name: req.file.originalname,
+      size: req.file.size,
+      mimeType: req.file.mimetype,
+    },
+    'File uploaded',
+    201
+  );
+});
 
 export const uploadFile = asyncHandler(async (req, res) => {
   if (!req.file) throw ApiError.badRequest('No file was uploaded');

@@ -45,11 +45,27 @@ const classField = (classOptions) =>
 
 // ---------- homework ----------
 
+/** A link to the attached worksheet, for any homework table. */
+export const attachmentColumn = {
+  key: 'attachmentPath',
+  label: 'File',
+  nowrap: true,
+  render: (row) =>
+    row.attachmentUrl ? (
+      <a href={row.attachmentUrl} target="_blank" rel="noopener noreferrer" download={row.attachmentName ?? true}>
+        {row.attachmentName ?? 'Download'}
+      </a>
+    ) : (
+      '—'
+    ),
+};
+
 export const homeworkColumns = [
   { key: 'title', label: 'Assignment' },
   { key: 'classGroup', label: 'Class' },
   { key: 'subject', label: 'Subject' },
   dateColumn('dueDate', 'Due date'),
+  attachmentColumn,
   publishedColumn,
 ];
 
@@ -57,14 +73,29 @@ export const homeworkColumns = [
  * @param {object} options
  * @param {boolean} [options.publishControl]  false in the teacher portal, where
  *        homework goes live the moment it is saved — no draft step to forget.
+ * @param {string} [options.attachmentEndpoint]  where the worksheet is uploaded,
+ *        '/admin/homework/attachment' or '/teacher/homework/attachment'
  */
-export function homeworkFields({ classOptions, subjectOptions, publishControl = true } = {}) {
+export function homeworkFields({
+  classOptions,
+  subjectOptions,
+  publishControl = true,
+  attachmentEndpoint = '/admin/homework/attachment',
+} = {}) {
   return [
     { name: 'title', label: 'Assignment title', type: 'text', required: true },
     classField(classOptions),
     subjectField(subjectOptions, { required: true }),
     { name: 'dueDate', label: 'Due date', type: 'date', half: true },
     { name: 'description', label: 'Instructions', type: 'textarea', rows: 5 },
+    {
+      name: 'attachmentPath',
+      label: 'Worksheet / notes (optional)',
+      type: 'file',
+      endpoint: attachmentEndpoint,
+      companions: { name: 'attachmentName', size: 'attachmentSize' },
+      hint: 'PDF or Word, up to 20 MB. Parents and students can download it with the homework.',
+    },
     ...(publishControl
       ? [
           {

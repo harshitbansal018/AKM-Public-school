@@ -7,6 +7,7 @@ import Input from '@/components/ui/Input/Input';
 import Select from '@/components/ui/Select/Select';
 import Textarea from '@/components/ui/Textarea/Textarea';
 import ImageUploader from '@/components/admin/ImageUploader/ImageUploader';
+import FileUploader from '@/components/admin/FileUploader/FileUploader';
 import Spinner from '@/components/ui/Spinner/Spinner';
 import styles from './ResourceForm.module.css';
 
@@ -24,7 +25,10 @@ const RichTextEditor = dynamic(() => import('@/components/admin/RichTextEditor/R
  * hand-written form with its own state handling and its own bugs.
  *
  * Field: { name, label, type, options?, required?, placeholder?, help?, half? }
- * Types: text | textarea | richtext | number | select | checkbox | checkboxes | date | color | list
+ * Types: text | textarea | richtext | number | select | checkbox | checkboxes | date | color | list | image | file
+ *   file — a downloadable document; `endpoint` receives the upload and the
+ *   value is the stored path. `companions: { name, size }` names the record's
+ *   fields that carry the original filename and size alongside it.
  *   checkboxes — pick several of `options`; the value is an array
  *   richtext   — CKEditor; the value is HTML (sanitised again by the API on save)
  *
@@ -51,6 +55,9 @@ export default function ResourceForm({
     for (const field of fields) {
       const raw = initialValues[field.name];
       seeded[field.name] = normaliseIn(field, raw);
+      for (const companion of Object.values(field.companions ?? {})) {
+        seeded[companion] = initialValues[companion] ?? null;
+      }
     }
     setValues(seeded);
     setErrors({});
@@ -85,6 +92,9 @@ export default function ResourceForm({
     const payload = {};
     for (const field of fields) {
       payload[field.name] = normaliseOut(field, values[field.name]);
+      for (const companion of Object.values(field.companions ?? {})) {
+        payload[companion] = values[companion] ?? null;
+      }
     }
 
     try {
@@ -236,6 +246,23 @@ function renderField(field, values, setField, error) {
           onChange={(path) => setField(field.name, path)}
         />
       );
+
+    case 'file': {
+      const companions = field.companions ?? {};
+      return (
+        <FileUploader
+          label={field.label}
+          endpoint={field.endpoint}
+          hint={field.hint}
+          value={value ? { path: value, name: values[companions.name], size: values[companions.size] } : null}
+          onChange={(file) => {
+            setField(field.name, file?.path ?? null);
+            if (companions.name) setField(companions.name, file?.name ?? null);
+            if (companions.size) setField(companions.size, file?.size ?? null);
+          }}
+        />
+      );
+    }
 
     case 'color':
       return (

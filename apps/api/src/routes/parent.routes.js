@@ -5,13 +5,13 @@ import * as parentService from '../services/parent.service.js';
 
 import { authenticateParent } from '../middlewares/auth.middleware.js';
 import { validate } from '../middlewares/validate.middleware.js';
-import { loginLimiter } from '../middlewares/rateLimit.middleware.js';
+import { loginLimiter, resetLimiter } from '../middlewares/rateLimit.middleware.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { sendOk } from '../utils/ApiResponse.js';
 import { TOKEN_KIND } from '../utils/jwt.js';
 
 import { idParamSchema } from '../validators/common.validator.js';
-import { loginSchema } from '../validators/auth.validator.js';
+import { loginSchema, forgotPasswordSchema, resetPasswordSchema } from '../validators/auth.validator.js';
 
 const router = Router();
 const id = validate(idParamSchema, 'params');
@@ -27,6 +27,8 @@ const auth = createAuthController({
 router.post('/auth/login', loginLimiter, validate(loginSchema), auth.login);
 router.post('/auth/refresh', auth.refresh);
 router.post('/auth/logout', auth.logout);
+router.post('/auth/forgot-password', resetLimiter, validate(forgotPasswordSchema), auth.forgotPassword);
+router.post('/auth/reset-password', resetLimiter, validate(resetPasswordSchema), auth.resetPassword);
 router.get('/auth/me', authenticateParent, auth.me);
 
 /* ---------------------------------------------------------------

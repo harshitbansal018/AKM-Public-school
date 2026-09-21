@@ -78,6 +78,16 @@ export default async function HomeworkPage({ searchParams }) {
                   </div>
                   <h2>{item.title}</h2>
                   {item.description ? <p>{item.description}</p> : null}
+                  {item.attachmentUrl ? (
+                    <a
+                      href={item.attachmentUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.attachment}
+                    >
+                      Download {item.attachmentName ?? 'worksheet'}
+                    </a>
+                  ) : null}
                 </Reveal>
               ))}
             </ul>

@@ -26,7 +26,7 @@ import { authenticate } from '../middlewares/auth.middleware.js';
 import { TOKEN_KIND } from '../utils/jwt.js';
 import { requireRole } from '../middlewares/role.middleware.js';
 import { validate } from '../middlewares/validate.middleware.js';
-import { loginLimiter } from '../middlewares/rateLimit.middleware.js';
+import { loginLimiter, resetLimiter } from '../middlewares/rateLimit.middleware.js';
 import { revalidateOnWrite } from '../middlewares/revalidate.middleware.js';
 import {
   uploadImages,
@@ -35,7 +35,7 @@ import {
 } from '../middlewares/upload.middleware.js';
 
 import { idParamSchema, reorderSchema } from '../validators/common.validator.js';
-import { loginSchema, changePasswordSchema } from '../validators/auth.validator.js';
+import { loginSchema, forgotPasswordSchema, resetPasswordSchema, changePasswordSchema } from '../validators/auth.validator.js';
 import { listEnquiriesSchema, updateEnquirySchema } from '../validators/enquiry.validator.js';
 import * as schema from '../validators/content.validator.js';
 
@@ -49,6 +49,8 @@ const auth = createAuthController({ kind: TOKEN_KIND.USER, portal: 'admin', cook
 router.post('/auth/login', loginLimiter, validate(loginSchema), auth.login);
 router.post('/auth/refresh', auth.refresh);
 router.post('/auth/logout', auth.logout);
+router.post('/auth/forgot-password', resetLimiter, validate(forgotPasswordSchema), auth.forgotPassword);
+router.post('/auth/reset-password', resetLimiter, validate(resetPasswordSchema), auth.resetPassword);
 router.get('/auth/me', authenticate, auth.me);
 router.patch('/auth/password', authenticate, validate(changePasswordSchema), changePassword);
 
@@ -165,6 +167,9 @@ router.get('/reports/:key', validate(schema.reportQuerySchema, 'query'), admin.r
 // The applicant's CV — streamed here rather than served statically.
 router.get('/job-applications/:id/resume', id, admin.downloadResume);
 
+// Fee reminder: emails the student's linked parent about this pending fee.
+router.post('/fees/:id/remind', id, admin.remindFee);
+
 // The salary-payment step: Due → Paid with a payment date.
 router.patch('/faculty-salary/:id/pay', id, validate(schema.paySalarySchema), admin.paySalary);
 
@@ -177,6 +182,7 @@ router.get('/policy-tabs', admin.listPolicyTabs);
 
 // ---------- uploads ----------
 router.post('/uploads/:folder', uploadImageToParamFolder('file'), admin.uploadFile);
+router.post('/homework/attachment', uploadDocument('homework', 'file'), admin.uploadHomeworkAttachment);
 
 /* ---------------------------------------------------------------
    Managing accounts is administrator-only, even for signed-in editors.

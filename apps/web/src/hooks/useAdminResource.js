@@ -86,12 +86,19 @@ export function useAdminResource(endpoint, { autoLoad = true } = {}) {
     [endpoint, api, run]
   );
 
+  /** A POST action on one row (send a reminder, say) — same toast + refresh as patch. */
+  const post = useCallback(
+    (path, payload, message, query) =>
+      run(() => api.post(`${endpoint}${path}`, payload), message, query),
+    [endpoint, api, run]
+  );
+
   const remove = useCallback(
     (id, query) => run(() => api.delete(`${endpoint}/${id}`), 'Deleted', query),
     [endpoint, api, run]
   );
 
-  return { items, meta, loading, saving, error, load, create, update, patch, remove, setItems };
+  return { items, meta, loading, saving, error, load, create, update, patch, post, remove, setItems };
 }
 
 export default useAdminResource;

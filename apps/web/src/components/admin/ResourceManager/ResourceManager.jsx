@@ -22,9 +22,9 @@ import { useAdminResource } from '@/hooks/useAdminResource';
  *        rendered above the table — totals and the like; gets the rows after search/filters
  * @param {(items) => items} [filterRows]  extra narrowing on top of the built-in filters
  * @param {React.ReactNode} [extraActions]  rendered beside the "+ Add" button in the page header
- * @param {(row, { patch, saving }) => React.ReactNode} [extraRowActions]
- *        extra buttons per row; `patch(path, body, message)` calls the API and reloads,
- *        `saving` is true while any request is in flight
+ * @param {(row, { patch, post, saving }) => React.ReactNode} [extraRowActions]
+ *        extra buttons per row; `patch(path, body, message)` / `post(...)` call the
+ *        API and reload, `saving` is true while any request is in flight
  */
 export default function ResourceManager({
   endpoint,
@@ -43,7 +43,7 @@ export default function ResourceManager({
   extraRowActions,
   canDelete = () => true,
 }) {
-  const { items, loading, saving, error, create, update, patch, remove } = useAdminResource(endpoint);
+  const { items, loading, saving, error, create, update, patch, post, remove } = useAdminResource(endpoint);
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [deleting, setDeleting] = useState(null);
@@ -124,7 +124,7 @@ export default function ResourceManager({
         }
         actions={(row) => (
           <RowActions>
-            {extraRowActions?.(row, { patch, saving })}
+            {extraRowActions?.(row, { patch, post, saving })}
             <RowButton onClick={() => openEdit(row)}>Edit</RowButton>
             {canDelete(row) ? (
               <RowButton tone="danger" onClick={() => setDeleting(row)}>

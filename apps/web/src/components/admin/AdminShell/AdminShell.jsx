@@ -26,7 +26,8 @@ export default function AdminShell({ nav, brand, title, children }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const loginPath = `/${portal}/login`;
-  const isLoginPage = pathname === loginPath;
+  // Sign-in and the forgot / reset password pages are reachable signed out.
+  const isLoginPage = [loginPath, `/${portal}/forgot-password`, `/${portal}/reset-password`].includes(pathname);
 
   useEffect(() => {
     if (loading || isLoginPage) return;

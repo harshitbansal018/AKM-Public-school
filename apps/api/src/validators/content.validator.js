@@ -243,6 +243,13 @@ export const createHomeworkSchema = z.object({
   subject: z.string().trim().min(2).max(120),
   dueDate: z.coerce.date().optional().nullable(),
   description: optionalText(5000),
+  // Set from the upload endpoint's response; the path is checked to stay inside uploads/homework.
+  attachmentPath: optionalText(300).refine(
+    (value) => value === null || value === undefined || /^homework\/[a-z0-9.-]+$/i.test(value),
+    'Upload the file through the form'
+  ),
+  attachmentName: optionalText(255),
+  attachmentSize: z.coerce.number().int().min(0).optional().nullable(),
   isPublished: z.boolean().default(false),
 });
 export const updateHomeworkSchema = createHomeworkSchema.partial();
