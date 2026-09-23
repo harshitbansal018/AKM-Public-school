@@ -69,6 +69,13 @@
   border-left-color: var(--gold);
 }
 
+/* The two call-to-action buttons, stacked full width under the links. */
+.ctas {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 @media (min-width: 981px) {
   .panel,
   .open {

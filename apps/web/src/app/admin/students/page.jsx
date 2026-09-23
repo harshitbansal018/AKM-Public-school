@@ -61,10 +61,15 @@ export default function StudentsPage() {
         {
           name: 'parentId',
           label: 'Parent portal account',
-          type: 'select',
-          placeholder: 'Not linked',
-          options: parents.map((parent) => ({ value: parent.id, label: `${parent.name} — ${parent.email}` })),
-          help: 'Accounts are created under Parents. The linked parent can see this student’s homework, results and fees.',
+          type: 'search-select',
+          placeholder: 'Search by parent name, email or phone…',
+          emptyText: 'No parent account matches that',
+          options: parents.map((parent) => ({
+            value: parent.id,
+            label: parent.name,
+            hint: [parent.email, parent.phone].filter(Boolean).join(' · '),
+          })),
+          help: 'Type a few letters of the name, email or phone to find the account. Accounts are created under Parents; the linked parent sees this student’s homework, results and fees.',
         },
       ]}
     />

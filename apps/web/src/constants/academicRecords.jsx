@@ -147,10 +147,13 @@ export const scoreText = (row) =>
  */
 export const studentOptionsFrom = (students) => (classGroup) =>
   students
-    .filter((student) => student.classGroup === classGroup)
+    .filter((student) => !classGroup || student.classGroup === classGroup)
     .map((student) => ({
       value: student.id,
-      label: student.rollNumber ? `${student.name} (Roll ${student.rollNumber})` : student.name,
+      label: student.name,
+      hint: [student.rollNumber ? `Roll ${student.rollNumber}` : null, student.classGroup, student.guardianName]
+        .filter(Boolean)
+        .join(' · '),
     }));
 
 /** Class dropdown + dependent student dropdown, shared by results and fees. */
@@ -160,12 +163,13 @@ export function studentFields({ classOptions, studentOptions }) {
     {
       name: 'studentId',
       label: 'Student',
-      type: 'select',
+      type: 'search-select',
       options: (values) => studentOptions(values.classGroup),
-      placeholder: 'Choose a student…',
+      placeholder: 'Search by name, roll no. or guardian…',
+      emptyText: 'No student matches that in this class',
       required: true,
       half: true,
-      help: 'Pick the class first. Students are registered by the school office under Students.',
+      help: 'Choose the class first to narrow the list, then type a few letters of the name or roll number.',
     },
   ];
 }

@@ -53,8 +53,7 @@ export const footerInfoLinks = [
   { href: '/achievements', label: 'Results & Toppers' },
   { href: '/downloads', label: 'Downloads' },
   { href: '/contact', label: 'Contact Us' },
-  { href: '/parent/login', label: 'Parent Login' },
-  { href: '/teacher/login', label: 'Teacher Login' },
+  { href: '/careers', label: 'Careers' },
 ];
 
 export const footerLegalLinks = [

@@ -52,9 +52,14 @@ export default function MobileMenu({ open, onNavigate, isActive }) {
         )}
       </ul>
 
-      <Link href="/admissions" className="btn btn-primary btn-sm" onClick={onNavigate}>
-        Admission Enquiry
-      </Link>
+      <div className={styles.ctas}>
+        <Link href="/admissions" className="btn btn-primary btn-sm" onClick={onNavigate}>
+          Admission Enquiry
+        </Link>
+        <Link href="/careers" className="btn btn-outline btn-sm" onClick={onNavigate}>
+          Apply for Job
+        </Link>
+      </div>
     </div>
   );
 }

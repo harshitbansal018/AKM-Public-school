@@ -152,6 +152,24 @@
   line-height: 1;
 }
 
+/* Holds the two call-to-action buttons side by side. Nothing else changes:
+   the buttons themselves keep the existing .cta sizing. */
+.ctas {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+/* Below this width the row was already full, so the new button steps back
+   rather than pushing anything else out of shape; it stays in the menu under
+   About and in the slide-in menu. */
+@media (max-width: 1180px) {
+  .jobCta {
+    display: none;
+  }
+}
+
 /* Eight nav items, the crest and the CTA together just about fill 1180px.
    Between the mobile breakpoint and that width, tighten the row rather than
    letting an item wrap or the header overflow. */

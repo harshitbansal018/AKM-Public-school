@@ -7,17 +7,22 @@
   z-index: 60;
 }
 
+/* Contact details grouped on the left at an even spacing, the portal sign-in
+   pushed to the right edge (see .logins). One line on desktop; wraps neatly
+   on small screens. */
 .inner {
   display: flex;
-  justify-content: space-between;
-  gap: 14px;
+  align-items: center;
+  gap: 28px;
   flex-wrap: wrap;
+  row-gap: 6px;
 }
 
 .inner span {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  line-height: 1.6;
 }
 
 .plain {
@@ -37,8 +42,34 @@
   text-decoration: underline;
 }
 
-@media (max-width: 600px) {
+/* Pushed to the far right of the strip, whatever the other items take. */
+.logins {
+  margin-left: auto;
+  gap: 8px !important;
+}
+
+.login {
+  color: #e7f0ff;
+  font-weight: 700;
+}
+
+.login:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.divider {
+  color: #5a7bbd;
+}
+
+/* Too narrow for one row: everything centres and the sign-in links sit on
+   their own line rather than being pushed to an edge. */
+@media (max-width: 860px) {
   .inner {
     justify-content: center;
+    gap: 18px;
+  }
+  .logins {
+    margin-left: 0;
   }
 }

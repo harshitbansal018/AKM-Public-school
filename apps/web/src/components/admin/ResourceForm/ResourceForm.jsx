@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import Modal from '@/components/ui/Modal/Modal';
 import Input from '@/components/ui/Input/Input';
 import Select from '@/components/ui/Select/Select';
+import SearchSelect from '@/components/ui/SearchSelect/SearchSelect';
 import Textarea from '@/components/ui/Textarea/Textarea';
 import ImageUploader from '@/components/admin/ImageUploader/ImageUploader';
 import FileUploader from '@/components/admin/FileUploader/FileUploader';
@@ -25,7 +26,10 @@ const RichTextEditor = dynamic(() => import('@/components/admin/RichTextEditor/R
  * hand-written form with its own state handling and its own bugs.
  *
  * Field: { name, label, type, options?, required?, placeholder?, help?, half? }
- * Types: text | textarea | richtext | number | select | checkbox | checkboxes | date | color | list | image | file
+ * Types: text | textarea | richtext | number | select | search-select | checkbox | checkboxes | date | color | list | image | file
+ *   search-select — a select you can type into; for long lists (parents, students).
+ *                   Options may carry a `hint` (an email, a roll number) that is
+ *                   searched too and shown under the label.
  *   file — a downloadable document; `endpoint` receives the upload and the
  *   value is the stored path. `companions: { name, size }` names the record's
  *   fields that carry the original filename and size alongside it.
@@ -179,6 +183,20 @@ function renderField(field, values, setField, error) {
           placeholder={field.placeholder ?? 'Choose…'}
           value={value ?? ''}
           onChange={(e) => setField(field.name, e.target.value)}
+        />
+      );
+
+    case 'search-select':
+      return (
+        <SearchSelect
+          {...common}
+          options={(typeof field.options === 'function' ? field.options(values) : field.options) ?? []}
+          placeholder={field.placeholder ?? 'Search…'}
+          emptyText={field.emptyText}
+          required={field.required}
+          disabled={typeof field.disabled === 'function' ? field.disabled(values) : field.disabled}
+          value={value ?? ''}
+          onChange={(next) => setField(field.name, next)}
         />
       );
 

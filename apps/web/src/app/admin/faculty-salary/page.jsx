@@ -93,9 +93,10 @@ export default function FacultySalaryPage() {
         {
           name: 'facultyId',
           label: 'Faculty member',
-          type: 'select',
+          type: 'search-select',
           options: facultyOptions,
-          placeholder: 'Choose a teacher…',
+          placeholder: 'Search by name…',
+          emptyText: 'No staff member matches that',
           required: true,
         },
         { name: 'month', label: 'Salary month', type: 'text', required: true, half: true, placeholder: 'September 2026' },

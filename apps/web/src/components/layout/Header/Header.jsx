@@ -130,9 +130,14 @@ export default function Header({ settings }) {
           </ul>
         </nav>
 
-        <Link href="/admissions" className={`btn btn-primary btn-sm ${styles.cta}`}>
-          Admission Enquiry
-        </Link>
+        <div className={styles.ctas}>
+          <Link href="/careers" className={`btn btn-outline btn-sm ${styles.cta} ${styles.jobCta}`}>
+            Apply for Job
+          </Link>
+          <Link href="/admissions" className={`btn btn-primary btn-sm ${styles.cta}`}>
+            Admission Enquiry
+          </Link>
+        </div>
       </div>
 
       <MobileMenu open={menuOpen} onNavigate={() => setMenuOpen(false)} isActive={isActive} />

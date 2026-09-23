@@ -34,6 +34,16 @@ const nextConfig = {
   // It never appears in a production build, so this is purely cosmetic.
   devIndicators: false,
 
+  /**
+   * Homework is shown to the linked parent inside the parent portal, not on
+   * the public website, so the old public page now sends visitors to the
+   * parent sign-in. Temporary (307) rather than permanent, so the decision can
+   * be reversed without browsers having cached it forever.
+   */
+  async redirects() {
+    return [{ source: '/homework', destination: '/parent/login', permanent: false }];
+  },
+
   images: {
     remotePatterns: [
       ...siteHostPattern(),
