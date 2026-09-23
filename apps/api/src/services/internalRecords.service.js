@@ -20,6 +20,7 @@ import { TOKEN_KIND } from '../utils/jwt.js';
 import { hashPassword } from '../utils/password.js';
 import { cleanHtml } from '../utils/html.js';
 import { ApiError } from '../utils/ApiError.js';
+import * as audit from './audit.service.js';
 
 /**
  * Anything filed under a class stores the configured class label, so a student
@@ -79,9 +80,24 @@ async function prepareSalary(data) {
  * @param {(data: object, existing?: object) => Promise<object>} [options.prepare]
  *        cleans a payload before create/update; on update it also gets the current row
  * @param {(row: object) => object} [options.serialize] shapes rows for the client
+ * @param {{category: string, type: string, label: (row) => string, related?: (row) => {type, id}|null}} [options.audit]
+ *        how this record appears in the audit log; every create / update / delete is written
  */
-function createInternalService(repository, label, options = {}) {
-  const { prepare = async (data) => data, serialize = (row) => row } = options;
+export function createInternalService(repository, label, options = {}) {
+  const { prepare = async (data) => data, serialize = (row) => row, audit: log } = options;
+  const action = (verb, row, changes) =>
+    log &&
+    audit.record({
+      action: `${log.category}.${verb}`,
+      category: log.category,
+      label,
+      entityType: log.type,
+      entityId: row.id,
+      entityLabel: log.label(row),
+      related: log.related?.(row) ?? null,
+      changes,
+    });
+
   return {
     async listAll() { return (await repository.findAll()).map(serialize); },
     async getById(id) {
@@ -89,23 +105,35 @@ function createInternalService(repository, label, options = {}) {
       if (!row) throw ApiError.notFound(`${label} not found`);
       return serialize(row);
     },
-    async create(data) { return serialize(await repository.create(await prepare(data))); },
+    async create(data) {
+      const row = await repository.create(await prepare(data));
+      action('created', row);
+      return serialize(row);
+    },
     async update(id, data) {
       const existing = await repository.findById(id);
       if (!existing) throw ApiError.notFound(`${label} not found`);
-      return serialize(await repository.update(id, await prepare(data, existing)));
+      const row = await repository.update(id, await prepare(data, existing));
+      action('updated', row, audit.diff(existing, row));
+      return serialize(row);
     },
     async remove(id) {
-      await this.getById(id);
+      const row = await repository.findById(id);
+      if (!row) throw ApiError.notFound(`${label} not found`);
       await repository.remove(id);
+      action('deleted', row);
       return { deleted: true };
     },
   };
 }
 
+const studentLabel = (row) => [row.studentName ?? row.name, row.classGroup].filter(Boolean).join(' · ');
+const ofStudent = (row) => (row.studentId ? { type: 'Student', id: row.studentId } : null);
+
 const baseParentService = createInternalService(parentRepository, 'Parent account', {
   prepare: prepareParent,
   serialize: serializeParent,
+  audit: { category: 'parents', type: 'Parent', label: (row) => `${row.name} (${row.email})` },
 });
 
 /** A new parent is emailed the portal address and a link to choose their password. */
@@ -117,18 +145,33 @@ export const parentService = {
     return parent;
   },
 };
-export const studentService = createInternalService(studentRepository, 'Student', { prepare: prepareStudent });
+export const studentService = createInternalService(studentRepository, 'Student', {
+  prepare: prepareStudent,
+  audit: { category: 'students', type: 'Student', label: studentLabel },
+});
 export const homeworkService = createInternalService(homeworkRepository, 'Homework', {
   prepare: withResolvedClass,
   serialize: serializeHomework,
+  audit: { category: 'homework', type: 'Homework', label: (row) => `${row.title} · ${row.classGroup}` },
 });
-export const resultService = createInternalService(resultRepository, 'Result', { prepare: prepareResult });
+export const resultService = createInternalService(resultRepository, 'Result', {
+  prepare: prepareResult,
+  audit: {
+    category: 'results',
+    type: 'Result',
+    label: (row) => `${studentLabel(row)} · ${row.exam}${row.subject ? ` · ${row.subject}` : ''}`,
+    related: ofStudent,
+  },
+});
 const rupees = (value) => Number(value ?? 0).toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 const longDate = (value) =>
   value ? new Date(value).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Not set';
 
 export const feeRecordService = {
-  ...createInternalService(feeRecordRepository, 'Fee record', { prepare: prepareFee }),
+  ...createInternalService(feeRecordRepository, 'Fee record', {
+    prepare: prepareFee,
+    audit: { category: 'fees', type: 'FeeRecord', label: studentLabel, related: ofStudent },
+  }),
 
   /**
    * Emails the linked parent about one pending fee, with the student's total
@@ -178,20 +221,45 @@ export const feeRecordService = {
           : `The email could not be sent: ${result.reason}`
       );
     }
+    audit.record({
+      action: 'fees.reminder_sent',
+      category: 'fees',
+      entityType: 'FeeRecord',
+      entityId: fee.id,
+      entityLabel: studentLabel(fee),
+      related: ofStudent(fee),
+      summary: `Emailed fee reminder for ${student.name} (${student.classGroup}) to ${parent.name} (${parent.email}) — ₹${rupees(outstandingOf(fee))} outstanding`,
+    });
     return { sent: true, to: parent.email, parentName: parent.name };
   },
 };
+const salaryLabel = (row) => `${row.facultyName} · ${row.month}`;
+const ofFaculty = (row) => (row.facultyId ? { type: 'Faculty', id: row.facultyId } : null);
+
 export const facultySalaryService = {
-  ...createInternalService(facultySalaryRepository, 'Salary record', { prepare: prepareSalary }),
+  ...createInternalService(facultySalaryRepository, 'Salary record', {
+    prepare: prepareSalary,
+    audit: { category: 'salary', type: 'FacultySalary', label: salaryLabel, related: ofFaculty },
+  }),
 
   /** The office's "paid" step: one click, dated today unless told otherwise. */
   async markPaid(id, paymentDate) {
     const row = await facultySalaryRepository.findById(id);
     if (!row) throw ApiError.notFound('Salary record not found');
-    return facultySalaryRepository.update(id, {
+    const paid = await facultySalaryRepository.update(id, {
       status: 'PAID',
       paymentDate: paymentDate ?? row.paymentDate ?? new Date(),
     });
+    audit.record({
+      action: 'salary.paid',
+      category: 'salary',
+      entityType: 'FacultySalary',
+      entityId: paid.id,
+      entityLabel: salaryLabel(paid),
+      related: ofFaculty(paid),
+      summary: `Marked salary ${paid.month} for ${paid.facultyName} as paid (₹${Number(paid.amount)})`,
+    });
+    return paid;
   },
 
   /** A teacher's own months, newest first — scoped by the faculty id, never by name. */
@@ -204,7 +272,13 @@ const applicationReference = (row) =>
   `AKM-${new Date(row.createdAt).getFullYear()}-${String(row.id).padStart(4, '0')}`;
 
 export const jobApplicationService = {
-  ...createInternalService(jobApplicationRepository, 'Job application'),
+  ...createInternalService(jobApplicationRepository, 'Job application', {
+    audit: {
+      category: 'applications',
+      type: 'JobApplication',
+      label: (row) => `${row.name} · ${row.position}${row.reference ? ` (${row.reference})` : ''}`,
+    },
+  }),
 
   /** Creates the application and stamps its reference number. */
   async create(data) {
@@ -230,7 +304,10 @@ async function preparePolicy(data) {
   return next;
 }
 
-export const policyService = createInternalService(policyRepository, 'Policy', { prepare: preparePolicy });
+export const policyService = createInternalService(policyRepository, 'Policy', {
+  prepare: preparePolicy,
+  audit: { category: 'policies', type: 'Policy', label: (row) => `${row.title} (${row.category})` },
+});
 
 export async function listPublishedHomework() {
   return (await homeworkRepository.findPublished()).map(serializeHomework);

@@ -3,6 +3,7 @@ import { serializeSettings } from '../serializers/index.js';
 import { SETTING_GROUP_PATTERN } from '../config/constants.js';
 import { normaliseMapEmbed } from '../utils/mapEmbed.js';
 import { ApiError } from '../utils/ApiError.js';
+import * as audit from './audit.service.js';
 
 /** Flat { key: value } object for the public site. */
 export async function getPublicSettings() {
@@ -39,6 +40,16 @@ export async function updateMany(entries) {
   });
 
   await settingRepository.upsertMany(cleaned);
+  const keys = cleaned.map((entry) => entry.key);
+  const structural = keys.filter((key) => key === CLASS_SECTIONS_KEY || key === SUBJECTS_KEY || key === POLICY_TABS_KEY);
+  audit.record({
+    action: structural.length ? 'settings.updated' : 'content.updated',
+    category: structural.length ? 'settings' : 'content',
+    entityType: 'Setting',
+    entityLabel: keys.length === 1 ? keys[0] : `${keys.length} settings`,
+    summary: `Updated website content: ${keys.slice(0, 8).join(', ')}${keys.length > 8 ? `, … (${keys.length} in all)` : ''}`,
+    changes: Object.fromEntries(cleaned.slice(0, 20).map((entry) => [entry.key, { from: '(previous)', to: String(entry.value).slice(0, 120) }])),
+  });
   return getPublicSettings();
 }
 

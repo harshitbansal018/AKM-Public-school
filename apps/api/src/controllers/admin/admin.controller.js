@@ -20,6 +20,7 @@ import { facultySalaryService, jobApplicationService, feeRecordService } from '.
 import { sendUploadedFile } from '../../utils/fileUrl.js';
 import * as reportService from '../../services/report.service.js';
 import * as resultService from '../../services/result.service.js';
+import * as auditService from '../../services/audit.service.js';
 
 // ---------- dashboard ----------
 
@@ -210,6 +211,13 @@ export const runReport = asyncHandler(async (req, res) => {
 export const downloadResume = asyncHandler(async (req, res) => {
   const { relativePath, filename } = await jobApplicationService.resolveResume(req.params.id);
   await sendUploadedFile(res, relativePath, filename);
+});
+
+// ---------- audit log (read-only) ----------
+
+export const listAuditLog = asyncHandler(async (req, res) => {
+  const { items, meta } = await auditService.list(req.validatedQuery ?? req.query);
+  sendOk(res, { items, meta, categories: auditService.CATEGORIES }, 'Audit log');
 });
 
 // ---------- fees ----------

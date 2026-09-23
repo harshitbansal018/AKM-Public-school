@@ -6,6 +6,7 @@ import { IMAGE_RULE } from '@/constants/uploads';
 import { useClassSections } from '@/hooks/useClassSections';
 import { booleanFilter } from '@/components/admin/ListToolbar/ListToolbar';
 import LineIcon from '@/components/ui/LineIcon/LineIcon';
+import { HistoryButton } from '@/components/admin/AuditTrail/AuditTrail';
 
 export default function FacultyAdminPage() {
   const classOptions = useClassSections();
@@ -21,6 +22,7 @@ export default function FacultyAdminPage() {
         booleanFilter('isPublished', 'Website', 'Shown', 'Hidden'),
       ]}
       singular="staff member"
+      extraRowActions={(row) => <HistoryButton type="Faculty" id={row.id} label={row.name} />}
       description="Teaching staff. The people ticked as Principal and MD supply the two messages on the homepage and About page. Teacher portal sign-in is set up on each record here."
       columns={[
         {

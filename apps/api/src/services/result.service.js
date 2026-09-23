@@ -8,6 +8,7 @@ import { resultRepository, studentRepository } from '../repositories/index.js';
 import { resolveClassGroup, normaliseSubject } from './setting.service.js';
 import { withStudent } from './internalRecords.service.js';
 import { ApiError } from '../utils/ApiError.js';
+import * as audit from './audit.service.js';
 
 const num = (value) => (value === null || value === undefined ? null : Number(value));
 const key = (value) => String(value ?? '').trim().toLowerCase();
@@ -152,6 +153,13 @@ export async function saveMarksGrid(grid, assertClass) {
   }
 
   await resultRepository.saveGrid({ rows, removeIds });
+  audit.record({
+    action: grid.isPublished ? 'results.published' : 'results.grid_saved',
+    category: 'results',
+    entityType: 'ResultSheet',
+    entityLabel: `${classGroup} · ${grid.exam}`,
+    summary: `${grid.isPublished ? 'Published' : 'Saved draft'} marks sheet ${classGroup} · ${grid.exam}: ${grid.entries.length} students, ${subjects.map((s) => s.name).join(', ')} (${rows.length} marks${removeIds.length ? `, ${removeIds.length} cleared` : ''})`,
+  });
   return { saved: rows.length, removed: removeIds.length, classGroup, exam: grid.exam };
 }
 

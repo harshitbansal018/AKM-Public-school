@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import InternalRecordManager from '@/components/admin/InternalRecordManager/InternalRecordManager';
 import { useClassSections } from '@/hooks/useClassSections';
 import { adminApi } from '@/lib/adminApi';
+import { HistoryButton } from '@/components/admin/AuditTrail/AuditTrail';
 
 /**
  * The student register. Each student is filed under a class (which is what
@@ -28,6 +29,7 @@ export default function StudentsPage() {
       searchPlaceholder="Search by student, roll no., guardian or phone…"
       filters={[{ name: 'classGroup', label: 'Class', options: classOptions, placeholder: 'All classes' }]}
       singular="student"
+      extraRowActions={(row) => <HistoryButton type="Student" id={row.id} label={`${row.name} · ${row.classGroup}`} />}
       description="Maintain the school’s internal student register. Link each student to their parent's portal account so the parent can see homework, results and fees."
       columns={[
         { key: 'name', label: 'Student' },

@@ -132,6 +132,12 @@ export const adminNav = [
         icon: 'user',
         adminOnly: true,
       },
+      {
+        href: '/admin/audit-log',
+        label: 'Audit log',
+        icon: 'clipboard',
+        adminOnly: true,
+      },
     ],
   },
 ];

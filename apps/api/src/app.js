@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 
 import { env } from './config/env.js';
 import { PRIVATE_UPLOAD_FOLDERS } from './config/constants.js';
+import { requestContext } from './utils/requestContext.js';
 import { corsOptions } from './config/cors.js';
 import routes from './routes/index.js';
 import { requestLogger } from './middlewares/requestLogger.middleware.js';
@@ -92,7 +93,7 @@ export function createApp({ nextHandler } = {}) {
   });
 
   // ---- 2. the API ----
-  app.use(env.apiPrefix, parseBody, generalLimiter, routes);
+  app.use(env.apiPrefix, requestContext, parseBody, generalLimiter, routes);
 
   // ---- 3. everything else ----
   if (nextHandler) {

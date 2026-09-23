@@ -24,7 +24,12 @@ const STATUS_LABELS = {
   ADMITTED: 'Admitted',
   CLOSED: 'Closed',
 };
-const label = (value) => STATUS_LABELS[value] ?? statusLabel(value);
+const AUDIT_AREAS = {
+  fees: 'Fees', results: 'Results', salary: 'Faculty salary', students: 'Students', parents: 'Parents',
+  faculty: 'Faculty', homework: 'Homework', users: 'Users & permissions', auth: 'Sign-ins',
+  applications: 'Job applications', policies: 'Policies', content: 'Website content', settings: 'Settings',
+};
+const label = (value) => STATUS_LABELS[value] ?? AUDIT_AREAS[value] ?? statusLabel(value);
 
 const DATE_LABELS = { createdAt: 'Created', dueDate: 'Due', resultDate: 'Result date', paymentDate: 'Paid on' };
 

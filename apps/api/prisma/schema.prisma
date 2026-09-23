@@ -261,6 +261,41 @@ model MediaFile {
   createdAt    DateTime @default(now())
 }
 
+/// Who did what, when — fee updates, result changes, salary payments, account
+/// and role changes, sign-ins. Append-only: rows are never edited or deleted
+/// through the API. `changes` holds { field: { from, to } } for the fields that
+/// actually changed; passwords and tokens are never stored here.
+model AuditLog {
+  id          Int      @id @default(autoincrement())
+  /// user (admin panel) | faculty (teacher portal) | parent | system
+  actorKind   String
+  actorId     Int?
+  actorName   String?
+  actorRole   String?
+  /// e.g. fee.updated, results.published, salary.paid, auth.login_failed
+  action      String
+  /// fees | results | salary | students | parents | faculty | homework | users | auth | applications | policies | content | settings
+  category    String
+  entityType  String?
+  entityId    Int?
+  entityLabel String?
+  /// The person the change is about when the record itself is not them: a
+  /// fee's student, a salary row's teacher — so their history can be pulled.
+  relatedType String?
+  relatedId   Int?
+  summary     String   @db.Text
+  changes     Json?
+  ipAddress   String?
+  userAgent   String?  @db.Text
+  createdAt   DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([category, createdAt])
+  @@index([entityType, entityId])
+  @@index([relatedType, relatedId])
+  @@index([actorKind, actorId])
+}
+
 /// A "forgot password" request for any of the three account kinds. Only the
 /// token's hash is stored; the token itself goes out by email once.
 model PasswordReset {

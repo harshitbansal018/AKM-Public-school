@@ -160,6 +160,9 @@ for (const [path, service, label, createSchema, updateSchema] of internalResourc
   router.delete(`/${path}/:id`, id, c.remove);
 }
 
+// ---------- audit log: administrators only, read-only ----------
+router.get('/audit-log', requireRole('ADMIN'), validate(schema.auditQuerySchema, 'query'), admin.listAuditLog);
+
 // ---------- reports / print ----------
 router.get('/reports', admin.listReports);
 router.get('/reports/:key', validate(schema.reportQuerySchema, 'query'), admin.runReport);

@@ -25,13 +25,21 @@ const STATUSES = [
   { value: 'CLOSED', label: 'Closed' },
 ];
 
-/** Codes the old enquiry form sent; newer enquiries store the class name itself. */
 const CLASS_LABELS = {
-  NURSERY_UKG: 'Nursery – UKG',
-  CLASS_1_5: 'Class 1 – 5',
-  CLASS_6_8: 'Class 6 – 8',
-  CLASS_9_10: 'Class 9 – 10',
-  CLASS_11_12: 'Class 11 – 12',
+  NURSERY: 'Nursery',
+  UKG: 'UKG',
+  CLASS_1: 'Class 1',
+  CLASS_2: 'Class 2',
+  CLASS_3: 'Class 3',
+  CLASS_4: 'Class 4',
+  CLASS_5: 'Class 5',
+  CLASS_6: 'Class 6',
+  CLASS_7: 'Class 7',
+  CLASS_8: 'Class 8',
+  CLASS_9: 'Class 9',
+  CLASS_10: 'Class 10',
+  CLASS_11: 'Class 11',
+  CLASS_12: 'Class 12',
 };
 
 export default function EnquiriesAdminPage() {

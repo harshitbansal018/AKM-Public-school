@@ -424,6 +424,19 @@ export const updatePolicySchema = createPolicySchema.partial();
 
 // ---------- reports ----------
 
+export const auditQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(25),
+  category: z.string().trim().max(40).optional(),
+  actorKind: z.enum(['user', 'faculty', 'parent', 'system']).optional(),
+  actorId: z.coerce.number().int().positive().optional(),
+  entityType: z.string().trim().max(40).optional(),
+  entityId: z.coerce.number().int().positive().optional(),
+  q: z.string().trim().max(120).optional(),
+  from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+});
+
 export const reportQuerySchema = z.object({
   format: z.enum(['csv', 'json']).optional(),
   classGroup: z.string().trim().max(80).optional(),

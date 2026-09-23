@@ -13,6 +13,7 @@ import { withResolvedClass } from './internalRecords.service.js';
 import { prepareResult, loadMarksGrid, saveMarksGrid } from './result.service.js';
 import { resolveClassGroup } from './setting.service.js';
 import { ApiError } from '../utils/ApiError.js';
+import * as audit from './audit.service.js';
 
 const inClasses = (teacher) => ({ classGroup: { in: facultyClasses(teacher) } });
 
@@ -27,7 +28,20 @@ function assertOwnClass(teacher, classGroup) {
  * the class (from the configured list, or from the chosen student) before the
  * scope check, so a teacher can only ever write into their own classes.
  */
-function createScopedService(repository, label, prepare, serialize = (row) => row) {
+function createScopedService(repository, label, prepare, serialize = (row) => row, log) {
+  const action = (verb, row, changes) =>
+    log &&
+    audit.record({
+      action: `${log.category}.${verb}`,
+      category: log.category,
+      label,
+      entityType: log.type,
+      entityId: row.id,
+      entityLabel: log.label(row),
+      related: log.related?.(row) ?? null,
+      changes,
+    });
+
   return {
     async list(teacher) {
       return (await repository.findWhere(inClasses(teacher))).map(serialize);
@@ -45,19 +59,24 @@ function createScopedService(repository, label, prepare, serialize = (row) => ro
     async create(teacher, input) {
       const data = await prepare(input);
       assertOwnClass(teacher, data.classGroup);
-      return serialize(await repository.create(data));
+      const row = await repository.create(data);
+      action('created', row);
+      return serialize(row);
     },
 
     async update(teacher, id, input) {
       const row = await this.getById(teacher, id);
       const data = await prepare(input, row);
       assertOwnClass(teacher, data.classGroup ?? row.classGroup);
-      return serialize(await repository.update(id, data));
+      const updated = await repository.update(id, data);
+      action('updated', updated, audit.diff(row, updated));
+      return serialize(updated);
     },
 
     async remove(teacher, id) {
-      await this.getById(teacher, id);
+      const row = await this.getById(teacher, id);
       await repository.remove(id);
+      action('deleted', row);
       return { deleted: true };
     },
   };
@@ -66,8 +85,17 @@ function createScopedService(repository, label, prepare, serialize = (row) => ro
 /** Homework a teacher saves is live at once — there is no draft step in the portal. */
 const publishedHomework = async (data) => ({ ...(await withResolvedClass(data)), isPublished: true });
 
-export const teacherHomeworkService = createScopedService(homeworkRepository, 'Homework', publishedHomework, serializeHomework);
-export const teacherResultService = createScopedService(resultRepository, 'Result', prepareResult);
+export const teacherHomeworkService = createScopedService(homeworkRepository, 'Homework', publishedHomework, serializeHomework, {
+  category: 'homework',
+  type: 'Homework',
+  label: (row) => `${row.title} · ${row.classGroup}`,
+});
+export const teacherResultService = createScopedService(resultRepository, 'Result', prepareResult, (row) => row, {
+  category: 'results',
+  type: 'Result',
+  label: (row) => `${row.studentName} · ${row.classGroup} · ${row.exam}${row.subject ? ` · ${row.subject}` : ''}`,
+  related: (row) => (row.studentId ? { type: 'Student', id: row.studentId } : null),
+});
 
 /** The marks grid, limited to the teacher's own classes. */
 export async function loadTeacherMarksGrid(teacher, query) {

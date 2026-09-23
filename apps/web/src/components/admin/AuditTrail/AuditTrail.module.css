@@ -1,0 +1,266 @@
+/* ---- the log table ---- */
+
+.tableWrap {
+  background: #fff;
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 16px rgba(18, 48, 127, 0.07);
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+  min-width: 760px;
+}
+
+.table th {
+  text-align: left;
+  padding: 13px 16px;
+  background: #f7fafd;
+  color: var(--royal-dark);
+  font-weight: 800;
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #eef2f9;
+  vertical-align: top;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.row:hover td {
+  background: #f9fcff;
+}
+
+.rowOpen td {
+  background: #f3f7fd;
+  border-bottom-color: transparent;
+}
+
+.whenCell {
+  white-space: nowrap;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+  width: 150px;
+}
+
+.whoCell {
+  width: 170px;
+  min-width: 0;
+}
+
+.whoCell b {
+  display: block;
+  font-size: 0.86rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 170px;
+}
+
+.whoCell small {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.system {
+  color: var(--muted);
+}
+
+.areaCell {
+  width: 110px;
+  white-space: nowrap;
+}
+
+.what {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.summary {
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+/* add / change / delete marker */
+.verb {
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+
+.add {
+  background: rgba(37, 211, 102, 0.18);
+  color: #0f7a3d;
+}
+
+.change {
+  background: var(--sky-soft);
+  color: var(--royal);
+}
+
+.remove {
+  background: rgba(208, 52, 44, 0.13);
+  color: var(--red);
+}
+
+.other {
+  background: #eef2f9;
+  color: var(--muted);
+}
+
+.detailsCell {
+  width: 90px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.toggle {
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--royal);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.toggle:hover {
+  background: var(--sky-soft);
+}
+
+/* ---- expanded details ---- */
+
+.detailsRow td {
+  padding: 0 16px 16px;
+  background: #f3f7fd;
+}
+
+.details {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+}
+
+.changes {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.84rem;
+  margin-bottom: 10px;
+}
+
+.changes th,
+.changes td {
+  text-align: left;
+  padding: 7px 10px;
+  border-bottom: 1px solid #eef2f9;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.changes th {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: var(--royal-dark);
+  background: #f7fafd;
+}
+
+.changes td:first-child {
+  font-weight: 700;
+  width: 22%;
+}
+
+.changes tr:last-child td {
+  border-bottom: none;
+}
+
+.before {
+  color: var(--muted);
+  text-decoration: line-through;
+  width: 34%;
+}
+
+.after {
+  font-weight: 800;
+  color: var(--royal-dark);
+}
+
+.noChanges {
+  font-size: 0.84rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  font-size: 0.74rem;
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* ---- dashboard list ---- */
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid #eef2f9;
+}
+
+.item:last-child {
+  border-bottom: none;
+}
+
+.itemBody {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.itemSummary {
+  font-size: 0.86rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.itemBody small {
+  font-size: 0.74rem;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+/* The history modal is wider than a form: room for the table. */
+.modal {
+  max-width: 920px;
+}

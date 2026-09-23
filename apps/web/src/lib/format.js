@@ -21,6 +21,13 @@ export function formatLongDate(value) {
   return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
+/** "15 Mar 2026, 10:14" — for logs and timestamps */
+export function formatDateTime(value) {
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return '';
+  return d.toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
+}
+
 /** 12500 → "₹12,500" (fees and salaries) */
 export function formatMoney(value) {
   const amount = Number(value ?? 0);

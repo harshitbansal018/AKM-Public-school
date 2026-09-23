@@ -8,6 +8,12 @@ import {
 import * as mailService from './mail.service.js';
 import { env } from '../config/env.js';
 import { logger } from '../utils/logger.js';
+import * as audit from './audit.service.js';
+
+const authActor = (kind, account) =>
+  account
+    ? { kind, id: account.id, name: account.name, role: kind === TOKEN_KIND.USER ? account.role : kind === TOKEN_KIND.FACULTY ? 'TEACHER' : 'PARENT' }
+    : { kind: 'system' };
 import { hashPassword, verifyPassword } from '../utils/password.js';
 import { signAccessToken, signRefreshToken, verifyRefreshToken, TOKEN_KIND } from '../utils/jwt.js';
 import { serializeUser, serializeTeacher, serializeParent } from '../serializers/index.js';
@@ -84,14 +90,20 @@ export async function login(kind, email, password) {
   const account = await config.findByEmail(String(email).toLowerCase());
   const failure = ApiError.unauthorized('Incorrect email or password');
 
+  const portal = config.portalName;
   if (!account?.passwordHash) {
     await hashPassword(password);
+    audit.record({ action: 'auth.login_failed', category: 'auth', summary: `Failed sign-in to ${portal}: ${email} (no such account)`, actor: { kind: 'system' } });
     throw failure;
   }
-  if (!(await verifyPassword(password, account.passwordHash))) throw failure;
+  if (!(await verifyPassword(password, account.passwordHash))) {
+    audit.record({ action: 'auth.login_failed', category: 'auth', summary: `Failed sign-in to ${portal}: ${email} (wrong password)`, actor: authActor(kind, account) });
+    throw failure;
+  }
   if (!config.allowed(account)) throw ApiError.forbidden(config.denied);
 
   await config.touch?.(account);
+  audit.record({ action: 'auth.login', category: 'auth', summary: `${account.name} signed in to ${portal}`, actor: authActor(kind, account) });
 
   const subject = config.subject(account);
   return {
@@ -207,6 +219,7 @@ export async function requestPasswordReset(kind, email) {
   }
 
   const resetUrl = await issueResetLink(kind, account, RESET_TTL_MINUTES);
+  audit.record({ action: 'auth.reset_requested', category: 'auth', summary: `Password reset link emailed to ${account.name} (${config.email(account)}) for ${config.portalName}`, actor: authActor(kind, account) });
   await mailService.send({
     to: config.email(account),
     subject: `Reset your ${config.portalName} password`,
@@ -238,6 +251,7 @@ export async function resetPassword(kind, token, newPassword) {
 
   await config.setPassword(account, await hashPassword(newPassword));
   await passwordResetRepository.markUsed(reset.id);
+  audit.record({ action: 'auth.password_reset', category: 'auth', summary: `${account.name} set a new ${config.portalName} password via the emailed link`, actor: authActor(kind, account) });
   return { reset: true };
 }
 
@@ -249,5 +263,6 @@ export async function changePassword(userId, currentPassword, newPassword) {
   if (!matches) throw ApiError.badRequest('Your current password is not correct');
 
   await userRepository.update(userId, { passwordHash: await hashPassword(newPassword) });
+  audit.record({ action: 'auth.password_changed', category: 'auth', entityType: 'User', entityId: user.id, entityLabel: `${user.name} (${user.email})`, summary: `${user.name} changed their admin panel password` });
   return { changed: true };
 }

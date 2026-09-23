@@ -18,6 +18,8 @@ import {
 } from '../repositories/index.js';
 import { facultyClasses } from '../serializers/index.js';
 import { CLASS_LABELS } from './enquiry.service.js';
+import { buildWhere as auditWhere, CATEGORIES as AUDIT_CATEGORIES } from './audit.service.js';
+import { auditLogRepository } from '../repositories/index.js';
 import { toCsv } from '../utils/csv.js';
 import { ApiError } from '../utils/ApiError.js';
 
@@ -232,6 +234,7 @@ function matches(row, where) {
 
 /** Turns the query string into a Prisma `where` for one report. */
 function buildWhere(report, query = {}) {
+  if (report === REPORTS.audit) return auditWhere({ category: query.status, from: query.from, to: query.to });
   const where = {};
 
   if (report.filters.includes('classGroup') && query.classGroup) where.classGroup = query.classGroup;
@@ -292,5 +295,30 @@ export async function runReport(key, query = {}) {
     csv: () => toCsv(columns, table.map((row) => columns.map((column) => row[column.key]))),
   };
 }
+
+/**
+ * The audit log as a report: same CSV / print machinery, filtered by category
+ * (as "status") and date. Reuses the log's own where-builder so the export
+ * and the Audit log screen agree.
+ */
+REPORTS.audit = {
+  label: 'Audit log',
+  description: 'Who changed what and when — fees, results, salaries, accounts, sign-ins.',
+  filters: ['status', 'dates'],
+  statuses: Object.keys(AUDIT_CATEGORIES),
+  dateField: 'createdAt',
+  rows: (where) => auditLogRepository.findWhere(where),
+  count: (where) => auditLogRepository.count(where),
+  columns: [
+    { key: 'createdAt', label: 'When', value: (r) => new Date(r.createdAt).toISOString().replace('T', ' ').slice(0, 16) },
+    { key: 'actorName', label: 'Who', value: (r) => r.actorName ?? 'System' },
+    { key: 'actorRole', label: 'Role', value: (r) => r.actorRole },
+    { key: 'category', label: 'Area', value: (r) => AUDIT_CATEGORIES[r.category] ?? r.category },
+    { key: 'action', label: 'Action', value: (r) => r.action },
+    { key: 'entityLabel', label: 'Record', value: (r) => r.entityLabel },
+    { key: 'summary', label: 'Details', value: (r) => r.summary },
+    { key: 'ipAddress', label: 'IP', value: (r) => r.ipAddress },
+  ],
+};
 
 export const reportKeys = Object.keys(REPORTS);

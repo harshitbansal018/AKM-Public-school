@@ -1,0 +1,26 @@
+-- Append-only audit log of important actions across the three portals.
+CREATE TABLE `AuditLog` (
+  `id` INTEGER NOT NULL AUTO_INCREMENT,
+  `actorKind` VARCHAR(191) NOT NULL,
+  `actorId` INTEGER NULL,
+  `actorName` VARCHAR(191) NULL,
+  `actorRole` VARCHAR(191) NULL,
+  `action` VARCHAR(191) NOT NULL,
+  `category` VARCHAR(191) NOT NULL,
+  `entityType` VARCHAR(191) NULL,
+  `entityId` INTEGER NULL,
+  `entityLabel` VARCHAR(191) NULL,
+  `relatedType` VARCHAR(191) NULL,
+  `relatedId` INTEGER NULL,
+  `summary` TEXT NOT NULL,
+  `changes` JSON NULL,
+  `ipAddress` VARCHAR(191) NULL,
+  `userAgent` TEXT NULL,
+  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  INDEX `AuditLog_createdAt_idx`(`createdAt`),
+  INDEX `AuditLog_category_createdAt_idx`(`category`, `createdAt`),
+  INDEX `AuditLog_entityType_entityId_idx`(`entityType`, `entityId`),
+  INDEX `AuditLog_relatedType_relatedId_idx`(`relatedType`, `relatedId`),
+  INDEX `AuditLog_actorKind_actorId_idx`(`actorKind`, `actorId`),
+  PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

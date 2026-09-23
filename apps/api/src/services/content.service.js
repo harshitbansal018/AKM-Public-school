@@ -24,6 +24,18 @@ import { hashPassword } from '../utils/password.js';
 import { resolveClassGroups } from './setting.service.js';
 import { sendWelcome } from './auth.service.js';
 import { TOKEN_KIND } from '../utils/jwt.js';
+import * as audit from './audit.service.js';
+
+const facultyAudit = (verb, row, changes) =>
+  audit.record({
+    action: `faculty.${verb}`,
+    category: 'faculty',
+    label: 'Faculty member',
+    entityType: 'Faculty',
+    entityId: row.id,
+    entityLabel: `${row.name} (${row.designation})`,
+    changes,
+  });
 
 function createContentService(repository, label, serialize = (row) => row) {
   return {
@@ -94,6 +106,7 @@ export const facultyService = {
   async create(input) {
     const data = await facultyAccessData(input, null);
     const created = await facultyRepository.create(data);
+    facultyAudit('created', created);
     await welcomeTeacher(created, false, input.password);
     return serializeFacultyAdmin(created);
   },
@@ -103,8 +116,17 @@ export const facultyService = {
     if (!row) throw ApiError.notFound('Faculty member not found');
     const data = await facultyAccessData(input, row);
     const updated = await facultyRepository.update(id, data);
+    facultyAudit('updated', updated, audit.diff(row, updated));
     await welcomeTeacher(updated, row.teacherAccess, input.password);
     return serializeFacultyAdmin(updated);
+  },
+
+  async remove(id) {
+    const row = await facultyRepository.findById(id);
+    if (!row) throw ApiError.notFound('Faculty member not found');
+    await facultyRepository.remove(id);
+    facultyAudit('deleted', row);
+    return { deleted: true };
   },
 
   /** The principal's block on the homepage and about page. */

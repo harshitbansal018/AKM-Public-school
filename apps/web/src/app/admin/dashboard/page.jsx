@@ -7,6 +7,7 @@ import { API_ENABLED } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 import { formatLongDate } from '@/lib/format';
 import StatCard from '@/components/admin/StatCard/StatCard';
+import { AuditList } from '@/components/admin/AuditTrail/AuditTrail';
 import LineIcon from '@/components/ui/LineIcon/LineIcon';
 import StatusPill from '@/components/admin/StatusPill/StatusPill';
 import { Loader } from '@/components/ui/Spinner/Spinner';
@@ -19,6 +20,7 @@ const EMPTY = {
   galleryAlbums: 0,
   users: 0,
   recentEnquiries: [],
+  recentActivity: [],
 };
 
 const SHORTCUTS = [
@@ -93,6 +95,16 @@ export default function DashboardPage() {
             </ul>
           )}
         </section>
+
+        {user?.role === 'ADMIN' ? (
+          <section className={styles.panel}>
+            <div className={styles.panelHead}>
+              <h2>Recent activity</h2>
+              <Link href="/admin/audit-log">Audit log →</Link>
+            </div>
+            <AuditList entries={stats.recentActivity ?? []} emptyTitle="No activity recorded yet" />
+          </section>
+        ) : null}
 
         <section className={styles.panel}>
           <div className={styles.panelHead}>
