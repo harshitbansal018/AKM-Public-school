@@ -64,6 +64,13 @@ const PATHS = {
       <path d="M12 16v-4M12 8h.01" />
     </>
   ),
+  search: (
+    <>
+      <circle cx="11" cy="11" r="7" />
+      <path d="M20 20l-3.6-3.6" />
+    </>
+  ),
+  chevronDown: <path d="M6 9l6 6 6-6" />,
   compass: (
     <>
       <circle cx="12" cy="12" r="10" />

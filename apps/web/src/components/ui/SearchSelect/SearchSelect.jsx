@@ -117,6 +117,10 @@ export default function SearchSelect({
       ) : null}
 
       <div className={styles.control}>
+        {/* The magnifier sits in its own gutter on the left, so it can never
+            collide with the caret or the clear button on the right. */}
+        <LineIcon name="search" size={16} className={styles.searchIcon} />
+
         {open ? (
           <input
             ref={inputRef}
@@ -156,10 +160,11 @@ export default function SearchSelect({
                 placeholder
               )}
             </span>
-            <LineIcon name="compass" size={16} className={styles.caret} />
           </button>
         )}
 
+        {/* One control on the right at a time: clear a chosen value, or the
+            caret that says "this opens a list". */}
         {selected && !open && !disabled ? (
           <button
             type="button"
@@ -169,6 +174,8 @@ export default function SearchSelect({
           >
             ×
           </button>
+        ) : !open ? (
+          <LineIcon name="chevronDown" size={16} className={styles.caret} />
         ) : null}
 
         {open ? (

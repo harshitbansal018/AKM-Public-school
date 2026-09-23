@@ -18,11 +18,12 @@
   position: relative;
 }
 
-/* Closed: looks exactly like a Select. */
+/* Closed and open share the same box: a magnifier gutter on the left, and
+   room on the right for either the clear button or the caret. */
 .trigger,
 .input {
   width: 100%;
-  padding: 12px 16px;
+  padding: 12px 42px 12px 40px;
   border: 2px solid var(--line);
   border-radius: var(--radius-sm);
   font-family: inherit;
@@ -37,11 +38,8 @@
 .trigger {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
   text-align: left;
   cursor: pointer;
-  padding-right: 44px;
 }
 
 .trigger:disabled {
@@ -56,21 +54,63 @@
   line-height: 1.35;
 }
 
+.triggerText,
 .triggerText small {
-  font-size: 0.76rem;
-  color: var(--muted);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.triggerText small {
+  font-size: 0.76rem;
+  color: var(--muted);
 }
 
 .empty .triggerText {
   color: var(--muted);
 }
 
-.caret {
-  flex-shrink: 0;
+/* Icons and buttons inside the box, each in its own gutter. */
+.searchIcon {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  transform: translateY(-50%);
   color: var(--muted);
+  pointer-events: none;
+}
+
+.caret {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.clear {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  color: var(--muted);
+  font-size: 1.15rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.clear:hover {
+  background: #fdecea;
+  color: var(--red);
 }
 
 .input:focus,
@@ -82,25 +122,6 @@
 
 .invalid {
   border-color: var(--red);
-}
-
-/* The × sits inside the box, left of where the caret would be. */
-.clear {
-  position: absolute;
-  top: 50%;
-  right: 38px;
-  transform: translateY(-50%);
-  border: none;
-  background: none;
-  color: var(--muted);
-  font-size: 1.2rem;
-  line-height: 1;
-  cursor: pointer;
-  padding: 0 4px;
-}
-
-.clear:hover {
-  color: var(--red);
 }
 
 /* The results, floating over whatever is below. */
