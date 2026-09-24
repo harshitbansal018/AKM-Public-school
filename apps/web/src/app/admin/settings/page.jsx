@@ -286,24 +286,9 @@ function Field({ field, value, changed, onChange }) {
   }
 
   if (field.type === 'lines') {
-    // One row in the database, pipe separated; one item per line to edit.
     return (
       <div className={wrapper}>
-        <Textarea
-          id={field.key}
-          label={field.label}
-          rows={field.rows ?? 4}
-          value={String(value).split('|').join('\n')}
-          onChange={(e) =>
-            onChange(
-              e.target.value
-                .split('\n')
-                .map((line) => line.trim())
-                .filter(Boolean)
-                .join('|')
-            )
-          }
-        />
+        <LinesEditor field={field} value={value} onChange={onChange} />
         {field.help ? <small className={styles.help}>{field.help}</small> : null}
       </div>
     );
@@ -323,6 +308,49 @@ function Field({ field, value, changed, onChange }) {
       />
       {field.help ? <small className={styles.help}>{field.help}</small> : null}
     </div>
+  );
+}
+
+/**
+ * A "one item per line" list — classes, subjects, policy tabs.
+ *
+ * The database holds one pipe-separated row, but the box is edited as lines.
+ * The text being typed is kept here as typed: converting on every keystroke
+ * would drop the blank line the moment Enter is pressed, which made it
+ * impossible to start a new item. Only the value passed upwards is cleaned.
+ */
+function LinesEditor({ field, value, onChange }) {
+  const toText = (stored) => String(stored ?? '').split('|').join('\n');
+  const toStored = (text) =>
+    text
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .join('|');
+
+  const [text, setText] = useState(() => toText(value));
+
+  // Re-seed only when the value changes from outside the box (page loaded,
+  // changes discarded) — never from our own onChange, which would strip the
+  // line being typed.
+  useEffect(() => {
+    if (toStored(text) !== String(value ?? '')) setText(toText(value));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
+
+  return (
+    <Textarea
+      id={field.key}
+      label={field.label}
+      rows={field.rows ?? 4}
+      value={text}
+      onChange={(event) => {
+        setText(event.target.value);
+        onChange(toStored(event.target.value));
+      }}
+      // Tidy the box once the person moves on: no blank lines, no stray spaces.
+      onBlur={() => setText(toText(toStored(text)))}
+    />
   );
 }
 
