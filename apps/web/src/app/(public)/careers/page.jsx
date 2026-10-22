@@ -55,7 +55,6 @@ export default async function CareersPage() {
             <ul className={styles.reasons}>
               {reasons.map((reason, index) => (
                 <Reveal key={reason.id} as="li" delay={Math.min(index, 4)} className={styles.reason}>
-                  <span className={styles.reasonIndex}>{String(index + 1).padStart(2, '0')}</span>
                   <h3>{reason.title}</h3>
                   {reason.description ? <p>{reason.description}</p> : null}
                 </Reveal>
@@ -78,7 +77,6 @@ export default async function CareersPage() {
                 const icon = STEP_ICONS[index];
                 return (
                   <Reveal key={step.id} as="li" delay={Math.min(index, 4)} className={styles.step}>
-                    <span className={styles.stepNumber}>{index + 1}</span>
                     {icon ? (
                       <span className={styles.stepIcon}>
                         <LineIcon name={icon} size={26} />
