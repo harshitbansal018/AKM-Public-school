@@ -17,7 +17,7 @@ export async function getSummary() {
       galleryRepository.countAlbums(),
       userRepository.count(),
       enquiryRepository.findPaged({ skip: 0, take: 5 }),
-      recentActivity(8),
+      recentActivity(5),
     ]);
 
   return {
