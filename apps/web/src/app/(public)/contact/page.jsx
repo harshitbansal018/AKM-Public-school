@@ -1,4 +1,4 @@
-import { getSettings } from '@/lib/serverApi';
+import { getClassSections, getSettings } from '@/lib/serverApi';
 import { buildMetadata } from '@/lib/seo';
 import { text } from '@/lib/content';
 import PageHeader from '@/components/ui/PageHeader/PageHeader';
@@ -15,7 +15,7 @@ export async function generateMetadata() {
 }
 
 export default async function ContactPage() {
-  const settings = await getSettings();
+  const [settings, classSections] = await Promise.all([getSettings(), getClassSections()]);
 
   return (
     <>
@@ -31,7 +31,7 @@ export default async function ContactPage() {
             tag={text(settings, 'contact_section_tag', 'Get in Touch')}
             title={text(settings, 'contact_section_title', 'Contact & Admission Enquiry')}
           />
-          <ContactSection settings={settings} />
+          <ContactSection settings={settings} classOptions={classSections} />
         </div>
       </section>
     </>

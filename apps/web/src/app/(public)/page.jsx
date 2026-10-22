@@ -1,4 +1,4 @@
-import { getHomeData } from '@/lib/serverApi';
+import { getClassSections, getHomeData } from '@/lib/serverApi';
 import { buildMetadata, schoolJsonLd } from '@/lib/seo';
 
 import Deco from '@/components/layout/Deco/Deco';
@@ -24,7 +24,7 @@ export const metadata = buildMetadata({ path: '/' });
  * so the whole page renders in a single round trip and is fully indexable.
  */
 export default async function HomePage() {
-  const data = await getHomeData();
+  const [data, classSections] = await Promise.all([getHomeData(), getClassSections()]);
 
   return (
     <>
@@ -111,7 +111,7 @@ export default async function HomePage() {
       <section className="section bg-sky" id="contact">
         <div className="container">
           <SectionIntro tag="Get in Touch" title="Contact & Admission Enquiry" />
-          <ContactSection settings={data.settings} />
+          <ContactSection settings={data.settings} classOptions={classSections} />
         </div>
       </section>
     </>

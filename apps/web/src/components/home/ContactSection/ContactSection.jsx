@@ -5,7 +5,7 @@ import EnquiryForm from '@/components/forms/EnquiryForm/EnquiryForm';
 import styles from './ContactSection.module.css';
 
 /** School details on the left, admission enquiry form on the right. */
-export default function ContactSection({ settings }) {
+export default function ContactSection({ settings, classOptions = [] }) {
   return (
     <div className={styles.grid}>
       <Reveal className={styles.card}>
@@ -66,7 +66,7 @@ export default function ContactSection({ settings }) {
 
       <Reveal delay={1} className={styles.card}>
         <h3>Admission Enquiry Form</h3>
-        <EnquiryForm settings={settings} />
+        <EnquiryForm settings={settings} classOptions={classOptions} />
       </Reveal>
     </div>
   );
