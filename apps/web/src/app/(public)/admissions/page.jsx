@@ -68,9 +68,9 @@ export default async function AdmissionsPage() {
                   <Reveal key={step.id} as="li" delay={Math.min(index, 4)} className={styles.step}>
                     {/* With an icon the number moves to the corner, so the two
                         never compete for the same spot. */}
-                    <span className={cn(styles.number, icon && styles.numberCorner)}>
+                    {/* <span className={cn(styles.number, icon && styles.numberCorner)}>
                       {index + 1}
-                    </span>
+                    </span> */}
                     {icon ? (
                       <span className={styles.icon}>
                         <LineIcon name={icon} size={26} />

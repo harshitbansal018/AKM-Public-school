@@ -44,7 +44,7 @@ export default async function HomePage() {
           <SectionIntro
             tag="Our Academics"
             title="One School, Every Learning Stage"
-            description="A structured HPBOSE academic journey — from playful early learning to board exam preparation."
+            description="A structured HPBOSE academic journey from playful early learning to board exam preparation."
           />
           {/* slider: sections here stay a tidy single row however many cards
               the school adds later. The full-page versions keep the grid. */}
@@ -81,7 +81,7 @@ export default async function HomePage() {
           <SectionIntro
             tag="Achievements"
             title="Our Proud Moments"
-            description="Board toppers, sports victories and cultural wins — our students shine everywhere."
+            description="Board toppers, sports victories and cultural wins, our students shine everywhere."
           />
           <AchievementGrid achievements={data.achievements} slider />
         </div>
