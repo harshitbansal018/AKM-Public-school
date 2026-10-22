@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { adminApi } from '@/lib/adminApi';
 import { useToast } from '@/hooks/useToast';
 import { useAdminResource } from '@/hooks/useAdminResource';
@@ -48,19 +48,23 @@ export default function NoticesAdminPage() {
   const query = `?page=${page}&limit=10`;
 
   const { items, meta, loading, saving, error, load, create, update, remove } =
-    useAdminResource(`/admin/notices${query}`);
+    useAdminResource('/admin/notices', { autoLoad: false });
+
+  useEffect(() => {
+    load(query);
+  }, [load, query]);
 
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [deleting, setDeleting] = useState(null);
   const [busyId, setBusyId] = useState(null);
 
-  const refresh = () => load('');
+  const refresh = () => load(query);
 
   const handleSubmit = async (payload) => {
     try {
-      if (editing) await update(editing.id, payload);
-      else await create(payload);
+      if (editing) await update(editing.id, payload, query);
+      else await create(payload, query);
       setFormOpen(false);
       setEditing(null);
     } catch {
@@ -208,7 +212,7 @@ export default function NoticesAdminPage() {
         busy={saving}
         onConfirm={async () => {
           try {
-            await remove(deleting.id);
+            await remove(deleting.id, query);
           } finally {
             setDeleting(null);
           }
