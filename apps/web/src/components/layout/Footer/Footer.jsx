@@ -1,9 +1,15 @@
 import Link from 'next/link';
 import { footerQuickLinks, footerInfoLinks, footerLegalLinks } from '@/constants/navLinks';
+import { toTelHref } from '@/lib/format';
 import Logo from '@/components/layout/Logo/Logo';
 import styles from './Footer.module.css';
 
 export default function Footer({ settings }) {
+  const mapQuery = [settings.schoolName, settings.addressFull || settings.addressShort]
+    .filter(Boolean)
+    .join(', ');
+  const mapsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`;
+
   return (
     <footer className={styles.footer}>
       <div className="container">
@@ -41,10 +47,24 @@ export default function Footer({ settings }) {
           <div>
             <h4>Contact</h4>
             <ul>
-              <li>📍 {settings.addressShort}</li>
-              <li>📞 {settings.phonePrimary}</li>
-              <li>✉️ {settings.email}</li>
-              <li>🕗 {settings.timingsShort}</li>
+              <li className={styles.contactItem}>
+                <span className={styles.contactIcon} aria-hidden="true">📍</span>
+                <a href={mapsHref} target="_blank" rel="noreferrer">
+                  {settings.addressShort}
+                </a>
+              </li>
+              <li className={styles.contactItem}>
+                <span className={styles.contactIcon} aria-hidden="true">📞</span>
+                <a href={toTelHref(settings.phonePrimary)}>{settings.phonePrimary}</a>
+              </li>
+              <li className={styles.contactItem}>
+                <span className={styles.contactIcon} aria-hidden="true">✉️</span>
+                <a href={`mailto:${settings.email}`}>{settings.email}</a>
+              </li>
+              <li className={styles.contactItem}>
+                <span className={styles.contactIcon} aria-hidden="true">🕗</span>
+                <span>{settings.timingsShort}</span>
+              </li>
             </ul>
           </div>
         </div>
@@ -56,7 +76,7 @@ export default function Footer({ settings }) {
           <span className={styles.legal}>
             {footerLegalLinks.map((link, index) => (
               <span key={link.href}>
-                {index > 0 ? <span aria-hidden="true"> • </span> : null}
+                {index > 0 ? <span aria-hidden="true"> | </span> : null}
                 <Link href={link.href}>{link.label}</Link>
               </span>
             ))}

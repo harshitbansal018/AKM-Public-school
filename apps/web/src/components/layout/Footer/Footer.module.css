@@ -39,6 +39,22 @@
   padding-left: 6px;
 }
 
+.contactItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.contactItem a {
+  display: inline;
+  min-width: 0;
+}
+
+.contactIcon {
+  flex: 0 0 18px;
+  text-align: center;
+}
+
 .about p {
   font-size: 0.9rem;
   margin-top: 12px;
