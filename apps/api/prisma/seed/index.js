@@ -109,7 +109,7 @@ const SETTINGS = [
   ['admissionSession', '2026–27', 'general', 'Admission session'],
   [
     'admission_description',
-    'A simple, transparent admission process for every parent Nursery to Class 12.',
+    'A simple, transparent admission process for every parent — Nursery to Class 12.',
     'general',
     'Admission description',
   ],

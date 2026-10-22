@@ -48,20 +48,22 @@ export async function submit(input, request = {}) {
     userAgent: request.userAgent?.slice(0, 500) ?? null,
   });
 
-  notifySchool(enquiry).catch((error) =>
-    logger.error('Enquiry notification failed (the enquiry itself was saved):', error.message)
+  const reference = `ENQ-${String(enquiry.id).padStart(5, '0')}`;
+  Promise.all([notifySchool(enquiry, reference), notifyParent(enquiry, reference)]).catch((error) =>
+    logger.error('Enquiry email failed (the enquiry itself was saved):', error.message)
   );
 
   // The parent gets a confirmation, not the stored row — no ids or IPs echoed back.
-  return { received: true, reference: `ENQ-${String(enquiry.id).padStart(5, '0')}` };
+  return { received: true, reference };
 }
 
-async function notifySchool(enquiry) {
+async function notifySchool(enquiry, reference) {
   await mailService.send({
     to: env.mail.notifyTo,
     subject: `New admission enquiry — ${enquiry.parentName}`,
     template: 'enquiry-notify',
     values: {
+      reference,
       studentName: enquiry.studentName,
       phone: enquiry.phone,
       parentName: enquiry.parentName,
@@ -70,6 +72,23 @@ async function notifySchool(enquiry) {
       address: enquiry.address || '—',
       message: enquiry.message || '—',
       receivedAt: enquiry.createdAt.toLocaleString('en-IN'),
+    },
+  });
+}
+
+async function notifyParent(enquiry, reference) {
+  if (!enquiry.email) return { sent: false, reason: 'no email supplied' };
+  return mailService.send({
+    to: enquiry.email,
+    subject: `We received your admission enquiry - ${reference}`,
+    template: 'enquiry-received',
+    values: {
+      parentName: enquiry.parentName,
+      studentName: enquiry.studentName || 'your child',
+      classGroup: CLASS_LABELS[enquiry.classGroup] ?? enquiry.classGroup,
+      reference,
+      phone: enquiry.phone,
+      websiteUrl: env.publicBaseUrl,
     },
   });
 }

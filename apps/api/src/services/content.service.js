@@ -92,8 +92,11 @@ export const academicStageService = createContentService(academicStageRepository
  * sign-in fields while the public list never does.
  */
 /** Emails the teacher their portal details the first time access is switched on. */
-async function welcomeTeacher(row, hadAccess, password) {
-  if (row.teacherAccess && !hadAccess) sendWelcome(TOKEN_KIND.FACULTY, row, password);
+async function welcomeTeacher(row, hadAccess) {
+  if (row.teacherAccess && !hadAccess) {
+    return sendWelcome(TOKEN_KIND.FACULTY, row);
+  }
+  return { sent: false, reason: 'access already existed' };
 }
 
 export const facultyService = {
@@ -107,7 +110,7 @@ export const facultyService = {
     const data = await facultyAccessData(input, null);
     const created = await facultyRepository.create(data);
     facultyAudit('created', created);
-    await welcomeTeacher(created, false, input.password);
+    await welcomeTeacher(created, false);
     return serializeFacultyAdmin(created);
   },
 
@@ -117,7 +120,7 @@ export const facultyService = {
     const data = await facultyAccessData(input, row);
     const updated = await facultyRepository.update(id, data);
     facultyAudit('updated', updated, audit.diff(row, updated));
-    await welcomeTeacher(updated, row.teacherAccess, input.password);
+    await welcomeTeacher(updated, row.teacherAccess);
     return serializeFacultyAdmin(updated);
   },
 

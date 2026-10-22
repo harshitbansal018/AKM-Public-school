@@ -4,6 +4,7 @@ import { toSkipTake, buildMeta } from '../utils/pagination.js';
 import { uniqueSlug } from '../utils/slugify.js';
 import { ApiError } from '../utils/ApiError.js';
 import { cleanHtml } from '../utils/html.js';
+import * as notification from './notification.service.js';
 
 // ---------- public ----------
 
@@ -55,13 +56,15 @@ export async function getById(id) {
 export async function create(input, authorId) {
   const slug = await uniqueSlug(input.title, noticeRepository.slugExists);
 
-  return noticeRepository.create({
+  const notice = await noticeRepository.create({
     ...input,
     body: cleanHtml(input.body),
     slug,
     authorId: authorId ?? null,
     noticeDate: new Date(input.noticeDate),
   });
+  if (notice.isPublished) await notification.noticePublished(notice);
+  return notice;
 }
 
 export async function update(id, input) {
@@ -73,17 +76,21 @@ export async function update(id, input) {
       ? await uniqueSlug(input.title, noticeRepository.slugExists, existing.slug)
       : existing.slug;
 
-  return noticeRepository.update(id, {
+  const notice = await noticeRepository.update(id, {
     ...input,
     ...(input.body !== undefined ? { body: cleanHtml(input.body) } : {}),
     slug,
     ...(input.noticeDate ? { noticeDate: new Date(input.noticeDate) } : {}),
   });
+  if (notice.isPublished && !existing.isPublished) await notification.noticePublished(notice);
+  return notice;
 }
 
 export async function setPublished(id, isPublished) {
-  await getById(id);
-  return noticeRepository.update(id, { isPublished });
+  const existing = await getById(id);
+  const notice = await noticeRepository.update(id, { isPublished });
+  if (isPublished && !existing.isPublished) await notification.noticePublished(notice);
+  return notice;
 }
 
 export async function remove(id) {

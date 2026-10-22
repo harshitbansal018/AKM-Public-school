@@ -3,6 +3,8 @@ import { serializeUser, serializeUsers } from '../serializers/index.js';
 import { hashPassword } from '../utils/password.js';
 import { ApiError } from '../utils/ApiError.js';
 import * as audit from './audit.service.js';
+import { sendWelcome } from './auth.service.js';
+import { TOKEN_KIND } from '../utils/jwt.js';
 
 const userAudit = (verb, row, changes, summary) =>
   audit.record({
@@ -32,6 +34,7 @@ export async function create({ password, ...rest }) {
 
   const user = await userRepository.create({ ...rest, passwordHash: await hashPassword(password) });
   userAudit('created', user);
+  await sendWelcome(TOKEN_KIND.USER, user);
   return serializeUser(user);
 }
 

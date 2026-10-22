@@ -21,6 +21,7 @@ import { hashPassword } from '../utils/password.js';
 import { cleanHtml } from '../utils/html.js';
 import { ApiError } from '../utils/ApiError.js';
 import * as audit from './audit.service.js';
+import * as notification from './notification.service.js';
 
 /**
  * Anything filed under a class stores the configured class label, so a student
@@ -141,7 +142,7 @@ export const parentService = {
   ...baseParentService,
   async create(data) {
     const parent = await baseParentService.create(data);
-    sendWelcome(TOKEN_KIND.PARENT, parent, data.password);
+    await sendWelcome(TOKEN_KIND.PARENT, parent);
     return parent;
   },
 };
@@ -149,12 +150,28 @@ export const studentService = createInternalService(studentRepository, 'Student'
   prepare: prepareStudent,
   audit: { category: 'students', type: 'Student', label: studentLabel },
 });
-export const homeworkService = createInternalService(homeworkRepository, 'Homework', {
+const baseHomeworkService = createInternalService(homeworkRepository, 'Homework', {
   prepare: withResolvedClass,
   serialize: serializeHomework,
   audit: { category: 'homework', type: 'Homework', label: (row) => `${row.title} · ${row.classGroup}` },
 });
-export const resultService = createInternalService(resultRepository, 'Result', {
+export const homeworkService = {
+  ...baseHomeworkService,
+  async create(data) {
+    const homework = await baseHomeworkService.create(data);
+    if (homework.isPublished) await notification.homeworkPublished(homework);
+    return homework;
+  },
+  async update(id, data) {
+    const before = await homeworkRepository.findById(id);
+    const homework = await baseHomeworkService.update(id, data);
+    if (homework.isPublished && !before?.isPublished) {
+      await notification.homeworkPublished(homework);
+    }
+    return homework;
+  },
+};
+const baseResultService = createInternalService(resultRepository, 'Result', {
   prepare: prepareResult,
   audit: {
     category: 'results',
@@ -163,6 +180,22 @@ export const resultService = createInternalService(resultRepository, 'Result', {
     related: ofStudent,
   },
 });
+export const resultService = {
+  ...baseResultService,
+  async create(data) {
+    const result = await baseResultService.create(data);
+    if (result.isPublished) await notification.resultPublishedForStudent(result);
+    return result;
+  },
+  async update(id, data) {
+    const before = await resultRepository.findById(id);
+    const result = await baseResultService.update(id, data);
+    if (result.isPublished && !before?.isPublished) {
+      await notification.resultPublishedForStudent(result);
+    }
+    return result;
+  },
+};
 const rupees = (value) => Number(value ?? 0).toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 const longDate = (value) =>
   value ? new Date(value).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Not set';
@@ -236,11 +269,29 @@ export const feeRecordService = {
 const salaryLabel = (row) => `${row.facultyName} · ${row.month}`;
 const ofFaculty = (row) => (row.facultyId ? { type: 'Faculty', id: row.facultyId } : null);
 
-export const facultySalaryService = {
-  ...createInternalService(facultySalaryRepository, 'Salary record', {
+const baseFacultySalaryService = createInternalService(facultySalaryRepository, 'Salary record', {
     prepare: prepareSalary,
     audit: { category: 'salary', type: 'FacultySalary', label: salaryLabel, related: ofFaculty },
-  }),
+  });
+
+async function notifySalaryPaid(before, paid) {
+  if (before?.status === 'PAID' || paid.status !== 'PAID' || !paid.facultyId) return;
+  await notification.salaryPaid(paid);
+}
+
+export const facultySalaryService = {
+  ...baseFacultySalaryService,
+  async create(data) {
+    const paid = await baseFacultySalaryService.create(data);
+    await notifySalaryPaid(null, paid);
+    return paid;
+  },
+  async update(id, data) {
+    const before = await facultySalaryRepository.findById(id);
+    const paid = await baseFacultySalaryService.update(id, data);
+    await notifySalaryPaid(before, paid);
+    return paid;
+  },
 
   /** The office's "paid" step: one click, dated today unless told otherwise. */
   async markPaid(id, paymentDate) {
@@ -259,6 +310,7 @@ export const facultySalaryService = {
       related: ofFaculty(paid),
       summary: `Marked salary ${paid.month} for ${paid.facultyName} as paid (₹${Number(paid.amount)})`,
     });
+    await notifySalaryPaid(row, paid);
     return paid;
   },
 
@@ -271,19 +323,55 @@ export const facultySalaryService = {
 const applicationReference = (row) =>
   `AKM-${new Date(row.createdAt).getFullYear()}-${String(row.id).padStart(4, '0')}`;
 
-export const jobApplicationService = {
-  ...createInternalService(jobApplicationRepository, 'Job application', {
+const baseJobApplicationService = createInternalService(jobApplicationRepository, 'Job application', {
     audit: {
       category: 'applications',
       type: 'JobApplication',
       label: (row) => `${row.name} · ${row.position}${row.reference ? ` (${row.reference})` : ''}`,
     },
-  }),
+  });
+
+export const jobApplicationService = {
+  ...baseJobApplicationService,
 
   /** Creates the application and stamps its reference number. */
   async create(data) {
-    const row = await jobApplicationRepository.create(data);
-    return jobApplicationRepository.update(row.id, { reference: applicationReference(row) });
+    const row = await baseJobApplicationService.create(data);
+    const application = await jobApplicationRepository.update(row.id, {
+      reference: applicationReference(row),
+    });
+    const commonValues = {
+      applicantName: application.name,
+      position: application.position,
+      subject: application.subject || 'Not specified',
+      phone: application.phone || 'Not supplied',
+      email: application.email || 'Not supplied',
+      qualification: application.qualification || 'Not supplied',
+      experience: application.experience || 'Not supplied',
+      reference: application.reference,
+    };
+    await Promise.all([
+      application.email
+        ? mailService.send({
+            to: application.email,
+            subject: `Application received - ${application.reference}`,
+            template: 'job-application-received',
+            values: { ...commonValues, websiteUrl: env.publicBaseUrl },
+          })
+        : Promise.resolve({ sent: false, reason: 'no applicant email' }),
+      mailService.send({
+        to: env.mail.notifyTo,
+        subject: `New job application: ${application.position} - ${application.name}`,
+        template: 'job-application-notify',
+        values: {
+          ...commonValues,
+          resumeStatus: application.resumePath ? 'CV attached' : 'No CV attached',
+          adminUrl: `${env.publicBaseUrl}/admin/job-applications/${application.id}`,
+          receivedAt: application.createdAt.toLocaleString('en-IN'),
+        },
+      }),
+    ]);
+    return application;
   },
 
   /** Where the CV lives on disk — for the authenticated admin download. */

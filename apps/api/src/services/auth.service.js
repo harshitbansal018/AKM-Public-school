@@ -175,10 +175,10 @@ async function issueResetLink(kind, account, ttlMinutes) {
  * the portal address, their login email and a week-long link to choose their
  * own password. Never throws — a save must not fail because mail is down.
  *
- * @param {string} [password]  the starting password the office typed, included
- *        in the email so the person can sign in at once
+ * The starting password is deliberately never included in email. The recipient
+ * gets a private, one-time setup link instead.
  */
-export async function sendWelcome(kind, account, password) {
+export async function sendWelcome(kind, account) {
   const config = accounts(kind);
   const to = config.email(account);
   if (!to) return { sent: false, reason: 'no email' };
@@ -194,7 +194,6 @@ export async function sendWelcome(kind, account, password) {
         portalName: config.portalName,
         portalUrl: `${env.publicBaseUrl}/${config.portal}/login`,
         purpose: config.purpose,
-        password: password ?? 'the password the school office gave you',
         resetUrl,
         expiresIn: '7 days',
       },

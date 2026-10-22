@@ -20,15 +20,44 @@ function getTransporter() {
   return transporter;
 }
 
-/** Fills {{placeholders}} in a template file. */
+const SCHOOL_NAME = 'AKM Public Sr. Sec. School';
+
+/** User-entered form values must never become executable HTML in an email. */
+function escapeHtml(value) {
+  return String(value ?? '—')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
+/** Fills escaped {{placeholders}} in a template file. */
 function render(templateName, values) {
   const file = path.resolve(process.cwd(), 'templates', 'email', `${templateName}.html`);
   let html = fs.readFileSync(file, 'utf8');
 
   for (const [key, value] of Object.entries(values)) {
-    html = html.replaceAll(`{{${key}}}`, String(value ?? '—'));
+    html = html.replaceAll(`{{${key}}}`, escapeHtml(value));
   }
 
+  return html;
+}
+
+/** Every message uses one centrally maintained, branded shell. */
+export function renderEmail(template, values = {}) {
+  const content = render(template, values);
+  const layout = render('layout', {
+    schoolName: SCHOOL_NAME,
+    logoUrl: `${env.publicBaseUrl}/images/logo.png`,
+    websiteUrl: env.publicBaseUrl,
+    currentYear: new Date().getFullYear(),
+  });
+  const html = layout.replace('{{content}}', content);
+  const unresolved = html.match(/{{[a-zA-Z0-9_]+}}/g);
+  if (unresolved) {
+    throw new Error(`Missing email values: ${[...new Set(unresolved)].join(', ')}`);
+  }
   return html;
 }
 
@@ -38,30 +67,34 @@ function render(templateName, values) {
  * Never throws: an enquiry that saved successfully must not report failure to
  * the parent just because the school's mail server is down.
  */
-export async function send({ to, subject, template, values }) {
-  if (!to) return { sent: false, reason: 'no recipient configured' };
+export async function send({ to, bcc, subject, template, values }) {
+  const blindRecipients = Array.isArray(bcc) ? bcc.filter(Boolean) : bcc;
+  if (!to && (!blindRecipients || blindRecipients.length === 0)) {
+    return { sent: false, reason: 'no recipient configured' };
+  }
 
   let html;
   try {
-    html = render(template, values);
+    html = renderEmail(template, values);
   } catch (error) {
-    logger.error(`Email template "${template}" could not be read`, error.message);
+    logger.error(`Email template "${template}" could not be rendered`, error.message);
     return { sent: false, reason: 'template missing' };
   }
 
   const mailer = getTransporter();
+  const recipientLabel = to || `${blindRecipients.length} BCC recipients`;
 
   if (!mailer) {
-    logger.info(`[mail:dry-run] to=${to} subject="${subject}" (set SMTP_HOST to actually send)`);
+    logger.info(`[mail:dry-run] to=${recipientLabel} subject="${subject}" (set SMTP_HOST to actually send)`);
     return { sent: false, reason: 'smtp not configured' };
   }
 
   try {
-    await mailer.sendMail({ from: env.mail.from, to, subject, html });
-    logger.success(`Email sent to ${to}: ${subject}`);
+    await mailer.sendMail({ from: env.mail.from, to, bcc: blindRecipients, subject, html });
+    logger.success(`Email sent to ${recipientLabel}: ${subject}`);
     return { sent: true };
   } catch (error) {
-    logger.error(`Email to ${to} failed:`, error.message);
+    logger.error(`Email to ${recipientLabel} failed:`, error.message);
     return { sent: false, reason: error.message };
   }
 }
