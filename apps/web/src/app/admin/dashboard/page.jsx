@@ -70,31 +70,52 @@ export default function DashboardPage() {
         </Link>
       </div>
 
-      <div className={styles.columns} hidden={loading}>
-        <section className={styles.panel}>
-          <div className={styles.panelHead}>
-            <h2>Latest enquiries</h2>
-            <Link href="/admin/enquiries">View all →</Link>
-          </div>
+      <div
+        className={`${styles.columns} ${user?.role !== 'ADMIN' ? styles.singleColumn : ''}`}
+        hidden={loading}
+      >
+        <div className={styles.columnStack}>
+          <section className={styles.panel}>
+            <div className={styles.panelHead}>
+              <h2>Latest enquiries</h2>
+              <Link href="/admin/enquiries">View all →</Link>
+            </div>
 
-          {stats.recentEnquiries.length === 0 ? (
-            <p className={styles.none}>No enquiries yet.</p>
-          ) : (
-            <ul className={styles.enquiries}>
-              {stats.recentEnquiries.map((enquiry) => (
-                <li key={enquiry.id}>
-                  <div>
-                    <b>{enquiry.parentName}</b>
-                    <span>
-                      {enquiry.phone} · {formatLongDate(enquiry.createdAt)}
-                    </span>
-                  </div>
-                  <StatusPill value={enquiry.status} />
+            {stats.recentEnquiries.length === 0 ? (
+              <p className={styles.none}>No enquiries yet.</p>
+            ) : (
+              <ul className={styles.enquiries}>
+                {stats.recentEnquiries.map((enquiry) => (
+                  <li key={enquiry.id}>
+                    <div>
+                      <b>{enquiry.parentName}</b>
+                      <span>
+                        {enquiry.phone} · {formatLongDate(enquiry.createdAt)}
+                      </span>
+                    </div>
+                    <StatusPill value={enquiry.status} />
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+
+          <section className={styles.panel}>
+            <div className={styles.panelHead}>
+              <h2>Common tasks</h2>
+            </div>
+            <ul className={styles.shortcuts}>
+              {SHORTCUTS.map((item) => (
+                <li key={item.href}>
+                  <Link href={item.href}>
+                    <LineIcon name={item.icon} size={18} />
+                    {item.label}
+                  </Link>
                 </li>
               ))}
             </ul>
-          )}
-        </section>
+          </section>
+        </div>
 
         {user?.role === 'ADMIN' ? (
           <section className={styles.panel}>
@@ -106,21 +127,6 @@ export default function DashboardPage() {
           </section>
         ) : null}
 
-        <section className={styles.panel}>
-          <div className={styles.panelHead}>
-            <h2>Common tasks</h2>
-          </div>
-          <ul className={styles.shortcuts}>
-            {SHORTCUTS.map((item) => (
-              <li key={item.href}>
-                <Link href={item.href}>
-                  <LineIcon name={item.icon} size={18} />
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
       </div>
     </div>
   );

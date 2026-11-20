@@ -43,6 +43,17 @@
   align-items: start;
 }
 
+.singleColumn {
+  grid-template-columns: 1fr;
+}
+
+.columnStack {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
 .panel {
   background: #fff;
   border-radius: var(--radius-md);
