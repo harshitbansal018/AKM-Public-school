@@ -440,10 +440,6 @@ export const policyService = createInternalService(policyRepository, 'Policy', {
   audit: { category: 'policies', type: 'Policy', label: (row) => `${row.title} (${row.category})` },
 });
 
-export async function listPublishedHomework() {
-  return (await homeworkRepository.findPublished()).map(serializeHomework);
-}
-
 /** Active policies for the website, newest effective date first. */
 export async function listActivePolicies() {
   const byDate = (a, b) => new Date(b.effectiveDate ?? b.updatedAt) - new Date(a.effectiveDate ?? a.updatedAt);

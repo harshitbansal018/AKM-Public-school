@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getNoticeBySlug, getNotices } from '@/lib/serverApi';
+import { getNoticeBySlug, getNotices, getSettings } from '@/lib/serverApi';
 import { formatLongDate, toISODate } from '@/lib/format';
-import { isHtml } from '@/lib/content';
+import { isHtml, text } from '@/lib/content';
 import { buildMetadata } from '@/lib/seo';
 import PageHeader from '@/components/ui/PageHeader/PageHeader';
 import Badge from '@/components/ui/Badge/Badge';
@@ -26,7 +26,7 @@ export async function generateMetadata({ params }) {
 
 export default async function NoticeDetailPage({ params }) {
   const { slug } = await params;
-  const notice = await getNoticeBySlug(slug);
+  const [notice, settings] = await Promise.all([getNoticeBySlug(slug), getSettings()]);
 
   if (!notice) notFound();
 
@@ -87,7 +87,7 @@ export default async function NoticeDetailPage({ params }) {
       {related.length > 0 ? (
         <section className="section bg-white">
           <div className="container">
-            <h2 className={styles.relatedHeading}>More Notices</h2>
+            <h2 className={styles.relatedHeading}>{text(settings, 'notice_related_heading', 'More Notices')}</h2>
             <ul className={styles.related}>
               {related.map((item) => (
                 <li key={item.id}>

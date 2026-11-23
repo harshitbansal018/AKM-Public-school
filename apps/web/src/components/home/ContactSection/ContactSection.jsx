@@ -9,14 +9,14 @@ export default function ContactSection({ settings, classOptions = [] }) {
   return (
     <div className={styles.grid}>
       <Reveal className={styles.card}>
-        <h3>School Information</h3>
+        <h3>{settings.contact_info_heading || 'School Information'}</h3>
 
         <div className={styles.line}>
           <span className={styles.icon} aria-hidden="true">
             📍
           </span>
           <div>
-            <b>Address</b>
+            <b>{settings.contact_address_label || 'Address'}</b>
             <span>{settings.addressFull}</span>
           </div>
         </div>
@@ -26,7 +26,7 @@ export default function ContactSection({ settings, classOptions = [] }) {
             📞
           </span>
           <div>
-            <b>Phone</b>
+            <b>{settings.contact_phone_label || 'Phone'}</b>
             <span>
               <a href={toTelHref(settings.phonePrimary)}>{settings.phonePrimary}</a>
               {settings.phoneSecondary ? (
@@ -44,7 +44,7 @@ export default function ContactSection({ settings, classOptions = [] }) {
             ✉️
           </span>
           <div>
-            <b>Email</b>
+            <b>{settings.contact_email_label || 'Email'}</b>
             <span>
               <a href={`mailto:${settings.email}`}>{settings.email}</a>
             </span>
@@ -56,7 +56,7 @@ export default function ContactSection({ settings, classOptions = [] }) {
             🕗
           </span>
           <div>
-            <b>School Timings</b>
+            <b>{settings.contact_timings_label || 'School Timings'}</b>
             <span>{settings.timings}</span>
           </div>
         </div>
@@ -65,7 +65,7 @@ export default function ContactSection({ settings, classOptions = [] }) {
       </Reveal>
 
       <Reveal delay={1} className={styles.card}>
-        <h3>Admission Enquiry Form</h3>
+        <h3>{settings.contact_form_heading || 'Admission Enquiry Form'}</h3>
         <EnquiryForm settings={settings} classOptions={classOptions} />
       </Reveal>
     </div>

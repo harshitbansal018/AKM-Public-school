@@ -23,8 +23,8 @@ const toQuery = (values) =>
 
 /**
  * Audit log: who changed what, newest first. Read-only — there is no edit or
- * delete, not even for administrators. Filters run on the server because the
- * log grows without limit.
+ * delete, not even for administrators. Filters run on the server and the API
+ * enforces the rolling 30-day retention window.
  */
 export default function AuditLogPage() {
   const toast = useToast();
@@ -103,6 +103,11 @@ export default function AuditLogPage() {
         </>
       }
     >
+      <p className={styles.retentionNotice} role="note">
+        Audit logs are available for 30 days only. Print or export any required records before
+        they are permanently deleted.
+      </p>
+
       <section className={styles.filters}>
         <div className={styles.grid}>
           <Input

@@ -1,10 +1,11 @@
 import Image from 'next/image';
 import Deco from '@/components/layout/Deco/Deco';
 import Button from '@/components/ui/Button/Button';
+import { cmsHref } from '@/constants/navLinks';
 import styles from './Hero.module.css';
 
 /** Opening banner: kicker, headline, intro copy, CTAs and the blob photo frame. */
-export default function Hero({ hero }) {
+export default function Hero({ hero, settings = {} }) {
   return (
     <section className={styles.hero}>
       <Deco shape="ring" motion="spin" size={180} style={{ top: '8%', right: '6%' }} />
@@ -19,9 +20,9 @@ export default function Hero({ hero }) {
           </h1>
           <p className={`${styles.lead} ${styles.in} ${styles.d3}`}>{hero.description}</p>
           <div className={`${styles.actions} ${styles.in} ${styles.d4}`}>
-            <Button href="/admissions">Apply for Admission</Button>
-            <Button href="/academics" variant="outline">
-              Explore Academics
+            <Button href={cmsHref(settings.hero_primary_href, '/admissions')}>{settings.hero_primary_label || 'Apply for Admission'}</Button>
+            <Button href={cmsHref(settings.hero_secondary_href, '/academics')} variant="outline">
+              {settings.hero_secondary_label || 'Explore Academics'}
             </Button>
           </div>
         </div>

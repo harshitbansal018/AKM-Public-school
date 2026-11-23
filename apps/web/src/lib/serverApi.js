@@ -144,6 +144,5 @@ export function getDownloads() {
   return withFallback(() => apiFetch('/downloads', { tags: ['downloads'] }), fallback.downloads);
 }
 
-export const getPublicHomework = () => withFallback(() => apiFetch('/homework', { tags: ['homework'] }), []);
 export const getPublicPolicies = () =>
   withFallback(() => apiFetch('/policies', { tags: ['policies'] }), { tabs: [], policies: [] });

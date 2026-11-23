@@ -2,6 +2,7 @@ import Image from 'next/image';
 import { getFaculty, getSettings } from '@/lib/serverApi';
 import { buildMetadata } from '@/lib/seo';
 import { text } from '@/lib/content';
+import { cmsHref } from '@/constants/navLinks';
 import PageHeader from '@/components/ui/PageHeader/PageHeader';
 import SectionIntro from '@/components/ui/SectionIntro/SectionIntro';
 import Reveal from '@/components/ui/Reveal/Reveal';
@@ -169,7 +170,9 @@ export default async function FacultyPage() {
             description={text(settings, 'faculty_join_description')}
           />
           <div style={{ textAlign: 'center' }}>
-            <Button href="/contact">Get in Touch</Button>
+            <Button href={cmsHref(text(settings, 'faculty_join_cta_href', '/careers'), '/careers')}>
+              {text(settings, 'faculty_join_cta_label', 'Apply for Job')}
+            </Button>
           </div>
         </div>
       </section>

@@ -1,26 +1,73 @@
 .group {
   display: inline-flex;
-  gap: 8px;
   justify-content: center;
 }
 
-.button {
+.trigger {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  gap: 7px;
+  min-width: 92px;
   border: 1px solid var(--line);
   background: #fff;
   color: var(--royal);
   border-radius: 999px;
-  padding: 6px 14px;
+  padding: 7px 13px;
+  font: inherit;
   font-size: 0.78rem;
   font-weight: 800;
   cursor: pointer;
-  transition:
-    background 0.18s ease,
-    color 0.18s ease,
-    border-color 0.18s ease;
   white-space: nowrap;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.trigger:hover,
+.trigger[aria-expanded='true'] {
+  background: var(--sky-soft);
+  border-color: rgba(18, 48, 127, 0.3);
+}
+
+.trigger:focus-visible,
+.button:focus-visible {
+  outline: 3px solid rgba(20, 102, 188, 0.22);
+  outline-offset: 2px;
+}
+
+.trigger span {
+  font-size: 1.1rem;
+  line-height: 0.8;
+}
+
+.menu {
+  position: fixed;
+  z-index: 1000;
+  width: max-content;
+  min-width: 150px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  box-shadow: 0 14px 36px rgba(11, 32, 89, 0.2);
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 36px;
+  border: 0;
+  background: transparent;
+  color: var(--royal);
+  border-radius: 8px;
+  padding: 8px 11px;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-align: left;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.18s ease, color 0.18s ease;
 }
 
 .button:hover:not(:disabled) {
@@ -34,21 +81,16 @@
 
 .danger {
   color: var(--red);
-  border-color: rgba(208, 52, 44, 0.35);
 }
 
 .danger:hover:not(:disabled) {
-  background: var(--red);
-  color: #fff;
-  border-color: var(--red);
+  background: rgba(208, 52, 44, 0.1);
 }
 
 .success {
   color: #0f7a3d;
-  border-color: rgba(37, 211, 102, 0.4);
 }
 
 .success:hover:not(:disabled) {
-  background: #25d366;
-  color: #053b1d;
+  background: rgba(37, 211, 102, 0.12);
 }

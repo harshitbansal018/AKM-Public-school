@@ -1,64 +1,37 @@
 import { getSettings } from '@/lib/serverApi';
 import { buildMetadata } from '@/lib/seo';
+import { fillTemplate, text, toPairs } from '@/lib/content';
 import PageHeader from '@/components/ui/PageHeader/PageHeader';
 import styles from '../legal.module.css';
 
-export const metadata = buildMetadata({
-  title: 'Terms & Conditions',
-  description: 'Terms of use for the AKM Public Sr. Sec. School website.',
-  path: '/terms',
-});
+const DEFAULT_SECTIONS = 'Use of this website::This website is operated by {schoolName} to share information about the school with parents, students and the public. You may browse and print pages for personal, non-commercial use.|Accuracy of information::We work to keep dates, results and notices current, but details can change. Please confirm examination dates, fees and admission deadlines with the school office.|Admission enquiries::Submitting an enquiry does not reserve a seat or constitute an offer of admission. Admission is confirmed by the school office after documents are verified.|Intellectual property::The school name, crest, photographs and page content belong to {schoolName}. Please do not reproduce them without written permission.|External links::Where we link to HPBOSE or other external sites, we are not responsible for their content or availability.|Questions::Write to {email} or call {phonePrimary}.';
+
+export async function generateMetadata() {
+  const settings = await getSettings();
+  return buildMetadata({
+    title: text(settings, 'terms_title', 'Terms & Conditions'),
+    description: text(settings, 'terms_meta_description', 'Terms of use for the school website.'),
+    path: '/terms',
+  });
+}
 
 export default async function TermsPage() {
   const settings = await getSettings();
-
+  const title = text(settings, 'terms_title', 'Terms & Conditions');
+  const sections = toPairs(text(settings, 'terms_sections', DEFAULT_SECTIONS));
   return (
     <>
-      <PageHeader title="Terms & Conditions" breadcrumbs={[{ label: 'Terms & Conditions' }]} />
-
+      <PageHeader title={title} subtitle={text(settings, 'terms_subtitle')} breadcrumbs={[{ label: title }]} />
       <section className="section">
         <div className="container">
           <div className={styles.prose}>
-            <p className={styles.updated}>Last updated: 1 April 2026</p>
-
-            <h2>Use of this website</h2>
-            <p>
-              This website is operated by {settings.schoolName} to share information about the
-              school with parents, students and the public. You may browse and print pages for
-              personal, non-commercial use.
-            </p>
-
-            <h2>Accuracy of information</h2>
-            <p>
-              We work to keep dates, results and notices current, but details can change. For
-              anything you plan to act on — an examination date, a fee amount, an admission
-              deadline — please confirm with the school office.
-            </p>
-
-            <h2>Admission enquiries</h2>
-            <p>
-              Submitting an enquiry through this site is a request for information. It does not
-              reserve a seat and does not constitute an offer of admission. Admission is confirmed
-              only by the school office, in person, after documents are verified.
-            </p>
-
-            <h2>Intellectual property</h2>
-            <p>
-              The school name, crest, photographs and page content belong to {settings.schoolName}.
-              Please do not reproduce them elsewhere without written permission.
-            </p>
-
-            <h2>External links</h2>
-            <p>
-              Where we link to HPBOSE or other external sites, we are not responsible for their
-              content or availability.
-            </p>
-
-            <h2>Questions</h2>
-            <p>
-              Write to <a href={`mailto:${settings.email}`}>{settings.email}</a> or call{' '}
-              {settings.phonePrimary}.
-            </p>
+            <p className={styles.updated}>{text(settings, 'terms_updated', 'Last updated: 1 April 2026')}</p>
+            {sections.map((section) => (
+              <section key={section.id}>
+                <h2>{fillTemplate(section.title, settings)}</h2>
+                <p>{fillTemplate(section.description, settings)}</p>
+              </section>
+            ))}
           </div>
         </div>
       </section>

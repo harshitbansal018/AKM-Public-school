@@ -802,7 +802,181 @@ export const cmsPages = [
   },
 ];
 
+// Client-facing copy added after the first CMS rollout. Kept in focused tabs
+// so existing page editors stay familiar while every visible content area is editable.
+cmsPages.push(
+  {
+    id: 'home-sections',
+    label: 'Homepage sections',
+    icon: 'home',
+    href: '/',
+    description: 'Headings, descriptions and buttons used across the homepage.',
+    sections: [
+      { id: 'academics', label: 'Academics band', fields: [
+        { key: 'home_academics_tag', label: 'Small label', type: 'text', half: true },
+        { key: 'home_academics_title', label: 'Heading', type: 'text', half: true },
+        { key: 'home_academics_description', label: 'Description', type: 'textarea', rows: 2 },
+      ] },
+      { id: 'streams', label: 'Streams band', fields: [
+        { key: 'home_streams_tag', label: 'Small label', type: 'text', half: true },
+        { key: 'home_streams_title', label: 'Heading', type: 'text', half: true },
+        { key: 'home_streams_description', label: 'Description', type: 'textarea', rows: 2 },
+      ] },
+      { id: 'facilities', label: 'Facilities band', fields: [
+        { key: 'home_facilities_tag', label: 'Small label', type: 'text', half: true },
+        { key: 'home_facilities_title', label: 'Heading', type: 'text', half: true },
+        { key: 'home_facilities_description', label: 'Description', type: 'textarea', rows: 2 },
+      ] },
+      { id: 'achievements', label: 'Achievements band', fields: [
+        { key: 'home_achievements_tag', label: 'Small label', type: 'text', half: true },
+        { key: 'home_achievements_title', label: 'Heading', type: 'text', half: true },
+        { key: 'home_achievements_description', label: 'Description', type: 'textarea', rows: 2 },
+      ] },
+      { id: 'gallery', label: 'Gallery band', fields: [
+        { key: 'home_gallery_tag', label: 'Small label', type: 'text', half: true },
+        { key: 'home_gallery_title', label: 'Heading', type: 'text', half: true },
+        { key: 'home_gallery_description', label: 'Description', type: 'textarea', rows: 2 },
+      ] },
+      { id: 'contact', label: 'Contact band', fields: [
+        { key: 'home_contact_tag', label: 'Small label', type: 'text', half: true },
+        { key: 'home_contact_title', label: 'Heading', type: 'text', half: true },
+        { key: 'home_contact_description', label: 'Description', type: 'textarea', rows: 2 },
+      ] },
+      { id: 'buttons', label: 'Homepage buttons', fields: [
+        { key: 'hero_primary_label', label: 'Hero primary button', type: 'text', half: true },
+        { key: 'hero_primary_href', label: 'Hero primary URL', type: 'text', half: true },
+        { key: 'hero_secondary_label', label: 'Hero secondary button', type: 'text', half: true },
+        { key: 'hero_secondary_href', label: 'Hero secondary URL', type: 'text', half: true },
+        { key: 'admission_cta_label', label: 'Admission button', type: 'text', half: true },
+        { key: 'admission_cta_href', label: 'Admission button URL', type: 'text', half: true },
+        { key: 'admission_whatsapp_label', label: 'WhatsApp button', type: 'text', half: true },
+      ] },
+      { id: 'leaders', label: 'Leadership labels', fields: [
+        { key: 'principal_message_label', label: 'Principal label', type: 'text', half: true },
+        { key: 'director_message_label', label: 'Managing Director label', type: 'text', half: true },
+        { key: 'faculty_join_cta_label', label: 'Faculty page button', type: 'text', half: true },
+        { key: 'faculty_join_cta_href', label: 'Faculty page button URL', type: 'text', half: true },
+      ] },
+    ],
+  },
+  {
+    id: 'navigation',
+    label: 'Navigation & footer',
+    icon: 'menu',
+    href: '/',
+    description: 'Header menus, call-to-action buttons and footer content. Each link row has a label and URL.',
+    sections: [
+      { id: 'main-nav', label: 'Header navigation', fields: [
+        { key: 'nav_before_about', label: 'Links before About', type: 'pairs', titleLabel: 'Label', bodyLabel: 'URL' },
+        { key: 'nav_about_label', label: 'About menu label', type: 'text', half: true },
+        { key: 'nav_about_href', label: 'About menu URL', type: 'text', half: true },
+        { key: 'nav_about_children', label: 'About dropdown links', type: 'pairs', titleLabel: 'Label', bodyLabel: 'URL' },
+        { key: 'nav_between_groups', label: 'Links between dropdowns', type: 'pairs', titleLabel: 'Label', bodyLabel: 'URL' },
+        { key: 'nav_news_label', label: 'News menu label', type: 'text', half: true },
+        { key: 'nav_news_href', label: 'News menu URL', type: 'text', half: true },
+        { key: 'nav_news_children', label: 'News dropdown links', type: 'pairs', titleLabel: 'Label', bodyLabel: 'URL' },
+        { key: 'nav_after_news', label: 'Links after News', type: 'pairs', titleLabel: 'Label', bodyLabel: 'URL' },
+      ] },
+      { id: 'header-buttons', label: 'Header buttons', fields: [
+        { key: 'header_job_label', label: 'Job button', type: 'text', half: true },
+        { key: 'header_job_href', label: 'Job button URL', type: 'text', half: true },
+        { key: 'header_admission_label', label: 'Admission button', type: 'text', half: true },
+        { key: 'header_admission_href', label: 'Admission button URL', type: 'text', half: true },
+      ] },
+      { id: 'footer-copy', label: 'Footer text', fields: [
+        { key: 'footer_description', label: 'School description', type: 'textarea', rows: 3 },
+        { key: 'footer_quick_heading', label: 'Quick links heading', type: 'text', half: true },
+        { key: 'footer_info_heading', label: 'Information heading', type: 'text', half: true },
+        { key: 'footer_contact_heading', label: 'Contact heading', type: 'text', half: true },
+      ] },
+      { id: 'footer-links', label: 'Footer links', fields: [
+        { key: 'footer_quick_links', label: 'Quick links', type: 'pairs', titleLabel: 'Label', bodyLabel: 'URL' },
+        { key: 'footer_info_links', label: 'Information links', type: 'pairs', titleLabel: 'Label', bodyLabel: 'URL' },
+        { key: 'footer_legal_links', label: 'Legal links', type: 'pairs', titleLabel: 'Label', bodyLabel: 'URL' },
+      ] },
+    ],
+  },
+  {
+    id: 'utility-copy',
+    label: 'Forms & empty messages',
+    icon: 'clipboard',
+    href: '/homework',
+    description: 'Contact-card labels and messages shown when a public list has no content.',
+    sections: [
+      { id: 'contact-card', label: 'Contact cards', fields: [
+        { key: 'contact_info_heading', label: 'Information heading', type: 'text', half: true },
+        { key: 'contact_form_heading', label: 'Form heading', type: 'text', half: true },
+        { key: 'contact_address_label', label: 'Address label', type: 'text', half: true },
+        { key: 'contact_phone_label', label: 'Phone label', type: 'text', half: true },
+        { key: 'contact_email_label', label: 'Email label', type: 'text', half: true },
+        { key: 'contact_timings_label', label: 'Timings label', type: 'text', half: true },
+      ] },
+      { id: 'gallery-notices', label: 'Gallery and notices', fields: [
+        { key: 'gallery_album_empty_title', label: 'Empty album heading', type: 'text', half: true },
+        { key: 'gallery_album_empty_description', label: 'Empty album description', type: 'text', half: true },
+        { key: 'notices_search_empty_title', label: 'No search results heading', type: 'text', help: 'Use {query} where the search words should appear.' },
+        { key: 'notice_related_heading', label: 'Related notices heading', type: 'text' },
+      ] },
+    ],
+  },
+  {
+    id: 'terms', label: 'Terms page', icon: 'clipboard', href: '/terms', description: 'Terms & Conditions content.',
+    sections: [{ id: 'content', label: 'Page content', fields: [
+      { key: 'terms_title', label: 'Page title', type: 'text', half: true },
+      { key: 'terms_subtitle', label: 'Subtitle', type: 'text', half: true },
+      { key: 'terms_meta_description', label: 'SEO description', type: 'textarea', rows: 2 },
+      { key: 'terms_updated', label: 'Last updated line', type: 'text' },
+      { key: 'terms_sections', label: 'Sections', type: 'pairs', titleLabel: 'Heading', bodyLabel: 'Paragraph', help: 'Placeholders: {schoolName}, {email}, {phonePrimary}.' },
+    ] }],
+  },
+  {
+    id: 'disclaimer', label: 'Disclaimer page', icon: 'clipboard', href: '/disclaimer', description: 'Disclaimer content.',
+    sections: [{ id: 'content', label: 'Page content', fields: [
+      { key: 'disclaimer_title', label: 'Page title', type: 'text', half: true },
+      { key: 'disclaimer_subtitle', label: 'Subtitle', type: 'text', half: true },
+      { key: 'disclaimer_meta_description', label: 'SEO description', type: 'textarea', rows: 2 },
+      { key: 'disclaimer_updated', label: 'Last updated line', type: 'text' },
+      { key: 'disclaimer_sections', label: 'Sections', type: 'pairs', titleLabel: 'Heading', bodyLabel: 'Paragraph', help: 'Placeholders: {schoolName}, {email}, {phonePrimary}.' },
+    ] }],
+  }
+);
+
 /** Every key the map accounts for — anything else is surfaced as "Other". */
+// Merge supporting fields into the page where visitors actually see them, so
+// the editor stays page-wise instead of exposing a confusing catch-all tab.
+const page = (id) => cmsPages.find((item) => item.id === id);
+const homeExtension = page('home-sections');
+const navigationExtension = page('navigation');
+const utilityExtension = page('utility-copy');
+
+const leaders = homeExtension.sections.find((section) => section.id === 'leaders');
+const facultyButtonFields = leaders.fields.filter((field) => field.key.startsWith('faculty_'));
+leaders.fields = leaders.fields.filter((field) => !field.key.startsWith('faculty_'));
+page('faculty').sections.find((section) => section.id === 'careers').fields.push(...facultyButtonFields);
+page('home').sections.push(...homeExtension.sections);
+
+page('identity').sections.push(...navigationExtension.sections);
+
+const contactFields = utilityExtension.sections.find((section) => section.id === 'contact-card');
+page('contact').sections.push(contactFields);
+
+const galleryNoticeFields = utilityExtension.sections.find((section) => section.id === 'gallery-notices').fields;
+page('gallery').sections.push({
+  id: 'album-empty',
+  label: 'When an album has no photos',
+  fields: galleryNoticeFields.filter((field) => field.key.startsWith('gallery_')),
+});
+page('notices').sections.push({
+  id: 'search-related',
+  label: 'Search and related notices',
+  fields: galleryNoticeFields.filter((field) => field.key.startsWith('notice')),
+});
+
+for (const id of ['home-sections', 'navigation', 'utility-copy']) {
+  const index = cmsPages.findIndex((item) => item.id === id);
+  if (index >= 0) cmsPages.splice(index, 1);
+}
+
 export const mappedKeys = new Set(
   cmsPages.flatMap((page) => page.sections.flatMap((section) => section.fields.map((f) => f.key)))
 );

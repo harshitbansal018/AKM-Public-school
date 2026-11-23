@@ -428,6 +428,19 @@ tar -czf uploads-$(date +%F).tar.gz apps/api/uploads
 database backup alone will not bring them back. Download both and keep them
 somewhere other than the server.
 
+### Audit-log retention — automatic rolling 30 days
+
+No session, cron or extra dependency is used. Whenever a new audit entry is
+written, the same database transaction permanently deletes entries older than
+30 days and then saves the new entry. If either operation fails, the whole
+transaction rolls back. Admin screens and exports also enforce the 30-day
+boundary, so older rows are never shown while waiting for the next new event.
+
+The school must use **Print** or **Export CSV** in Admin → Audit log before an
+entry expires if it needs to keep its own file copy. If no new audit event occurs
+for more than 30 days, physical cleanup waits until the next event; no scheduled
+server configuration is required.
+
 ### Never run these on the server
 
 | Command | What it does |

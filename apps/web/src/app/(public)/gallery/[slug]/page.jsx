@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
-import { getAlbumBySlug } from '@/lib/serverApi';
+import { getAlbumBySlug, getSettings } from '@/lib/serverApi';
+import { text } from '@/lib/content';
 import { formatLongDate } from '@/lib/format';
 import { buildMetadata } from '@/lib/seo';
 import PageHeader from '@/components/ui/PageHeader/PageHeader';
@@ -25,7 +26,7 @@ export async function generateMetadata({ params }) {
 
 export default async function AlbumPage({ params }) {
   const { slug } = await params;
-  const album = await getAlbumBySlug(slug);
+  const [album, settings] = await Promise.all([getAlbumBySlug(slug), getSettings()]);
 
   if (!album) notFound();
 
@@ -45,8 +46,8 @@ export default async function AlbumPage({ params }) {
         <div className="container">
           {images.length === 0 ? (
             <EmptyState
-              title="Photos coming soon"
-              description="This album has been created but no photos have been uploaded yet."
+              title={text(settings, 'gallery_album_empty_title', 'Photos coming soon')}
+              description={text(settings, 'gallery_album_empty_description', 'This album has been created but no photos have been uploaded yet.')}
               action={<Button href="/gallery" variant="outline">Back to gallery</Button>}
             />
           ) : (

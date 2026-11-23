@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/cn';
-import { navLinks } from '@/constants/navLinks';
+import { buildNavLinks, cmsHref } from '@/constants/navLinks';
 import { useScrolled } from '@/hooks/useScrolled';
 import Logo from '@/components/layout/Logo/Logo';
 import MobileMenu from '@/components/layout/MobileMenu/MobileMenu';
@@ -15,6 +15,7 @@ import styles from './Header.module.css';
  * Gains a deeper shadow past 40px of scroll, matching the old page.
  */
 export default function Header({ settings }) {
+  const siteNav = buildNavLinks(settings);
   const pathname = usePathname();
   const scrolled = useScrolled(40);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -70,7 +71,7 @@ export default function Header({ settings }) {
           </button>
 
           <ul id="main-menu" className={styles.menu}>
-            {navLinks.map((item) => {
+            {siteNav.map((item) => {
               const active = isGroupActive(item);
 
               if (!item.children) {
@@ -131,16 +132,22 @@ export default function Header({ settings }) {
         </nav>
 
         <div className={styles.ctas}>
-          <Link href="/careers" className={`btn btn-outline btn-sm ${styles.cta} ${styles.jobCta}`}>
-            Apply for Job
+          <Link href={cmsHref(settings.header_job_href, '/careers')} className={`btn btn-outline btn-sm ${styles.cta} ${styles.jobCta}`}>
+            {settings.header_job_label || 'Apply for Job'}
           </Link>
-          <Link href="/admissions" className={`btn btn-primary btn-sm ${styles.cta}`}>
-            Admission Enquiry
+          <Link href={cmsHref(settings.header_admission_href, '/admissions')} className={`btn btn-primary btn-sm ${styles.cta}`}>
+            {settings.header_admission_label || 'Admission Enquiry'}
           </Link>
         </div>
       </div>
 
-      <MobileMenu open={menuOpen} onNavigate={() => setMenuOpen(false)} isActive={isActive} />
+      <MobileMenu
+        open={menuOpen}
+        onNavigate={() => setMenuOpen(false)}
+        isActive={isActive}
+        navLinks={siteNav}
+        settings={settings}
+      />
     </header>
   );
 }

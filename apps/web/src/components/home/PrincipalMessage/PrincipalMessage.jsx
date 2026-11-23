@@ -3,10 +3,10 @@ import Reveal from '@/components/ui/Reveal/Reveal';
 import styles from './PrincipalMessage.module.css';
 
 /** The Principal's and Managing Director's messages shown on public pages. */
-export default function PrincipalMessage({ principal, director = null }) {
+export default function PrincipalMessage({ principal, director = null, settings = {} }) {
   const leaders = [
-    principal && { ...principal, label: "Principal's Message" },
-    director && { ...director, label: "Managing Director's Message" },
+    principal && { ...principal, label: settings.principal_message_label || "Principal's Message" },
+    director && { ...director, label: settings.director_message_label || "Managing Director's Message" },
   ].filter(Boolean);
 
   if (!leaders.length) return null;

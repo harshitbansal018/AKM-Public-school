@@ -86,7 +86,9 @@ export default async function NoticesPage({ searchParams }) {
 
           {items.length === 0 ? (
             <EmptyState
-              title={q ? `No notices match “${q}”` : text(settings, 'notices_empty_title', 'No notices in this category')}
+              title={q
+                ? text(settings, 'notices_search_empty_title', 'No notices match {query}').replace('{query}', `“${q}”`)
+                : text(settings, 'notices_empty_title', 'No notices in this category')}
               description={text(settings, 'notices_empty_description')}
             />
           ) : (

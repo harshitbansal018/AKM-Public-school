@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { cn } from '@/lib/cn';
-import { navLinks } from '@/constants/navLinks';
+import { cmsHref } from '@/constants/navLinks';
 import styles from './MobileMenu.module.css';
 
 /**
@@ -12,7 +12,7 @@ import styles from './MobileMenu.module.css';
  * there are only thirteen links in total, and every extra tap is a chance for
  * a parent on a phone to give up looking.
  */
-export default function MobileMenu({ open, onNavigate, isActive }) {
+export default function MobileMenu({ open, onNavigate, isActive, navLinks = [], settings = {} }) {
   return (
     <div className={cn(styles.panel, open && styles.open)} hidden={!open}>
       <ul className={styles.list}>
@@ -53,11 +53,11 @@ export default function MobileMenu({ open, onNavigate, isActive }) {
       </ul>
 
       <div className={styles.ctas}>
-        <Link href="/admissions" className="btn btn-primary btn-sm" onClick={onNavigate}>
-          Admission Enquiry
+        <Link href={cmsHref(settings.header_admission_href, '/admissions')} className="btn btn-primary btn-sm" onClick={onNavigate}>
+          {settings.header_admission_label || 'Admission Enquiry'}
         </Link>
-        <Link href="/careers" className="btn btn-outline btn-sm" onClick={onNavigate}>
-          Apply for Job
+        <Link href={cmsHref(settings.header_job_href, '/careers')} className="btn btn-outline btn-sm" onClick={onNavigate}>
+          {settings.header_job_label || 'Apply for Job'}
         </Link>
       </div>
     </div>

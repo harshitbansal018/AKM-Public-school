@@ -157,17 +157,24 @@ export async function list(query = {}) {
 /** Everything about one record — a student's history, a teacher's history. */
 export function historyFor(type, id, take = 100) {
   return auditLogRepository.findWhere(
-    { OR: [{ entityType: type, entityId: Number(id) }, { relatedType: type, relatedId: Number(id) }] },
+    {
+      createdAt: { gte: auditLogRepository.retentionCutoff() },
+      OR: [{ entityType: type, entityId: Number(id) }, { relatedType: type, relatedId: Number(id) }],
+    },
     { take }
   );
 }
 
 export function recent(take = 10) {
-  return auditLogRepository.findWhere({}, { take });
+  return auditLogRepository.findWhere(
+    { createdAt: { gte: auditLogRepository.retentionCutoff() } },
+    { take }
+  );
 }
 
 export function buildWhere(query = {}) {
-  const where = {};
+  const cutoff = auditLogRepository.retentionCutoff();
+  const where = { createdAt: { gte: cutoff } };
   if (query.category) where.category = query.category;
   if (query.actorKind) where.actorKind = query.actorKind;
   if (query.actorId) where.actorId = Number(query.actorId);
@@ -182,8 +189,10 @@ export function buildWhere(query = {}) {
     where.AND = [{ OR: [{ summary: { contains: q } }, { entityLabel: { contains: q } }, { actorName: { contains: q } }] }];
   }
   if (query.from || query.to) {
-    where.createdAt = {};
-    if (query.from) where.createdAt.gte = new Date(query.from);
+    if (query.from) {
+      const from = new Date(query.from);
+      if (from > cutoff) where.createdAt.gte = from;
+    }
     if (query.to) {
       const to = new Date(query.to);
       to.setHours(23, 59, 59, 999);

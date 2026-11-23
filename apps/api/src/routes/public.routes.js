@@ -23,7 +23,6 @@ router.get('/facilities', controller.getFacilities);
 router.get('/faculty', controller.getFaculty);
 router.get('/faculty/principal', controller.getPrincipal);
 router.get('/achievements', controller.getAchievements);
-router.get('/homework', controller.getHomework);
 router.get('/policies', controller.getPolicies);
 // Careers form: multipart, with the CV in the `resume` field. multer parses the
 // body first, so the honeypot and validation see the text fields as usual.

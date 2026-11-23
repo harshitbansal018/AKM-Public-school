@@ -71,3 +71,10 @@ export function text(settings, key, fallback = '') {
   const value = settings?.[key];
   return value === undefined || value === null || value === '' ? fallback : value;
 }
+
+/** Replaces safe CMS placeholders used in legal and shared copy. */
+export function fillTemplate(value, settings = {}) {
+  return String(value ?? '').replace(/\{(schoolName|email|phonePrimary)\}/g, (_match, key) =>
+    String(settings[key] ?? '')
+  );
+}
