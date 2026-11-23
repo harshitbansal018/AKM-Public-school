@@ -71,6 +71,20 @@
   gap: 18px;
 }
 
+.empty {
+  padding: 28px;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-md);
+  background: #fff;
+  color: var(--muted);
+}
+
+.empty h2 {
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+  color: var(--ink);
+}
+
 @media (max-width: 900px) {
   .wrap {
     grid-template-columns: 1fr;

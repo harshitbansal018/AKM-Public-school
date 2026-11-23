@@ -39,6 +39,15 @@ export function createRepository(model, options = {}) {
       return delegate().findMany({ orderBy, include });
     },
 
+    /** A bounded admin list for high-volume management screens. */
+    async findPaged({ where, skip = 0, take = 25 } = {}) {
+      const [items, total] = await Promise.all([
+        delegate().findMany({ where, orderBy, include, skip, take }),
+        delegate().count({ where }),
+      ]);
+      return { items, total };
+    },
+
     findById(id) {
       return delegate().findUnique({ where: { id: Number(id) }, include });
     },

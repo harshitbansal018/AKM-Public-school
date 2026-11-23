@@ -13,7 +13,9 @@ export async function generateMetadata({ params }) {
   const { slug } = await params;
   const notice = await getNoticeBySlug(slug);
 
-  if (!notice) return buildMetadata({ title: 'Notice not found', path: `/notices/${slug}` });
+  // Throw before the route starts streaming so Next.js can send a real 404
+  // status instead of a 200 response containing the not-found UI.
+  if (!notice) notFound();
 
   return buildMetadata({
     title: notice.title,

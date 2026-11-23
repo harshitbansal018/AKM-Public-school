@@ -9,6 +9,10 @@
   border-left: 6px solid var(--royal);
 }
 
+.card > div {
+  min-width: 0;
+}
+
 .royal {
   border-left-color: var(--royal);
 }
@@ -40,6 +44,7 @@
   font-size: 1.7rem;
   color: var(--royal-dark);
   line-height: 1.1;
+  overflow-wrap: anywhere;
 }
 
 .label {

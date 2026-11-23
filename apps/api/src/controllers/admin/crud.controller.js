@@ -13,7 +13,11 @@ import { sendOk } from '../../utils/ApiResponse.js';
  */
 export function createCrudController(service, label) {
   return {
-    list: asyncHandler(async (_req, res) => {
+    list: asyncHandler(async (req, res) => {
+      if (req.query.page && service.listPaged) {
+        sendOk(res, await service.listPaged(req.query), `${label} list`);
+        return;
+      }
       sendOk(res, await service.listAll(), `${label} list`);
     }),
 

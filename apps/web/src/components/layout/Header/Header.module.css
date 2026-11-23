@@ -196,6 +196,9 @@
 }
 
 @media (max-width: 980px) {
+  .nav > nav {
+    margin-left: auto;
+  }
   .menu {
     display: none;
   }
@@ -204,5 +207,8 @@
   }
   .toggle {
     display: block;
+  }
+  .ctas {
+    display: none;
   }
 }

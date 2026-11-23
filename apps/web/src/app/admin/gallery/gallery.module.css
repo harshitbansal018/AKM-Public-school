@@ -152,3 +152,24 @@
   opacity: 0.6;
   cursor: wait;
 }
+
+.loadMore {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.loadMore span {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+@media (hover: none) {
+  .makeCover {
+    opacity: 1;
+  }
+}

@@ -7,7 +7,7 @@ import { createRepository } from './createRepository.js';
  */
 const base = createRepository('result', { orderBy: [{ resultDate: 'desc' }, { id: 'desc' }] });
 
-export const { findPublished, findAll, findById, findWhere, findFirst, create, update, remove, count } = base;
+export const { findPublished, findAll, findPaged, findById, findWhere, findFirst, create, update, remove, count } = base;
 
 /** The distinct examination names a class has results for, newest first. */
 export async function listExams(classGroup) {

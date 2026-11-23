@@ -11,7 +11,9 @@ export async function generateMetadata({ params }) {
   const { slug } = await params;
   const album = await getAlbumBySlug(slug);
 
-  if (!album) return buildMetadata({ title: 'Album not found', path: `/gallery/${slug}` });
+  // Throw during metadata resolution, before streaming starts, so the HTTP
+  // response carries the correct 404 status.
+  if (!album) notFound();
 
   return buildMetadata({
     title: album.title,

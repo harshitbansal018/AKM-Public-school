@@ -28,6 +28,11 @@ export async function getBySlug(slug) {
   return serializeNotice(notice);
 }
 
+/** Existence check for the frontend's pre-render HTTP-status guard. */
+export async function existsBySlug(slug) {
+  return noticeRepository.publishedSlugExists(slug);
+}
+
 export async function latest(limit = 4) {
   return serializeNotices(await noticeRepository.findLatest(limit));
 }

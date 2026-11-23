@@ -9,6 +9,10 @@ export const forgotPasswordSchema = z.object({
   email: z.string().trim().toLowerCase().email('Enter a valid email address'),
 });
 
+export const resetTokenSchema = z.object({
+  token: z.string().trim().min(20, 'This reset link is not valid').max(200),
+});
+
 export const resetPasswordSchema = z
   .object({
     token: z.string().trim().min(20, 'This reset link is not valid').max(200),

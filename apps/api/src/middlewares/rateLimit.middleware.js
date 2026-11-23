@@ -23,6 +23,19 @@ export const enquiryLimiter = rateLimit({
   message: message('You have already sent several enquiries — please call the school instead.'),
 });
 
+/**
+ * Careers submissions have their own allowance. Sharing the enquiry limiter
+ * meant five admission enquiries could lock every applicant on the same Wi-Fi
+ * out of the careers form, and returned an unrelated enquiry error message.
+ */
+export const applicationLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: message('You have already sent several applications — please wait before trying again.'),
+});
+
 /** Password-reset emails: a few per address per quarter hour is plenty. */
 export const resetLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,

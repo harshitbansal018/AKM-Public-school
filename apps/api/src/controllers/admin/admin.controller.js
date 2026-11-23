@@ -117,6 +117,10 @@ export const getAlbum = asyncHandler(async (req, res) => {
   sendOk(res, await galleryService.getById(req.params.id), 'Album');
 });
 
+export const listAlbumImages = asyncHandler(async (req, res) => {
+  sendOk(res, await galleryService.listImages(req.params.id, req.query), 'Album photos');
+});
+
 export const createAlbum = asyncHandler(async (req, res) => {
   sendOk(res, await galleryService.createAlbum(req.body), 'Album created', 201);
 });

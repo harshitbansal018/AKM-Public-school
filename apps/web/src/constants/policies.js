@@ -11,7 +11,8 @@ export function groupPoliciesByTab(policies = [], tabs = []) {
   const orphans = [...new Set(policies.map((p) => p.category).filter((c) => !tabs.includes(c)))].map(
     (tab) => ({ tab, items: policies.filter((policy) => policy.category === tab) })
   );
-  return [...known, ...orphans].filter((group) => group.items.length > 0);
+  // Keep configured tabs visible even before their first policy is published.
+  return [...known, ...orphans];
 }
 
 /** "Attendance / Leave Rules" -> "attendance-leave-rules", for tab ids and hashes. */

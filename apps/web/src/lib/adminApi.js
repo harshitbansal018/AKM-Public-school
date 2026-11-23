@@ -9,6 +9,21 @@
 import { API_URL, API_ENABLED, ApiClientError } from './api';
 import { getAccessToken, setAccessToken, clearSession } from './auth';
 
+/**
+ * These auth routes are intentionally usable without an existing session.
+ * Their 401 responses describe the submitted credentials/token and must not be
+ * replaced with the global "session expired" message.
+ */
+function isPublicAuthRequest(path, portal) {
+  const authBase = `/${portal}/auth`;
+  return (
+    path === `${authBase}/login` ||
+    path === `${authBase}/forgot-password` ||
+    path === `${authBase}/reset-password` ||
+    path === `${authBase}/reset-password/validate`
+  );
+}
+
 async function request(path, options = {}, isRetry = false, portal = 'admin') {
   if (!API_ENABLED) {
     throw new ApiClientError('API not configured — the backend is not built yet', 0);
@@ -30,9 +45,11 @@ async function request(path, options = {}, isRetry = false, portal = 'admin') {
     cache: 'no-store',
   });
 
-  if (res.status === 401 && !isRetry) {
-    const refreshed = await refreshSession(portal);
-    if (refreshed) return request(path, options, true, portal);
+  if (res.status === 401 && !isPublicAuthRequest(path, portal)) {
+    if (!isRetry) {
+      const refreshed = await refreshSession(portal);
+      if (refreshed) return request(path, options, true, portal);
+    }
     clearSession();
     throw new ApiClientError('Your session expired — please sign in again', 401);
   }

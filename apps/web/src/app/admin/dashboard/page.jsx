@@ -46,7 +46,7 @@ export default function DashboardPage() {
   }, []);
 
   return (
-    <div>
+    <div className={styles.dashboard}>
       <h1 className={styles.heading}>
         Welcome{user?.name ? `, ${user.name.split(' ')[0]}` : ''}
       </h1>

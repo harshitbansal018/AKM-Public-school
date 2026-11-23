@@ -11,6 +11,7 @@ import { formatLongDate } from '@/lib/format';
 export default function ParentsAdminPage() {
   return (
     <ResourceManager
+      serverPagination
       endpoint="/admin/parents"
       title="Parents"
       searchKeys={['name', 'email', 'phone']}

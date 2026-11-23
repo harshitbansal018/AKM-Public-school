@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { adminApi } from '@/lib/adminApi';
 import { useToast } from '@/hooks/useToast';
 import { formatLongDate, toTelHref } from '@/lib/format';
@@ -47,15 +47,18 @@ export default function EnquiriesAdminPage() {
   const [items, setItems] = useState([]);
   const [meta, setMeta] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState('');
   const [status, setStatus] = useState('');
   const [page, setPage] = useState(1);
   const [open, setOpen] = useState(null);
   const [deleting, setDeleting] = useState(null);
   const [saving, setSaving] = useState(false);
+  const loadedOnce = useRef(false);
 
   const load = useCallback(async () => {
-    setLoading(true);
+    if (loadedOnce.current) setRefreshing(true);
+    else setLoading(true);
     setError('');
     try {
       const params = new URLSearchParams({ page: String(page), limit: '20' });
@@ -66,7 +69,9 @@ export default function EnquiriesAdminPage() {
     } catch (err) {
       setError(err.message);
     } finally {
+      loadedOnce.current = true;
       setLoading(false);
+      setRefreshing(false);
     }
   }, [page, status]);
 
@@ -131,6 +136,7 @@ export default function EnquiriesAdminPage() {
       <DataTable
         rows={items}
         loading={loading}
+        refreshing={refreshing}
         error={error}
         emptyTitle="No enquiries"
         emptyDescription="Enquiries submitted through the contact form will appear here."

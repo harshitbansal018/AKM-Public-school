@@ -2,7 +2,7 @@ import { Router } from 'express';
 import * as controller from '../controllers/public/public.controller.js';
 import { validate } from '../middlewares/validate.middleware.js';
 import { honeypot } from '../middlewares/honeypot.middleware.js';
-import { enquiryLimiter } from '../middlewares/rateLimit.middleware.js';
+import { applicationLimiter, enquiryLimiter } from '../middlewares/rateLimit.middleware.js';
 import { uploadDocument } from '../middlewares/upload.middleware.js';
 import { idParamSchema, slugParamSchema } from '../validators/common.validator.js';
 import { listNoticesSchema, createPublicJobApplicationSchema } from '../validators/content.validator.js';
@@ -29,7 +29,7 @@ router.get('/policies', controller.getPolicies);
 // body first, so the honeypot and validation see the text fields as usual.
 router.post(
   '/job-applications',
-  enquiryLimiter,
+  applicationLimiter,
   uploadDocument('resumes', 'resume'),
   honeypot,
   validate(createPublicJobApplicationSchema),
@@ -38,10 +38,12 @@ router.post(
 
 // Notices — the /:slug route is declared last so it cannot shadow the list.
 router.get('/notices', validate(listNoticesSchema, 'query'), controller.getNotices);
+router.head('/notices/:slug', validate(slugParamSchema, 'params'), controller.checkNoticeBySlug);
 router.get('/notices/:slug', validate(slugParamSchema, 'params'), controller.getNoticeBySlug);
 
 // Gallery
 router.get('/gallery', controller.getGallery);
+router.head('/gallery/:slug', validate(slugParamSchema, 'params'), controller.checkAlbumBySlug);
 router.get('/gallery/:slug', validate(slugParamSchema, 'params'), controller.getAlbumBySlug);
 
 // Downloads

@@ -16,11 +16,20 @@ export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError('');
+    const nextErrors = {};
+    if (!/^\S+@\S+\.\S+$/.test(email.trim())) nextErrors.email = 'Enter a valid email address';
+    if (!password) nextErrors.password = 'Enter your password';
+    if (Object.keys(nextErrors).length > 0) {
+      setFieldErrors(nextErrors);
+      return;
+    }
+    setFieldErrors({});
 
     if (!API_ENABLED) {
       setError('The backend is not built yet, so sign-in is not available.');
@@ -32,7 +41,13 @@ export default function LoginForm() {
       await login(email.trim(), password);
       router.replace(`/${portal}/dashboard`);
     } catch (err) {
-      setError(err.message || 'Sign in failed. Check your email and password.');
+      const apiFieldErrors = Object.fromEntries(
+        (err.details ?? [])
+          .filter(({ field }) => field === 'email' || field === 'password')
+          .map(({ field, message }) => [field, message])
+      );
+      if (Object.keys(apiFieldErrors).length > 0) setFieldErrors(apiFieldErrors);
+      else setError(err.message || 'Sign in failed. Check your email and password.');
     } finally {
       setSubmitting(false);
     }
@@ -47,7 +62,11 @@ export default function LoginForm() {
         label="Email"
         placeholder="you@akmpublicschool.in"
         value={email}
-        onChange={(event) => setEmail(event.target.value)}
+        onChange={(event) => {
+          setEmail(event.target.value);
+          setFieldErrors((current) => ({ ...current, email: undefined }));
+        }}
+        error={fieldErrors.email}
         autoComplete="username"
         required
       />
@@ -59,7 +78,11 @@ export default function LoginForm() {
         label="Password"
         placeholder="Your password"
         value={password}
-        onChange={(event) => setPassword(event.target.value)}
+        onChange={(event) => {
+          setPassword(event.target.value);
+          setFieldErrors((current) => ({ ...current, password: undefined }));
+        }}
+        error={fieldErrors.password}
         autoComplete="current-password"
         required
       />

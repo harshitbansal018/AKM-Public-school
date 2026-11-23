@@ -22,6 +22,7 @@ import { cleanHtml } from '../utils/html.js';
 import { ApiError } from '../utils/ApiError.js';
 import * as audit from './audit.service.js';
 import * as notification from './notification.service.js';
+import { toSkipTake, buildMeta } from '../utils/pagination.js';
 
 /**
  * Anything filed under a class stores the configured class label, so a student
@@ -85,7 +86,13 @@ async function prepareSalary(data) {
  *        how this record appears in the audit log; every create / update / delete is written
  */
 export function createInternalService(repository, label, options = {}) {
-  const { prepare = async (data) => data, serialize = (row) => row, audit: log } = options;
+  const {
+    prepare = async (data) => data,
+    serialize = (row) => row,
+    audit: log,
+    searchFields = [],
+    filterFields = [],
+  } = options;
   const action = (verb, row, changes) =>
     log &&
     audit.record({
@@ -101,6 +108,26 @@ export function createInternalService(repository, label, options = {}) {
 
   return {
     async listAll() { return (await repository.findAll()).map(serialize); },
+    async listPaged(query = {}) {
+      const { page, limit, skip, take } = toSkipTake(query);
+      const clauses = [];
+      const q = String(query.q ?? '').trim();
+      if (q && searchFields.length) {
+        clauses.push({ OR: searchFields.map((field) => ({ [field]: { contains: q } })) });
+      }
+      for (const field of filterFields) {
+        const raw = query[field];
+        if (raw === undefined || raw === null || raw === '') continue;
+        const value = raw === 'true' ? true : raw === 'false' ? false : field.endsWith('Id') ? Number(raw) : raw;
+        clauses.push({ [field]: value });
+      }
+      const where = clauses.length ? { AND: clauses } : undefined;
+      const { items, total } = await repository.findPaged({ where, skip, take });
+      return {
+        items: items.map(serialize),
+        meta: buildMeta({ page, limit, total }),
+      };
+    },
     async getById(id) {
       const row = await repository.findById(id);
       if (!row) throw ApiError.notFound(`${label} not found`);
@@ -134,6 +161,8 @@ const ofStudent = (row) => (row.studentId ? { type: 'Student', id: row.studentId
 const baseParentService = createInternalService(parentRepository, 'Parent account', {
   prepare: prepareParent,
   serialize: serializeParent,
+  searchFields: ['name', 'email', 'phone'],
+  filterFields: ['isActive'],
   audit: { category: 'parents', type: 'Parent', label: (row) => `${row.name} (${row.email})` },
 });
 
@@ -148,11 +177,15 @@ export const parentService = {
 };
 export const studentService = createInternalService(studentRepository, 'Student', {
   prepare: prepareStudent,
+  searchFields: ['name', 'rollNumber', 'guardianName', 'phone'],
+  filterFields: ['classGroup'],
   audit: { category: 'students', type: 'Student', label: studentLabel },
 });
 const baseHomeworkService = createInternalService(homeworkRepository, 'Homework', {
   prepare: withResolvedClass,
   serialize: serializeHomework,
+  searchFields: ['title', 'subject'],
+  filterFields: ['classGroup', 'isPublished'],
   audit: { category: 'homework', type: 'Homework', label: (row) => `${row.title} · ${row.classGroup}` },
 });
 export const homeworkService = {
@@ -173,6 +206,8 @@ export const homeworkService = {
 };
 const baseResultService = createInternalService(resultRepository, 'Result', {
   prepare: prepareResult,
+  searchFields: ['studentName', 'exam', 'subject'],
+  filterFields: ['classGroup', 'subject', 'isPublished'],
   audit: {
     category: 'results',
     type: 'Result',
@@ -203,6 +238,8 @@ const longDate = (value) =>
 export const feeRecordService = {
   ...createInternalService(feeRecordRepository, 'Fee record', {
     prepare: prepareFee,
+    searchFields: ['studentName'],
+    filterFields: ['classGroup', 'status'],
     audit: { category: 'fees', type: 'FeeRecord', label: studentLabel, related: ofStudent },
   }),
 
@@ -271,6 +308,8 @@ const ofFaculty = (row) => (row.facultyId ? { type: 'Faculty', id: row.facultyId
 
 const baseFacultySalaryService = createInternalService(facultySalaryRepository, 'Salary record', {
     prepare: prepareSalary,
+    searchFields: ['facultyName', 'month'],
+    filterFields: ['facultyId', 'status'],
     audit: { category: 'salary', type: 'FacultySalary', label: salaryLabel, related: ofFaculty },
   });
 
@@ -324,6 +363,8 @@ const applicationReference = (row) =>
   `AKM-${new Date(row.createdAt).getFullYear()}-${String(row.id).padStart(4, '0')}`;
 
 const baseJobApplicationService = createInternalService(jobApplicationRepository, 'Job application', {
+    searchFields: ['name', 'reference', 'position', 'subject', 'phone', 'email'],
+    filterFields: ['status'],
     audit: {
       category: 'applications',
       type: 'JobApplication',
@@ -394,6 +435,8 @@ async function preparePolicy(data) {
 
 export const policyService = createInternalService(policyRepository, 'Policy', {
   prepare: preparePolicy,
+  searchFields: ['title'],
+  filterFields: ['category', 'status'],
   audit: { category: 'policies', type: 'Policy', label: (row) => `${row.title} (${row.category})` },
 });
 

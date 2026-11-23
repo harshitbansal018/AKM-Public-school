@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { apiPost, API_ENABLED } from '@/lib/api';
 import { useToast } from '@/hooks/useToast';
 import Input from '@/components/ui/Input/Input';
@@ -66,11 +66,24 @@ function validate(values, cv) {
 export default function JobApplicationForm({ positions = [], privacyNote, successTitle, successText }) {
   const toast = useToast();
   const fileInput = useRef(null);
+  const successPanel = useRef(null);
   const [values, setValues] = useState(EMPTY);
   const [cv, setCv] = useState(null);
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [reference, setReference] = useState('');
+
+  useEffect(() => {
+    if (!reference) return undefined;
+    const frame = requestAnimationFrame(() => {
+      successPanel.current?.focus({ preventScroll: true });
+      successPanel.current?.scrollIntoView({
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        block: 'center',
+      });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [reference]);
 
   const update = (field) => (event) => {
     setValues((current) => ({ ...current, [field]: event.target.value }));
@@ -127,7 +140,7 @@ export default function JobApplicationForm({ positions = [], privacyNote, succes
 
   if (reference) {
     return (
-      <div className={styles.thanks} role="status">
+      <div ref={successPanel} className={styles.thanks} role="status" tabIndex={-1}>
         <span className={styles.thanksTag}>{successTitle}</span>
         <p className={styles.refLabel}>Your reference number</p>
         <p className={styles.ref}>{reference}</p>

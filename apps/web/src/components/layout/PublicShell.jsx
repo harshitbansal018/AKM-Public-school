@@ -1,4 +1,3 @@
-import Preloader from '@/components/layout/Preloader/Preloader';
 import Topbar from '@/components/layout/Topbar/Topbar';
 import Ticker from '@/components/layout/Ticker/Ticker';
 import Header from '@/components/layout/Header/Header';
@@ -15,7 +14,6 @@ export default async function PublicShell({ children }) {
 
   return (
     <>
-      <Preloader schoolName={settings.schoolName} />
       <Topbar settings={settings} />
       <Ticker announcements={announcements} />
       <Header settings={settings} />

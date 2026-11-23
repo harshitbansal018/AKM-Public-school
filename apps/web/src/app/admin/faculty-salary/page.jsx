@@ -58,14 +58,15 @@ export default function FacultySalaryPage() {
           ],
         },
       ]}
-      toolbar={(rows, items) => {
+      toolbar={(rows, items, meta) => {
         const due = rows.filter((row) => row.status !== 'PAID');
         const narrowed = rows.length !== items.length;
+        const scope = meta && meta.total > rows.length ? 'Visible page' : narrowed ? 'Selected records' : 'All records';
         return (
           <>
             <div className={dashboard.grid}>
-              <StatCard icon="banknote" label="Paid" value={formatMoney(sum(rows.filter((r) => r.status === 'PAID')))} hint={narrowed ? 'Selected records' : 'All teachers'} tone="green" />
-              <StatCard icon="clock" label="Due" value={formatMoney(sum(due))} hint={`${due.length} month${due.length === 1 ? '' : 's'} unpaid`} tone="red" />
+              <StatCard icon="banknote" label="Paid" value={formatMoney(sum(rows.filter((r) => r.status === 'PAID')))} hint={scope} tone="green" />
+              <StatCard icon="clock" label="Due" value={formatMoney(sum(due))} hint={`${due.length} visible month${due.length === 1 ? '' : 's'} unpaid`} tone="red" />
             </div>
           </>
         );

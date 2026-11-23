@@ -8,20 +8,20 @@ export default function Topbar({ settings }) {
   return (
     <div className={styles.topbar}>
       <div className={`container ${styles.inner}`}>
-        <span>
+        <span className={styles.phone}>
           📞{' '}
           <a href={toTelHref(settings.phonePrimary)} className={styles.plain}>
             {settings.phonePrimary}
           </a>
         </span>
-        <span>
+        <span className={styles.email}>
           ✉️{' '}
           <a href={`mailto:${settings.email}`} className={styles.plain}>
             {settings.email}
           </a>
         </span>
         {/* <span>🕗 {settings.timingsShort}</span> */}
-        <span>
+        <span className={styles.admissions}>
           <Link href="/admissions" className={styles.cta}>
             Admissions Open {settings.admissionSession} →
           </Link>

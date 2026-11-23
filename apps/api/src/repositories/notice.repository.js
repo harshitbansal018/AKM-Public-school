@@ -55,6 +55,12 @@ export function findBySlug(slug) {
   });
 }
 
+export function publishedSlugExists(slug) {
+  return prisma.notice
+    .findFirst({ where: { slug, isPublished: true }, select: { id: true } })
+    .then(Boolean);
+}
+
 export function slugExists(slug) {
   return prisma.notice.findUnique({ where: { slug }, select: { id: true } }).then(Boolean);
 }

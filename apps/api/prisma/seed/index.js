@@ -61,14 +61,14 @@ const SETTINGS = [
     'general',
     'Subjects',
   ],
-  ['phonePrimary', '+91 98765 43210', 'contact', 'Primary phone'],
-  ['phoneSecondary', '+91 91234 56789', 'contact', 'Secondary phone'],
-  ['whatsapp', '919876543210', 'contact', 'WhatsApp number'],
-  ['email', 'info@akmpublicschool.in', 'contact', 'Email address'],
-  ['addressShort', 'Main Road, Tehsil & District, Himachal Pradesh', 'contact', 'Short address'],
+  ['phonePrimary', '+91 94182 87125', 'contact', 'Primary phone'],
+  ['phoneSecondary', '+91 94590 24526', 'contact', 'Secondary phone'],
+  ['whatsapp', '', 'contact', 'WhatsApp number (digits only; leave blank when unconfirmed)'],
+  ['email', 'akmschool111@gmail.com', 'contact', 'Email address'],
+  ['addressShort', 'Chuli, VPO Dadahu, District Sirmaur, Himachal Pradesh 173022', 'contact', 'Short address'],
   [
     'addressFull',
-    'AKM Public Sr. Sec. School, Main Road, Tehsil & District, Himachal Pradesh — 176xxx',
+    'AKM Public Sr. Sec. School, Chuli, VPO Dadahu, District Sirmaur, Himachal Pradesh 173022',
     'contact',
     'Full address',
   ],
@@ -80,7 +80,7 @@ const SETTINGS = [
   ['stat_students', '310', 'stats', 'Students'],
   ['stat_teachers', '22', 'stats', 'Teachers'],
   ['stat_streams', '3', 'stats', 'Senior secondary streams'],
-  ['stat_classes', '14', 'stats', 'Classes offered'],
+  ['stat_classes', '15', 'stats', 'Classes offered'],
 
   // hero
   ['hero_kicker', 'Welcome to AKM Public Sr. Sec. School', 'general', 'Hero kicker'],
@@ -332,7 +332,7 @@ const POLICIES = [
     effectiveDate: new Date('2026-04-01'),
     content: [
       '<h2>What we collect</h2>',
-      '<p>When you submit an admission enquiry or a job application through this website, we collect the name and phone number you provide, and optionally the student name, class, message or CV. We do not ask for payment details anywhere on this site.</p>',
+      '<p>Admission enquiries collect the student name, parent or guardian name, phone number, class applied for, address and message. Job applications collect the applicant name, phone number, email address, city or address, position and subject applied for, qualifications, experience, current or previous employer, notes and CV. Some fields are optional. We do not ask for payment details anywhere on this site.</p>',
       '<h2>Why we collect it</h2>',
       '<p>The only purpose is to respond to your enquiry or application. A member of the school office uses your phone number to call you back.</p>',
       '<h2>Who can see it</h2>',
@@ -360,7 +360,7 @@ async function seedPolicies() {
 
 const ANNOUNCEMENTS = [
   '📢 Admissions open for Session 2026–27 — Nursery to Class 12',
-  '📝 Annual Examination date sheet released — check Downloads',
+  '📝 Annual Examination date sheet released — contact the school office',
   '🏆 Class 12 Board Results: 96% pass percentage this year',
   '🎉 Annual Function on 20th December — parents are invited',
 ];
@@ -477,8 +477,8 @@ const NOTICES = [
   {
     slug: 'annual-examination-date-sheet-released',
     title: 'Annual Examination Date Sheet Released',
-    excerpt: 'Date sheet for Classes 1–9 and 11 is now available in Downloads.',
-    body: 'The annual examination date sheet for Classes 1–9 and Class 11 has been released and is now available in the Downloads section. Parents are requested to note the dates and ensure students reach school at least 20 minutes before each paper. Admit cards will be issued by class teachers one week before the examinations begin.',
+    excerpt: 'The date sheet for Classes 1–9 and 11 is available from the school office.',
+    body: 'The annual examination date sheet for Classes 1–9 and Class 11 has been released. Please contact the school office for the current copy. Parents are requested to note the dates and ensure students reach school at least 20 minutes before each paper. Admit cards will be issued by class teachers one week before the examinations begin.',
     noticeDate: '2026-03-15',
     category: 'exam',
     isPinned: true,

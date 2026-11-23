@@ -73,3 +73,33 @@
     margin-left: 0;
   }
 }
+
+/* Keep the public header visible on a phone. Email and the admissions CTA are
+   available in the footer/main navigation, so the utility strip only keeps
+   the two actions people need immediately. */
+@media (max-width: 600px) {
+  .topbar {
+    padding: 5px 0;
+    font-size: 0.78rem;
+  }
+  .inner {
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    gap: 10px;
+  }
+  .email,
+  .admissions {
+    display: none !important;
+  }
+  .phone,
+  .logins {
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 360px) {
+  .inner {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}

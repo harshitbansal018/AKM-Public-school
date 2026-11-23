@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { portalApi } from '@/lib/adminApi';
 import { useToast } from '@/hooks/useToast';
 
@@ -20,15 +20,21 @@ export function useAdminResource(endpoint, { autoLoad = true } = {}) {
   const [items, setItems] = useState([]);
   const [meta, setMeta] = useState(null);
   const [loading, setLoading] = useState(autoLoad);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
+  const loadedOnce = useRef(false);
+  const requestNumber = useRef(0);
 
   const load = useCallback(
     async (query = '') => {
-      setLoading(true);
+      const request = ++requestNumber.current;
+      if (loadedOnce.current) setRefreshing(true);
+      else setLoading(true);
       setError('');
       try {
         const data = await api.get(`${endpoint}${query}`);
+        if (request !== requestNumber.current) return;
         // Endpoints return either a bare array or { items, meta }.
         if (Array.isArray(data)) {
           setItems(data);
@@ -38,10 +44,14 @@ export function useAdminResource(endpoint, { autoLoad = true } = {}) {
           setMeta(data?.meta ?? null);
         }
       } catch (err) {
+        if (request !== requestNumber.current) return;
         setError(err.message);
-        setItems([]);
       } finally {
-        setLoading(false);
+        if (request === requestNumber.current) {
+          loadedOnce.current = true;
+          setLoading(false);
+          setRefreshing(false);
+        }
       }
     },
     [endpoint, api]
@@ -98,7 +108,7 @@ export function useAdminResource(endpoint, { autoLoad = true } = {}) {
     [endpoint, api, run]
   );
 
-  return { items, meta, loading, saving, error, load, create, update, patch, post, remove, setItems };
+  return { items, meta, loading, refreshing, saving, error, load, create, update, patch, post, remove, setItems };
 }
 
 export default useAdminResource;

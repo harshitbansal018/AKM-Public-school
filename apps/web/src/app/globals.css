@@ -47,15 +47,28 @@
 html {
   scroll-behavior: smooth;
 
-  /* Firefox aur Chrome 121+ */
-  scrollbar-width: none;
-  /* purana Edge */
-  -ms-overflow-style: none;
+  /* Keep the page position visible, matching the admin panel's compact UI. */
+  scrollbar-width: thin;
+  scrollbar-color: var(--royal) var(--sky-soft);
 }
 
-/* Chrome, Safari, Edge */
+/* Branded page scrollbar for Chrome, Safari and Edge. */
 html::-webkit-scrollbar {
-  display: none;
+  width: 10px;
+}
+
+html::-webkit-scrollbar-track {
+  background: var(--sky-soft);
+}
+
+html::-webkit-scrollbar-thumb {
+  background: var(--royal);
+  border: 2px solid var(--sky-soft);
+  border-radius: 999px;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background: var(--royal-dark);
 }
 
 

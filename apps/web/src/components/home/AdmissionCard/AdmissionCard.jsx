@@ -14,9 +14,11 @@ export default function AdmissionCard({ admission, settings }) {
       </ul>
       <div className={styles.actions}>
         <Button href="/contact">Enquire Now</Button>
-        <Button href={`https://wa.me/${settings.whatsapp}`} variant="whatsapp">
-          💬 WhatsApp Us
-        </Button>
+        {settings.whatsapp ? (
+          <Button href={`https://wa.me/${settings.whatsapp}`} variant="whatsapp">
+            💬 WhatsApp Us
+          </Button>
+        ) : null}
       </div>
     </div>
   );

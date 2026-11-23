@@ -35,7 +35,7 @@ import {
 } from '../middlewares/upload.middleware.js';
 
 import { idParamSchema, reorderSchema } from '../validators/common.validator.js';
-import { loginSchema, forgotPasswordSchema, resetPasswordSchema, changePasswordSchema } from '../validators/auth.validator.js';
+import { loginSchema, forgotPasswordSchema, resetTokenSchema, resetPasswordSchema, changePasswordSchema } from '../validators/auth.validator.js';
 import { listEnquiriesSchema, updateEnquirySchema } from '../validators/enquiry.validator.js';
 import * as schema from '../validators/content.validator.js';
 
@@ -50,6 +50,7 @@ router.post('/auth/login', loginLimiter, validate(loginSchema), auth.login);
 router.post('/auth/refresh', auth.refresh);
 router.post('/auth/logout', auth.logout);
 router.post('/auth/forgot-password', resetLimiter, validate(forgotPasswordSchema), auth.forgotPassword);
+router.post('/auth/reset-password/validate', validate(resetTokenSchema), auth.validateResetPassword);
 router.post('/auth/reset-password', resetLimiter, validate(resetPasswordSchema), auth.resetPassword);
 router.get('/auth/me', authenticate, auth.me);
 router.patch('/auth/password', authenticate, validate(changePasswordSchema), changePassword);
@@ -95,6 +96,7 @@ router.delete('/enquiries/:id', id, admin.deleteEnquiry);
 router.get('/gallery', admin.listAlbums);
 router.post('/gallery', validate(schema.createAlbumSchema), admin.createAlbum);
 router.delete('/gallery/images/:imageId', admin.deleteAlbumImage);
+router.get('/gallery/:id/images', id, admin.listAlbumImages);
 router.get('/gallery/:id', id, admin.getAlbum);
 router.put('/gallery/:id', id, validate(schema.updateAlbumSchema), admin.updateAlbum);
 router.delete('/gallery/:id', id, admin.deleteAlbum);

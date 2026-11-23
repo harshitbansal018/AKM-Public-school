@@ -59,6 +59,14 @@ export function createAuthController({ kind, portal, cookie }) {
       );
     }),
 
+    validateResetPassword: asyncHandler(async (req, res) => {
+      sendOk(
+        res,
+        await authService.validatePasswordReset(kind, req.body.token),
+        'Reset link is valid'
+      );
+    }),
+
     resetPassword: asyncHandler(async (req, res) => {
       sendOk(
         res,

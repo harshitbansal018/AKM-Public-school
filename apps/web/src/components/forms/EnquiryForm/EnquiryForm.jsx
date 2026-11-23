@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { apiPost, API_ENABLED } from '@/lib/api';
 import { useToast } from '@/hooks/useToast';
 import { toTelHref } from '@/lib/format';
@@ -55,10 +55,23 @@ function validate(values) {
  */
 export default function EnquiryForm({ settings, classOptions = [] }) {
   const toast = useToast();
+  const successPanel = useRef(null);
   const [values, setValues] = useState(EMPTY);
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
+
+  useEffect(() => {
+    if (!sent) return undefined;
+    const frame = requestAnimationFrame(() => {
+      successPanel.current?.focus({ preventScroll: true });
+      successPanel.current?.scrollIntoView({
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        block: 'center',
+      });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [sent]);
 
   const update = (field) => (event) => {
     setValues((current) => ({ ...current, [field]: event.target.value }));
@@ -103,7 +116,7 @@ export default function EnquiryForm({ settings, classOptions = [] }) {
 
   if (sent) {
     return (
-      <div className={styles.thanks}>
+      <div ref={successPanel} className={styles.thanks} role="status" tabIndex={-1}>
         <div className={styles.thanksIcon} aria-hidden="true">
           ✅
         </div>
@@ -216,10 +229,14 @@ export default function EnquiryForm({ settings, classOptions = [] }) {
       <p className={styles.alt}>
         Prefer to talk? Call{' '}
         <a href={toTelHref(settings.phonePrimary)}>{settings.phonePrimary}</a>
-        {' or '}
-        <a href={`https://wa.me/${settings.whatsapp}`} target="_blank" rel="noopener noreferrer">
-          message us on WhatsApp
-        </a>
+        {settings.whatsapp ? (
+          <>
+            {' or '}
+            <a href={`https://wa.me/${settings.whatsapp}`} target="_blank" rel="noopener noreferrer">
+              message us on WhatsApp
+            </a>
+          </>
+        ) : null}
         .
       </p>
     </form>

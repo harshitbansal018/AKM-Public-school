@@ -20,13 +20,13 @@ export const LOGO_URL = '/images/logo.png';
 export const settings = {
   schoolName: 'AKM Public Sr. Sec. School',
   tagline: 'Nursery to Class 12 • HPBOSE Affiliated',
-  phonePrimary: '+91 98765 43210',
-  phoneSecondary: '+91 91234 56789',
-  whatsapp: '919876543210',
-  email: 'info@akmpublicschool.in',
-  addressShort: 'Main Road, Tehsil & District, Himachal Pradesh',
+  phonePrimary: '+91 94182 87125',
+  phoneSecondary: '+91 94590 24526',
+  whatsapp: '',
+  email: 'akmschool111@gmail.com',
+  addressShort: 'Chuli, VPO Dadahu, District Sirmaur, Himachal Pradesh 173022',
   addressFull:
-    'AKM Public Sr. Sec. School, Main Road, Tehsil & District, Himachal Pradesh — 176xxx',
+    'AKM Public Sr. Sec. School, Chuli, VPO Dadahu, District Sirmaur, Himachal Pradesh 173022',
   timings: 'Monday – Saturday, 8:00 AM – 2:00 PM',
   timingsShort: 'Mon–Sat, 8:00 AM – 2:00 PM',
   admissionSession: '2026–27',
@@ -46,12 +46,12 @@ export const stats = [
   { id: 1, value: 310, suffix: '+', label: 'Students' },
   { id: 2, value: 22, suffix: '', label: 'Dedicated Teachers' },
   { id: 3, value: 3, suffix: '', label: 'Senior Sec. Streams' },
-  { id: 4, value: 14, suffix: '', label: 'Classes: Nursery–12' },
+  { id: 4, value: 15, suffix: '', label: 'Classes: Nursery–12' },
 ];
 
 export const announcements = [
   { id: 1, text: '📢 Admissions open for Session 2026–27 — Nursery to Class 12' },
-  { id: 2, text: '📝 Annual Examination date sheet released — check Downloads' },
+  { id: 2, text: '📝 Annual Examination date sheet released — contact the school office' },
   { id: 3, text: '🏆 Class 12 Board Results: 96% pass percentage this year' },
   { id: 4, text: '🎉 Annual Function on 20th December — parents are invited' },
 ];
@@ -232,8 +232,8 @@ export const notices = [
     id: 1,
     slug: 'annual-examination-date-sheet-released',
     title: 'Annual Examination Date Sheet Released',
-    excerpt: 'Date sheet for Classes 1–9 and 11 is now available in Downloads.',
-    body: 'The annual examination date sheet for Classes 1–9 and Class 11 has been released and is now available in the Downloads section. Parents are requested to note the dates and ensure students reach school at least 20 minutes before each paper. Admit cards will be issued by class teachers one week before the examinations begin.',
+    excerpt: 'The date sheet for Classes 1–9 and 11 is available from the school office.',
+    body: 'The annual examination date sheet for Classes 1–9 and Class 11 has been released. Please contact the school office for the current copy. Parents are requested to note the dates and ensure students reach school at least 20 minutes before each paper. Admit cards will be issued by class teachers one week before the examinations begin.',
     noticeDate: '2026-03-15',
     category: 'exam',
     isPinned: true,

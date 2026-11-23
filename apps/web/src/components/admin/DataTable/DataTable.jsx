@@ -21,6 +21,7 @@ export default function DataTable({
   rows = [],
   actions,
   loading = false,
+  refreshing = false,
   error = '',
   emptyTitle = 'Nothing here yet',
   emptyDescription,
@@ -72,7 +73,12 @@ export default function DataTable({
   }
 
   return (
-    <div className={styles.wrap}>
+    <div className={styles.wrap} aria-busy={refreshing} tabIndex={0} aria-label="Scrollable data table">
+      {refreshing ? (
+        <div className={styles.refreshing} role="status">
+          <Spinner size="xs" label="Updating…" />
+        </div>
+      ) : null}
       <table className={styles.table}>
         <thead>
           <tr>

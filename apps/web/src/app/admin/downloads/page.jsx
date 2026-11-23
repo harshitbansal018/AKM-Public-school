@@ -28,7 +28,7 @@ const CATEGORIES = [
 ];
 
 export default function DownloadsAdminPage() {
-  const { items, loading, saving, error, load, remove } = useAdminResource('/admin/downloads');
+  const { items, loading, refreshing, saving, error, load, remove } = useAdminResource('/admin/downloads');
   const [uploadOpen, setUploadOpen] = useState(false);
   const [deleting, setDeleting] = useState(null);
 
@@ -45,6 +45,7 @@ export default function DownloadsAdminPage() {
       <DataTable
         rows={items}
         loading={loading}
+        refreshing={refreshing}
         error={error}
         emptyTitle="No downloads yet"
         emptyDescription="Upload a date sheet or admission form and it appears on the Downloads page."

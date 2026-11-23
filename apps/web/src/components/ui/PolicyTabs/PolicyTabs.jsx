@@ -59,9 +59,14 @@ export default function PolicyTabs({ groups }) {
         aria-labelledby={`tab-${tabSlug(current.tab)}`}
         className={styles.panel}
       >
-        {current.items.map((policy) => (
-          <PolicyCard key={policy.id} policy={policy} />
-        ))}
+        {current.items.length > 0 ? (
+          current.items.map((policy) => <PolicyCard key={policy.id} policy={policy} />)
+        ) : (
+          <div className={styles.empty} role="status">
+            <h2>No published policies in this category</h2>
+            <p>Please contact the school office if you need this policy before it is published here.</p>
+          </div>
+        )}
       </div>
     </div>
   );

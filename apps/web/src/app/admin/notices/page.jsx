@@ -47,7 +47,7 @@ export default function NoticesAdminPage() {
   const [page, setPage] = useState(1);
   const query = `?page=${page}&limit=10`;
 
-  const { items, meta, loading, saving, error, load, create, update, remove } =
+  const { items, meta, loading, refreshing, saving, error, load, create, update, remove } =
     useAdminResource('/admin/notices', { autoLoad: false });
 
   useEffect(() => {
@@ -106,6 +106,7 @@ export default function NoticesAdminPage() {
       <DataTable
         rows={items}
         loading={loading}
+        refreshing={refreshing}
         error={error}
         emptyTitle="No notices yet"
         emptyDescription="Add the first notice and it appears on the homepage board straight away."

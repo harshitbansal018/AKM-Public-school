@@ -20,6 +20,12 @@ export function findAlbumBySlug(slug) {
   });
 }
 
+export function publishedAlbumSlugExists(slug) {
+  return prisma.galleryAlbum
+    .findFirst({ where: { slug, isPublished: true }, select: { id: true } })
+    .then(Boolean);
+}
+
 export function albumSlugExists(slug) {
   return prisma.galleryAlbum.findUnique({ where: { slug }, select: { id: true } }).then(Boolean);
 }
@@ -35,6 +41,43 @@ export function findAlbumById(id) {
   return prisma.galleryAlbum.findUnique({
     where: { id: Number(id) },
     include: { images: { orderBy: IMAGE_ORDER } },
+  });
+}
+
+export function findAlbumImagePage(id, { skip = 0, take = 24 } = {}) {
+  const albumId = Number(id);
+  return Promise.all([
+    prisma.galleryAlbum.findUnique({
+      where: { id: albumId },
+      select: { id: true, title: true, coverImage: true },
+    }),
+    prisma.galleryImage.findMany({
+      where: { albumId },
+      orderBy: IMAGE_ORDER,
+      skip,
+      take,
+    }),
+    prisma.galleryImage.count({ where: { albumId } }),
+  ]).then(([album, images, total]) => ({ album, images, total }));
+}
+
+export function findAlbumImageByPath(albumId, imagePath) {
+  return prisma.galleryImage.findFirst({
+    where: { albumId: Number(albumId), imagePath },
+    select: { id: true },
+  });
+}
+
+export function findAlbumCoverState(id) {
+  return prisma.galleryAlbum.findUnique({
+    where: { id: Number(id) },
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      coverImage: true,
+      images: { orderBy: IMAGE_ORDER, take: 1, select: { imagePath: true } },
+    },
   });
 }
 

@@ -6,6 +6,8 @@ import { uniqueSlug } from '../utils/slugify.js';
 import { ApiError } from '../utils/ApiError.js';
 import { logger } from '../utils/logger.js';
 import { env } from '../config/env.js';
+import { toFileUrl } from '../utils/fileUrl.js';
+import { toSkipTake, buildMeta } from '../utils/pagination.js';
 
 // ---------- public ----------
 
@@ -19,6 +21,11 @@ export async function getBySlug(slug) {
   return serializeAlbum(album);
 }
 
+/** Existence check for the frontend's pre-render HTTP-status guard. */
+export async function existsBySlug(slug) {
+  return galleryRepository.publishedAlbumSlugExists(slug);
+}
+
 // ---------- admin: albums ----------
 
 export async function listAll() {
@@ -29,6 +36,17 @@ export async function getById(id) {
   const album = await galleryRepository.findAlbumById(id);
   if (!album) throw ApiError.notFound('Album not found');
   return serializeAlbum(album);
+}
+
+export async function listImages(id, query = {}) {
+  const { page, limit, skip, take } = toSkipTake({ ...query, limit: query.limit ?? 24 });
+  const { album, images, total } = await galleryRepository.findAlbumImagePage(id, { skip, take });
+  if (!album) throw ApiError.notFound('Album not found');
+  return {
+    album: { ...album, coverImage: toFileUrl(album.coverImage), imageCount: total },
+    items: images.map((image) => ({ ...image, imagePath: toFileUrl(image.imagePath) })),
+    meta: buildMeta({ page, limit, total }),
+  };
 }
 
 export async function createAlbum(input) {
@@ -44,7 +62,7 @@ export async function createAlbum(input) {
 }
 
 export async function updateAlbum(id, input) {
-  const existing = await galleryRepository.findAlbumById(id);
+  const existing = await galleryRepository.findAlbumCoverState(id);
   if (!existing) throw ApiError.notFound('Album not found');
 
   const slug =
@@ -55,7 +73,7 @@ export async function updateAlbum(id, input) {
   // A cover must be one of this album's own photos. Without this check the
   // field would accept any path, including one pointing outside the gallery.
   if (input.coverImage) {
-    const owned = existing.images.some((image) => image.imagePath === input.coverImage);
+    const owned = await galleryRepository.findAlbumImageByPath(id, input.coverImage);
     if (!owned) throw ApiError.badRequest('Choose a cover from this album’s own photos');
   }
 
@@ -84,7 +102,7 @@ export async function removeAlbum(id) {
 // ---------- admin: images ----------
 
 export async function addImages(albumId, files, captions = []) {
-  const album = await galleryRepository.findAlbumById(albumId);
+  const album = await galleryRepository.findAlbumCoverState(albumId);
   if (!album) throw ApiError.notFound('Album not found');
   if (!files?.length) throw ApiError.badRequest('No images were uploaded');
 
@@ -101,7 +119,7 @@ export async function addImages(albumId, files, captions = []) {
     await galleryRepository.updateAlbum(albumId, { coverImage: `gallery/${files[0].filename}` });
   }
 
-  return getById(albumId);
+  return { added: files.length };
 }
 
 export async function removeImage(imageId) {
@@ -114,7 +132,7 @@ export async function removeImage(imageId) {
   // coverImage holds a path, not a relation, so nothing in the database stops
   // it pointing at an image that has just been deleted. Promote the next photo
   // in the album, or clear it when the album is now empty.
-  const album = await galleryRepository.findAlbumById(image.albumId);
+  const album = await galleryRepository.findAlbumCoverState(image.albumId);
   if (album && album.coverImage === image.imagePath) {
     await galleryRepository.updateAlbum(album.id, {
       coverImage: album.images[0]?.imagePath ?? null,

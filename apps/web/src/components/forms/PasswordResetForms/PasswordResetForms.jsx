@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { apiPost } from '@/lib/api';
@@ -97,6 +97,29 @@ export function ResetPasswordForm() {
   const [error, setError] = useState('');
   const [done, setDone] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [checking, setChecking] = useState(Boolean(token));
+  const [tokenError, setTokenError] = useState('');
+
+  useEffect(() => {
+    if (!token) return undefined;
+    let cancelled = false;
+    setChecking(true);
+    setTokenError('');
+
+    apiPost(`/${portal}/auth/reset-password/validate`, { token })
+      .catch((err) => {
+        if (!cancelled) {
+          setTokenError(err.message || 'This reset link is not valid or has expired.');
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setChecking(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [portal, token]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -130,6 +153,25 @@ export function ResetPasswordForm() {
     );
   }
 
+  if (checking) {
+    return (
+      <div className={styles.form} role="status">
+        <p className={styles.notice}>Checking your reset link…</p>
+      </div>
+    );
+  }
+
+  if (tokenError) {
+    return (
+      <div className={styles.form}>
+        <p className={styles.error} role="alert">{tokenError}</p>
+        <Link href={`/${portal}/forgot-password`} className="btn btn-outline">
+          Request a new link
+        </Link>
+      </div>
+    );
+  }
+
   if (done) {
     return (
       <div className={styles.form}>
@@ -150,7 +192,8 @@ export function ResetPasswordForm() {
         name="password"
         type="password"
         label="New password"
-        placeholder="At least 8 characters, with a letter and a number"
+        placeholder="Create a password"
+        hint="Use at least 8 characters, including a letter and a number."
         value={password}
         onChange={(event) => setPassword(event.target.value)}
         autoComplete="new-password"

@@ -29,7 +29,7 @@ const FIELDS = [
 ];
 
 export default function GalleryAdminPage() {
-  const { items, loading, saving, error, load, create, update, remove } =
+  const { items, loading, refreshing, saving, error, load, create, update, remove } =
     useAdminResource('/admin/gallery');
 
   const [formOpen, setFormOpen] = useState(false);
@@ -68,6 +68,7 @@ export default function GalleryAdminPage() {
       <DataTable
         rows={items}
         loading={loading}
+        refreshing={refreshing}
         error={error}
         emptyTitle="No albums yet"
         emptyDescription="Create an album such as “Sports Day”, then upload photos into it."
@@ -181,19 +182,27 @@ function PhotoManager({ albumId, albumTitle, onClose }) {
   const toast = useToast();
   const fileInput = useRef(null);
   const [album, setAlbum] = useState(null);
+  const [images, setImages] = useState([]);
+  const [meta, setMeta] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [removing, setRemoving] = useState(null);
   const [settingCover, setSettingCover] = useState(null);
 
-  const load = async () => {
-    setLoading(true);
+  const load = async (page = 1, append = false) => {
+    if (append) setLoadingMore(true);
+    else setLoading(true);
     try {
-      setAlbum(await adminApi.get(`/admin/gallery/${albumId}`));
+      const data = await adminApi.get(`/admin/gallery/${albumId}/images?page=${page}&limit=24`);
+      setAlbum(data.album);
+      setImages((current) => (append ? [...current, ...data.items] : data.items));
+      setMeta(data.meta);
     } catch (err) {
       toast.error(err.message);
     } finally {
       setLoading(false);
+      setLoadingMore(false);
     }
   };
 
@@ -240,7 +249,7 @@ function PhotoManager({ albumId, albumTitle, onClose }) {
       if (!res.ok || payload.success === false) throw new Error(payload.message || 'Upload failed');
 
       toast.success(`${files.length} photo(s) uploaded`);
-      setAlbum(payload.data);
+      await load(1);
     } catch (err) {
       toast.error(err.message);
     } finally {
@@ -274,10 +283,7 @@ function PhotoManager({ albumId, albumTitle, onClose }) {
     setRemoving(imageId);
     try {
       await adminApi.delete(`/admin/gallery/images/${imageId}`);
-      setAlbum((current) => ({
-        ...current,
-        images: current.images.filter((image) => image.id !== imageId),
-      }));
+      await load(1);
       toast.success('Photo deleted');
     } catch (err) {
       toast.error(err.message);
@@ -285,8 +291,6 @@ function PhotoManager({ albumId, albumTitle, onClose }) {
       setRemoving(null);
     }
   };
-
-  const images = album?.images ?? [];
 
   return (
     <Modal open onClose={onClose} title={`Photos — ${albumTitle}`} className={styles.photoModal}>
@@ -349,6 +353,22 @@ function PhotoManager({ albumId, albumTitle, onClose }) {
           ))}
         </ul>
       )}
+
+      {meta?.hasNext ? (
+        <div className={styles.loadMore}>
+          <button
+            type="button"
+            className="btn btn-outline btn-sm"
+            onClick={() => load(meta.page + 1, true)}
+            disabled={loadingMore}
+          >
+            {loadingMore ? <Spinner size="xs" /> : null} Load more photos
+          </button>
+          <span>
+            Showing {images.length} of {meta.total}
+          </span>
+        </div>
+      ) : null}
     </Modal>
   );
 }

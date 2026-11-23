@@ -15,5 +15,3 @@ export const noticeCategories = [
   { value: 'event', label: 'Events' },
   { value: 'general', label: 'General' },
 ];
-
-export default classGroups;

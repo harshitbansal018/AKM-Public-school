@@ -95,12 +95,24 @@ export const getNoticeBySlug = asyncHandler(async (req, res) => {
   sendOk(res, await noticeService.getBySlug(req.params.slug), 'Notice');
 });
 
+export const checkNoticeBySlug = asyncHandler(async (req, res) => {
+  const exists = await noticeService.existsBySlug(req.params.slug);
+  res.setHeader('X-AKM-Resource-Check', '1');
+  res.status(exists ? 204 : 404).end();
+});
+
 export const getGallery = asyncHandler(async (_req, res) => {
   sendOk(res, await galleryService.listPublic(), 'Gallery albums');
 });
 
 export const getAlbumBySlug = asyncHandler(async (req, res) => {
   sendOk(res, await galleryService.getBySlug(req.params.slug), 'Album');
+});
+
+export const checkAlbumBySlug = asyncHandler(async (req, res) => {
+  const exists = await galleryService.existsBySlug(req.params.slug);
+  res.setHeader('X-AKM-Resource-Check', '1');
+  res.status(exists ? 204 : 404).end();
 });
 
 export const getDownloads = asyncHandler(async (req, res) => {

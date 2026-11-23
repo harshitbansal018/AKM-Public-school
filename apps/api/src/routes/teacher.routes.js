@@ -13,7 +13,7 @@ import { loginLimiter, resetLimiter } from '../middlewares/rateLimit.middleware.
 import { revalidateOnWrite } from '../middlewares/revalidate.middleware.js';
 
 import { idParamSchema } from '../validators/common.validator.js';
-import { loginSchema, forgotPasswordSchema, resetPasswordSchema } from '../validators/auth.validator.js';
+import { loginSchema, forgotPasswordSchema, resetTokenSchema, resetPasswordSchema } from '../validators/auth.validator.js';
 import * as schema from '../validators/content.validator.js';
 
 const router = Router();
@@ -31,6 +31,7 @@ router.post('/auth/login', loginLimiter, validate(loginSchema), auth.login);
 router.post('/auth/refresh', auth.refresh);
 router.post('/auth/logout', auth.logout);
 router.post('/auth/forgot-password', resetLimiter, validate(forgotPasswordSchema), auth.forgotPassword);
+router.post('/auth/reset-password/validate', validate(resetTokenSchema), auth.validateResetPassword);
 router.post('/auth/reset-password', resetLimiter, validate(resetPasswordSchema), auth.resetPassword);
 router.get('/auth/me', authenticateTeacher, auth.me);
 

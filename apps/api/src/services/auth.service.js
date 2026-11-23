@@ -235,6 +235,22 @@ export async function requestPasswordReset(kind, email) {
   return { requested: true };
 }
 
+/** Confirms that a reset page may show the password fields without consuming the token. */
+export async function validatePasswordReset(kind, token) {
+  const config = accounts(kind);
+  const reset = await passwordResetRepository.findLive(hashToken(token));
+  if (!reset || reset.kind !== kind) {
+    throw ApiError.badRequest('This reset link is not valid or has expired — please ask for a new one');
+  }
+
+  const account = await config.findById(reset.accountId);
+  if (!account || !config.allowed(account)) {
+    throw ApiError.badRequest('This reset link is not valid or has expired — please ask for a new one');
+  }
+
+  return { valid: true };
+}
+
 /** Sets a new password from a live token, then retires the token. */
 export async function resetPassword(kind, token, newPassword) {
   const config = accounts(kind);
