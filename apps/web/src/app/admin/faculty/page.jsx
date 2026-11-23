@@ -43,7 +43,7 @@ export default function FacultyAdminPage() {
         },
         { key: 'name', label: 'Name' },
         { key: 'designation', label: 'Designation' },
-        { key: 'subject', label: 'Subject' },
+        { key: 'subject', label: 'Subject', minWidth: '120px', nowrap: true },
         {
           key: 'isPrincipal',
           label: 'Role',

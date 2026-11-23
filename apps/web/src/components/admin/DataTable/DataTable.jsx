@@ -11,7 +11,7 @@ import styles from './DataTable.module.css';
  * Admin list table.
  *
  * @param {object} props
- * @param {{key: string, label: string, render?: (row) => any, width?: string}[]} props.columns
+ * @param {{key: string, label: string, render?: (row) => any, width?: string, minWidth?: string, nowrap?: boolean}[]} props.columns
  * @param {object[]} props.rows
  * @param {(row) => React.ReactNode} [props.actions]  buttons in the last column
  * @param {number} [props.pageSize]  rows per page; 0 shows everything
@@ -83,7 +83,13 @@ export default function DataTable({
         <thead>
           <tr>
             {columns.map((column) => (
-              <th key={column.key} style={column.width ? { width: column.width } : undefined}>
+              <th
+                key={column.key}
+                style={{
+                  ...(column.width ? { width: column.width } : {}),
+                  ...(column.minWidth ? { minWidth: column.minWidth } : {}),
+                }}
+              >
                 {column.label}
               </th>
             ))}
@@ -94,7 +100,11 @@ export default function DataTable({
           {pageRows.map((row) => (
             <tr key={row.id}>
               {columns.map((column) => (
-                <td key={column.key} className={cn(column.nowrap && styles.nowrap)}>
+                <td
+                  key={column.key}
+                  className={cn(column.nowrap && styles.nowrap)}
+                  style={column.minWidth ? { minWidth: column.minWidth } : undefined}
+                >
                   {column.render ? column.render(row) : (row[column.key] ?? '—')}
                 </td>
               ))}
