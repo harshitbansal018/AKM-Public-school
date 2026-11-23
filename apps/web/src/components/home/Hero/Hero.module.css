@@ -24,12 +24,15 @@
   padding: 7px 18px;
   border-radius: 999px;
   margin-bottom: 18px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 .title {
   font-size: clamp(2rem, 4.5vw, 3.1rem);
   font-weight: 800;
   margin-bottom: 16px;
+  overflow-wrap: anywhere;
 }
 
 .title em {
@@ -42,6 +45,7 @@
   font-size: 1.05rem;
   max-width: 520px;
   margin-bottom: 26px;
+  overflow-wrap: anywhere;
 }
 
 .actions {
@@ -122,6 +126,8 @@
   font-weight: 800;
   font-family: var(--font-display);
   color: var(--royal-dark);
+  max-width: min(220px, 75%);
+  overflow-wrap: anywhere;
 }
 
 .badge small {

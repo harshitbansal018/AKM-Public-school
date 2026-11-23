@@ -25,6 +25,11 @@
   border-bottom: 1px dashed #dce7f5;
 }
 
+.line > div:last-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 .line:last-of-type {
   border-bottom: none;
 }

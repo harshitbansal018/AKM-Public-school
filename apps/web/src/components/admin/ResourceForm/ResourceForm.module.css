@@ -8,6 +8,10 @@
   gap: 16px;
 }
 
+.grid > * {
+  min-width: 0;
+}
+
 .full {
   grid-column: 1 / -1;
 }
@@ -21,6 +25,7 @@
   margin-top: 5px;
   font-size: 0.76rem;
   color: var(--muted);
+  overflow-wrap: anywhere;
 }
 
 .checkbox {
@@ -32,6 +37,7 @@
   color: var(--ink);
   cursor: pointer;
   padding: 10px 0;
+  overflow-wrap: anywhere;
 }
 
 .checkbox input {

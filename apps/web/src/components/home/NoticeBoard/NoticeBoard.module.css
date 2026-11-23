@@ -18,6 +18,11 @@
   gap: 12px;
 }
 
+.head span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 .head a {
   font-size: 0.8rem;
   font-family: var(--font-body);
@@ -40,6 +45,10 @@
   gap: 16px;
   align-items: flex-start;
   transition: background 0.2s ease;
+}
+
+.notice > div:last-child {
+  min-width: 0;
 }
 
 .notice:hover {
@@ -77,11 +86,13 @@
   font-family: var(--font-body);
   font-weight: 800;
   color: var(--ink);
+  overflow-wrap: anywhere;
 }
 
 .notice p {
   font-size: 0.83rem;
   color: var(--muted);
+  overflow-wrap: anywhere;
 }
 
 .empty {

@@ -16,6 +16,12 @@
     opacity 0.7s ease;
 }
 
+.stream h3,
+.stream p,
+.stream li {
+  overflow-wrap: anywhere;
+}
+
 .stream:hover {
   transform: translateY(-8px);
 }

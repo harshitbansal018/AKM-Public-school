@@ -15,6 +15,11 @@
     opacity 0.7s ease;
 }
 
+.facility h3,
+.facility p {
+  overflow-wrap: anywhere;
+}
+
 .facility:hover {
   transform: translateY(-8px);
 }

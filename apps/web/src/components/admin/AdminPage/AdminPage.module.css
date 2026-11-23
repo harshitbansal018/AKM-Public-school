@@ -14,6 +14,7 @@
 .title {
   font-size: 1.5rem;
   line-height: 1.2;
+  overflow-wrap: anywhere;
 }
 
 .description {
@@ -21,6 +22,7 @@
   font-size: 0.88rem;
   margin-top: 4px;
   max-width: 620px;
+  overflow-wrap: anywhere;
 }
 
 .action {
