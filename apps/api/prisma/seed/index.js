@@ -78,7 +78,6 @@ const SETTINGS = [
 
   // stats
   ['stat_students', '310', 'stats', 'Students'],
-  ['stat_teachers', '22', 'stats', 'Teachers'],
   ['stat_streams', '3', 'stats', 'Senior secondary streams'],
   ['stat_classes', '15', 'stats', 'Classes offered'],
 
