@@ -148,6 +148,7 @@ export const facultyService = {
     return {
       principal: serializeFaculty(principal),
       director: serializeFaculty(director),
+      teacherCount: staff.length,
     };
   },
 };

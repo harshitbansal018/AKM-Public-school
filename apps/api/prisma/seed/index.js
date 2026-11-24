@@ -335,6 +335,8 @@ const SETTINGS = [
   ['admission_whatsapp_label', 'WhatsApp Us', 'page_home', 'WhatsApp button'],
   ['principal_message_label', "Principal's Message", 'page_home', 'Principal message label'],
   ['director_message_label', "Managing Director's Message", 'page_home', 'Director message label'],
+  ['principal_message_heading', "Nurturing Every Child's Potential", 'page_home', 'Principal message heading'],
+  ['director_message_heading', 'Nurturing Young Minds, Building Bright Futures', 'page_home', 'Director message heading'],
   ['faculty_join_cta_label', 'Apply for Job', 'page_faculty', 'Careers button'],
   ['faculty_join_cta_href', '/careers#apply', 'page_faculty', 'Careers button link'],
 
@@ -408,10 +410,10 @@ const POLICIES = [
     title: 'Website Privacy Policy',
     category: 'Privacy Policy',
     status: 'ACTIVE',
-    effectiveDate: new Date('2026-04-01'),
+    effectiveDate: new Date('2026-11-24'),
     content: [
       '<h2>What we collect</h2>',
-      '<p>Admission enquiries collect the student name, parent or guardian name, phone number, class applied for, address and message. Job applications collect the applicant name, phone number, email address, city or address, position and subject applied for, qualifications, experience, current or previous employer, notes and CV. Some fields are optional. We do not ask for payment details anywhere on this site.</p>',
+      '<p>Admission enquiries collect the student name, parent or guardian name, phone number, class applied for, address and message. Job applications collect the applicant name, phone number, email address, city, position and subject applied for, qualifications, experience, current or previous employer, notes and CV. Some fields are optional. We do not ask for payment details anywhere on this site.</p>',
       '<h2>Why we collect it</h2>',
       '<p>The only purpose is to respond to your enquiry or application. A member of the school office uses your phone number to call you back.</p>',
       '<h2>Who can see it</h2>',
@@ -517,9 +519,9 @@ async function seedFaculty() {
   const data = {
     name,
     designation: 'Principal, AKM Public Sr. Sec. School',
-    qualification: "Nurturing Every Child's Potential",
+    qualification: null,
     message:
-      'At AKM Public Sr. Sec. School, we believe education is not just about textbooks — it is about building confidence, discipline, values and curiosity. Our dedicated team of 22 teachers works every day to give each of our 310 students individual attention and a supportive environment to learn, explore and grow.',
+      'At AKM Public Sr. Sec. School, we believe education is not just about textbooks — it is about building confidence, discipline, values and curiosity. Our dedicated team of {teacherCount} teachers works every day to give each of our 310 students individual attention and a supportive environment to learn, explore and grow.',
     isPrincipal: true,
     sortOrder: 0,
   };

@@ -34,19 +34,21 @@ export async function getHomePayload() {
 
   return {
     settings,
-    stats: await settingService.getStats(),
+    stats: settingService.getStats(settings, leadership.teacherCount),
     announcements,
     hero: buildHero(settings),
     academicStages: stages,
     principal: buildLeader(leadership.principal, {
       photoCaption: "Principal's Photo Here",
-      heading: "Nurturing Every Child's Potential",
+      heading: settings.principal_message_heading ?? "Nurturing Every Child's Potential",
+      teacherCount: leadership.teacherCount,
     }),
     // null until someone is ticked as MD — the section then shows the
     // principal alone, exactly as before.
     director: buildLeader(leadership.director, {
       photoCaption: "MD's Photo Here",
-      heading: 'A Word from the Management',
+      heading: settings.director_message_heading ?? 'A Word from the Management',
+      teacherCount: leadership.teacherCount,
     }),
     streams: streams.map(withParsedSubjects),
     facilities,
@@ -75,10 +77,11 @@ function buildHero(settings) {
 }
 
 /**
- * One message card — the principal's or the MD's. The admin form's
- * "Heading / qualification" field doubles as the card heading.
+ * One message card — the principal's or the MD's. Message headings come from
+ * website-content settings, keeping each faculty member's qualification as
+ * independent data.
  */
-function buildLeader(person, { photoCaption, heading }) {
+function buildLeader(person, { photoCaption, heading, teacherCount }) {
   if (!person) return null;
   return {
     id: person.id,
@@ -86,9 +89,20 @@ function buildLeader(person, { photoCaption, heading }) {
     designation: person.designation,
     photo: person.photo,
     photoCaption,
-    heading: person.qualification || heading,
-    message: person.message ?? '',
+    heading,
+    message: withTeacherCount(person.message, teacherCount),
   };
+}
+
+/** Resolve the live Faculty count in leadership copy, with correct grammar. */
+function withTeacherCount(message, teacherCount) {
+  const count = Number(teacherCount) || 0;
+  const value = `${count} ${count === 1 ? 'teacher' : 'teachers'}`;
+
+  return String(message ?? '')
+    .replace(/\{teacherCount\}\s+teachers?/gi, value)
+    .replace(/team of \d+ teachers?/gi, `team of ${value}`)
+    .replace(/\{teacherCount\}/g, String(count));
 }
 
 function buildAdmission(settings) {

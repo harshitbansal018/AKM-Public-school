@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { apiPost, API_ENABLED } from '@/lib/api';
 import { useToast } from '@/hooks/useToast';
 import { toTelHref } from '@/lib/format';
+import { focusFirstInvalidField } from '@/lib/formFocus';
 import Input from '@/components/ui/Input/Input';
 import Select from '@/components/ui/Select/Select';
 import Textarea from '@/components/ui/Textarea/Textarea';
@@ -55,6 +56,7 @@ function validate(values) {
  */
 export default function EnquiryForm({ settings, classOptions = [] }) {
   const toast = useToast();
+  const formRef = useRef(null);
   const successPanel = useRef(null);
   const [values, setValues] = useState(EMPTY);
   const [errors, setErrors] = useState({});
@@ -84,6 +86,7 @@ export default function EnquiryForm({ settings, classOptions = [] }) {
     const found = validate(values);
     if (Object.keys(found).length > 0) {
       setErrors(found);
+      focusFirstInvalidField(formRef.current, found);
       return;
     }
 
@@ -133,7 +136,7 @@ export default function EnquiryForm({ settings, classOptions = [] }) {
   }
 
   return (
-    <form className={styles.form} onSubmit={handleSubmit} noValidate>
+    <form ref={formRef} className={styles.form} onSubmit={handleSubmit} noValidate>
       <div className={styles.row}>
         <Input
           id="studentName"

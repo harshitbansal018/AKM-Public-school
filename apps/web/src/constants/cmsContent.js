@@ -81,10 +81,9 @@ export const cmsPages = [
       {
         id: 'stats',
         label: 'Numbers strip',
-        help: 'The four counters on the dark blue bar that count up as you scroll.',
+        help: 'The counters on the dark blue bar. Teachers are counted automatically from published Faculty records.',
         fields: [
           { key: 'stat_students', label: 'Students', type: 'number', half: true },
-          { key: 'stat_teachers', label: 'Teachers', type: 'number', half: true },
           { key: 'stat_streams', label: 'Senior secondary streams', type: 'number', half: true },
           { key: 'stat_classes', label: 'Number of classes', type: 'number', half: true },
         ],
@@ -854,6 +853,8 @@ cmsPages.push(
       { id: 'leaders', label: 'Leadership labels', fields: [
         { key: 'principal_message_label', label: 'Principal label', type: 'text', half: true },
         { key: 'director_message_label', label: 'Managing Director label', type: 'text', half: true },
+        { key: 'principal_message_heading', label: 'Principal message heading', type: 'text', half: true },
+        { key: 'director_message_heading', label: 'Managing Director message heading', type: 'text', half: true },
         { key: 'faculty_join_cta_label', label: 'Faculty page button', type: 'text', half: true },
         { key: 'faculty_join_cta_href', label: 'Faculty page button URL', type: 'text', half: true },
       ] },

@@ -42,9 +42,11 @@ export const classSections = [
   ...Array.from({ length: 12 }, (_, index) => `Class ${index + 1}`),
 ];
 
+const FALLBACK_TEACHER_COUNT = 1;
+
 export const stats = [
   { id: 1, value: 310, suffix: '+', label: 'Students' },
-  { id: 2, value: 22, suffix: '', label: 'Dedicated Teachers' },
+  { id: 2, value: FALLBACK_TEACHER_COUNT, suffix: '', label: 'Dedicated Teachers' },
   { id: 3, value: 3, suffix: '', label: 'Senior Sec. Streams' },
   { id: 4, value: 15, suffix: '', label: 'Classes: Nursery–12' },
 ];
@@ -122,7 +124,7 @@ export const principal = {
   photoCaption: "Principal's Photo Here",
   heading: "Nurturing Every Child's Potential",
   message:
-    'At AKM Public Sr. Sec. School, we believe education is not just about textbooks — it is about building confidence, discipline, values and curiosity. Our dedicated team of 22 teachers works every day to give each of our 310 students individual attention and a supportive environment to learn, explore and grow.',
+    `At AKM Public Sr. Sec. School, we believe education is not just about textbooks — it is about building confidence, discipline, values and curiosity. Our dedicated team of ${FALLBACK_TEACHER_COUNT} teacher works every day to give each of our 310 students individual attention and a supportive environment to learn, explore and grow.`,
 };
 
 /** Staff list for the Faculty page — the principal alone until the school adds more. */

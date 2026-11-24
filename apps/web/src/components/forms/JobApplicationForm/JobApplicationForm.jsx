@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { apiPost, API_ENABLED } from '@/lib/api';
 import { useToast } from '@/hooks/useToast';
+import { focusFirstInvalidField } from '@/lib/formFocus';
 import Input from '@/components/ui/Input/Input';
 import Select from '@/components/ui/Select/Select';
 import Textarea from '@/components/ui/Textarea/Textarea';
@@ -65,6 +66,7 @@ function validate(values, cv) {
  */
 export default function JobApplicationForm({ positions = [], privacyNote, successTitle, successText }) {
   const toast = useToast();
+  const formRef = useRef(null);
   const fileInput = useRef(null);
   const successPanel = useRef(null);
   const [values, setValues] = useState(EMPTY);
@@ -101,6 +103,9 @@ export default function JobApplicationForm({ positions = [], privacyNote, succes
     const found = validate(values, cv);
     if (Object.keys(found).length > 0) {
       setErrors(found);
+      focusFirstInvalidField(formRef.current, found, {
+        position: values.position === OTHER ? 'positionOther' : 'position',
+      });
       return;
     }
 
@@ -158,7 +163,7 @@ export default function JobApplicationForm({ positions = [], privacyNote, succes
   ];
 
   return (
-    <form className={styles.form} onSubmit={handleSubmit} noValidate>
+    <form ref={formRef} className={styles.form} onSubmit={handleSubmit} noValidate>
       <fieldset className={styles.group}>
         <legend>About you</legend>
         <div className={styles.row}>
@@ -281,13 +286,17 @@ export default function JobApplicationForm({ positions = [], privacyNote, succes
 
       <fieldset className={styles.group}>
         <legend>Your CV</legend>
-        <label className={styles.upload}>
+        <label className={styles.upload} data-error-field>
           <input
             ref={fileInput}
+            id="resume"
+            name="resume"
             type="file"
             accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             onChange={chooseCv}
             className={styles.fileInput}
+            aria-invalid={errors.resume ? 'true' : undefined}
+            aria-describedby={errors.resume ? 'resume-error' : undefined}
           />
           <span className={styles.uploadText}>
             {cv ? (
@@ -304,7 +313,7 @@ export default function JobApplicationForm({ positions = [], privacyNote, succes
           </span>
         </label>
         {errors.resume ? (
-          <span className={styles.error} role="alert">
+          <span id="resume-error" className={styles.error} role="alert">
             {errors.resume}
           </span>
         ) : null}

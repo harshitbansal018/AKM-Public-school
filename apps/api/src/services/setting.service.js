@@ -181,15 +181,13 @@ export async function normaliseSubject(input) {
 }
 
 /**
- * The four homepage counters, pulled out of settings and coerced to numbers so
- * the frontend never has to parse strings.
+ * Homepage counters. The Faculty count is supplied from the published rows;
+ * the remaining CMS values are coerced to numbers for the frontend.
  */
-export async function getStats() {
-  const settings = await getPublicSettings();
-
+export function getStats(settings, teacherCount) {
   return [
     { id: 1, value: Number(settings.stat_students ?? 0), suffix: '+', label: 'Students' },
-    { id: 2, value: Number(settings.stat_teachers ?? 0), suffix: '', label: 'Dedicated Teachers' },
+    { id: 2, value: Number(teacherCount ?? 0), suffix: '', label: 'Dedicated Teachers' },
     { id: 3, value: Number(settings.stat_streams ?? 0), suffix: '', label: 'Senior Sec. Streams' },
     { id: 4, value: Number(settings.stat_classes ?? 0), suffix: '', label: 'Classes: Nursery–12' },
   ];

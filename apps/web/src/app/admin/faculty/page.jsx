@@ -82,7 +82,7 @@ export default function FacultyAdminPage() {
         },
         { name: 'name', label: 'Name', type: 'text', required: true, half: true, placeholder: 'Mrs. Sunita Sharma' },
         { name: 'designation', label: 'Designation', type: 'text', required: true, half: true, placeholder: 'Principal' },
-        { name: 'qualification', label: 'Heading / qualification', type: 'text', help: "Used as the heading above the Principal's or MD's message." },
+        { name: 'qualification', label: 'Qualification', type: 'text', help: 'Shown on the Faculty page. Leave blank if no qualification is available.' },
         { name: 'subject', label: 'Subject taught', type: 'text', half: true },
         { name: 'sortOrder', label: 'Order', type: 'number', half: true },
         { name: 'message', label: 'Message', type: 'textarea', rows: 5, help: 'Shown on the homepage when this person is the Principal or the MD.' },
